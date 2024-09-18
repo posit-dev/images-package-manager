@@ -16,12 +16,12 @@ package:
 process:
   rstudio-pm:
     running: true
-    skip: {% raw %}{{ if eq .Env.IMAGE_TYPE "min" }}true{{ else }}false{{ end }}{% endraw %}
+    skip: {{ if eq .Env.IMAGE_TYPE "min" }}true{{ else }}false{{ end }}
 
 port:
   tcp6:4242:
     listening: true
-    skip: {% raw %}{{ if eq .Env.IMAGE_TYPE "min" }}true{{ else }}false{{ end }}{% endraw %}
+    skip: {{ if eq .Env.IMAGE_TYPE "min" }}true{{ else }}false{{ end }}
 
 file:
   /etc/rstudio-pm/license.lic:
@@ -44,42 +44,42 @@ file:
     contents:
       - "Posit Package Manager service is ready"
   # Check for R installation
-  /opt/R/{{ r_version }}/bin/R:
-    exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
+  /opt/R/4.4.0/bin/R:
+    exists: {{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}
     filetype: file
   /opt/R/default/bin/R:
-    exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
+    exists: {{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}
     filetype: file
   /usr/local/bin/R:
-    exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
+    exists: {{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}
     filetype: symlink
   /usr/local/bin/Rscript:
-    exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
+    exists: {{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}
     filetype: symlink
   # Check for Python installation
-  /opt/python/{{ python_version }}/bin/python:
-    exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
+  /opt/python/3.12.1/bin/python:
+    exists: {{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}
   /opt/python/default/bin/python:
-    exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
+    exists: {{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}
 
 command:
   "Ensure Package Manager version is correct":
     exec: /opt/rstudio-pm/bin/rstudio-pm --version
     exit-status: 0
     stdout:
-      - "{{ package_manager_version }}"
+      - ""
   "Ensure Package Manager is running":
     exec: pgrep rstudio-pm
     exit-status: 0
   "Ensure R version is correct":
-    exec: /opt/R/{{ r_version }}/bin/R --version
+    exec: /opt/R/4.4.0/bin/R --version
     exit-status: 0
     stdout:
-      - "{{ r_version }}"
-    skip: {% raw %}{{ if eq .Env.IMAGE_TYPE "min" }}true{{ else }}false{{ end }}{% endraw %}
+      - "4.4.0"
+    skip: {{ if eq .Env.IMAGE_TYPE "min" }}true{{ else }}false{{ end }}
   "Ensure Python version is correct":
-    exec: /opt/python/{{ python_version }}/bin/python --version
+    exec: /opt/python/3.12.1/bin/python --version
     exit-status: 0
     stdout:
-      - "{{ python_version }}"
-    skip: {% raw %}{{ if eq .Env.IMAGE_TYPE "min" }}true{{ else }}false{{ end }}{% endraw %}
+      - "3.12.1"
+    skip: {{ if eq .Env.IMAGE_TYPE "min" }}true{{ else }}false{{ end }}

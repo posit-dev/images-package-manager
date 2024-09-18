@@ -1,20 +1,10 @@
 ARG REGISTRY=docker.io
-{% if not is_minimal -%}
-ARG PYTHON_VERSION="{{ python_version }}"
-ARG R_VERSION="{{ r_version }}"
-FROM ${REGISTRY}/posit/base:ubuntu2204
-{%- else -%}
 FROM ${REGISTRY}/posit/base:ubuntu2204-min
-{%- endif %}
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
 ARG SCRIPTS_DIR=/opt/positscripts
-{%- if not is_minimal %}
-ARG PYTHON_VERSION="{{ python_version }}"
-ARG R_VERSION="{{ r_version }}"
-{%- endif %}
-ARG PACKAGE_MANAGER_VERSION="{{ product_version }}"
+ARG PACKAGE_MANAGER_VERSION="2024.04.4-35"
 
 ENV PPM_LICENSE ""
 ENV PPM_LICENSE_SERVER ""
@@ -28,19 +18,15 @@ RUN $SCRIPTS_DIR/apt.sh --update upgrade \
     && rm -f /tmp/packages.txt \
     && $SCRIPTS_DIR/apt.sh --clean
 
-{% if not is_minimal -%}
-### Install Python packages ###
-COPY {{ rel_path }}/deps/requirements.txt /tmp/requirements.txt
-RUN $SCRIPTS_DIR/install_python.sh -r /tmp/requirements.txt -- ${PYTHON_VERSION}
-{%- endif %}
 
-### Install Package Manager {{ product_version }} ###
+
+### Install Package Manager 2024.04.4-35 ###
 COPY common/ubuntu/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN /tmp/install_package_manager.sh \
     && rm -f /tmp/install_package_manager.sh
 
 ### Add startup.sh script ###
-COPY --chmod=0775 {{ rel_path }}/scripts/startup.sh /usr/local/bin/startup.sh
+COPY --chmod=0775 package-manager/2024.04.4-35/scripts/startup.sh /usr/local/bin/startup.sh
 RUN mkdir -p /var/run/rstudio-pm \
     && chmod +x /usr/local/bin/startup.sh \
     && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \

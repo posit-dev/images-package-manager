@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -eo pipefail
 
 # Output delimiter
 d="===="
@@ -12,7 +12,7 @@ PACKAGE_MANAGER_VERSION=${PACKAGE_MANAGER_VERSION}
 echo "$d Fetching Posit Package Manager package $d"
 
 # fetch latest deb package
-curl -fsSL "https://cdn.posit.co/package-manager/deb/amd64/rstudio-pm_${PPM_VERSION}_amd64.deb" -o /tmp/rstudio-pm.deb
+curl -fsSL "https://cdn.posit.co/package-manager/deb/amd64/rstudio-pm_${PACKAGE_MANAGER_VERSION}_amd64.deb" -o /tmp/rstudio-pm.deb
 
 echo "$d Verify Posit Package Manager package $d"
 # Verify the deb package
@@ -40,9 +40,6 @@ EOF
 else
     echo "$d No R or Python version provided $d"
 fi
-
-echo "$d Symlinking rspm binary $d"
-ln -s /opt/rstudio-pm/bin/rspm /usr/local/bin/rspm
 
 # clean up
 rm /tmp/rstudio-pm.deb
