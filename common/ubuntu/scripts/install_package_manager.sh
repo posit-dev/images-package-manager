@@ -6,7 +6,7 @@ d="===="
 
 PYTHON_VERSION=${PYTHON_VERSION}
 R_VERSION=${R_VERSION}
-SCRIPTS_DIR=${SCRIPTS_DIR:-/opt/positscripts}
+SCRIPTS_DIR=${SCRIPTS_DIR:-/opt/posit/scripts}
 PACKAGE_MANAGER_VERSION=${PACKAGE_MANAGER_VERSION}
 
 echo "$d Fetching Posit Package Manager package $d"

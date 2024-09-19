@@ -5,7 +5,7 @@ FROM ${REGISTRY}/posit/base:ubuntu2204
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
-ARG SCRIPTS_DIR=/opt/positscripts
+ARG SCRIPTS_DIR=/opt/posit/scripts
 ARG PYTHON_VERSION="3.12.1"
 ARG R_VERSION="4.4.0"
 ARG PACKAGE_MANAGER_VERSION="2024.08.0-6"

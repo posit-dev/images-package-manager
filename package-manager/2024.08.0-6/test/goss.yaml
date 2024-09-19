@@ -67,7 +67,7 @@ command:
     exec: /opt/rstudio-pm/bin/rstudio-pm --version
     exit-status: 0
     stdout:
-      - ""
+      - "2024.08.0-6"
   "Ensure Package Manager is running":
     exec: pgrep rstudio-pm
     exit-status: 0

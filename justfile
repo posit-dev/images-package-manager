@@ -1,21 +1,32 @@
 #!/usr/bin/env just --justfile
 
-
-init:
+init-venv:
   #!/bin/bash
   set -ex
-  rm -rf venv
-  python3 -m venv venv
-  source venv/bin/activate
-  pip install -r tools/requirements.txt
-  mkdir -p {{justfile_directory()}}/tools
+  rm -rf .venv
+  python3 -m venv .venv
+
+install-templater:
+  #!/bin/bash
+  {{justfile_directory()}}/.venv/bin/pip3 install {{justfile_directory()}}/../posit-images-shared/image-templater
+
+install-goss:
+  #!/bin/bash
   curl -fsSL https://github.com/goss-org/goss/releases/latest/download/goss-linux-amd64 -o {{justfile_directory()}}/tools/goss
   chmod +rx {{justfile_directory()}}/tools/goss
   curl -fsSL https://github.com/goss-org/goss/releases/latest/download/dgoss -o {{justfile_directory()}}/tools/dgoss
   chmod +rx {{justfile_directory()}}/tools/dgoss
 
-generate image product_version r_version python_version:
-  venv/bin/python3 {{ justfile_directory() }}/tools/templater.py {{image}} {{product_version}} {{r_version}} {{python_version}}
+init: init-venv install-templater install-goss
+
+alias generate := render
+render image product_version r_version python_version:
+  {{ justfile_directory() }}/.venv/bin/templater render \
+    {{image}} \
+    {{product_version}} \
+    --value r_version={{r_version}} \
+    --value python_version={{python_version}} \
+    --value rel_path={{ image }}/{{ product_version }}
 
 alias bake := build
 build target export_options="--load" override_file="docker-bake.override.hcl":
