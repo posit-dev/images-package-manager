@@ -31,16 +31,6 @@ function get_tags {
   )
 }
 
-variable build_matrix {
-  default = {
-    builds = [
-      {version = "2024.08.2-9", os = "ubuntu2204", mark_latest = true},
-      {version = "2024.08.0-6", os = "ubuntu2204", mark_latest = false},
-      {version = "2024.04.4-35", os = "ubuntu2204", mark_latest = false},
-    ]
-  }
-}
-
 group "default" {
   targets = [
     "std",
@@ -53,9 +43,18 @@ target "std" {
   matrix = build_matrix
   name = "${builds.os}-${replace(get_clean_version(builds.version), ".", "-")}-std"
   tags = get_tags(builds.version, builds.os, "std", builds.mark_latest)
+  labels = {
+    "co.posit.image.type" = "std"
+    "co.posit.image.os" = "${builds.os}"
+    "co.posit.image.version" = "${builds.version}"
+    "co.posit.image.name" = "${image_name}"
+    "co.posit.internal.goss.test.wait" = "10"
+    "co.posit.internal.goss.test.path" = "${image_name}/${builds.version}/test"
+    "co.posit.internal.goss.test.deps" = "${image_name}/${builds.version}/deps"
+  }
   dockerfile = "${image_name}/${builds.version}/Containerfile.${builds.os}.std"
   args = {
-    "REGISTRY" = registry
+    "BASE_IMAGE_REGISTRY" = registry
   }
 }
 
@@ -64,8 +63,17 @@ target "min" {
   matrix = build_matrix
   name = "${builds.os}-${replace(get_clean_version(builds.version), ".", "-")}-min"
   tags = get_tags(builds.version, builds.os, "min", builds.mark_latest)
+  labels = {
+    "co.posit.image.type" = "min"
+    "co.posit.image.os" = "${builds.os}"
+    "co.posit.image.version" = "${builds.version}"
+    "co.posit.image.name" = "${image_name}"
+    "co.posit.internal.goss.test.wait" = "0"
+    "co.posit.internal.goss.test.path" = "${image_name}/${builds.version}/test"
+    "co.posit.internal.goss.test.deps" = "${image_name}/${builds.version}/deps"
+  }
   dockerfile = "${image_name}/${builds.version}/Containerfile.${builds.os}.min"
   args = {
-    "REGISTRY" = registry
+    "BASE_IMAGE_REGISTRY" = registry
   }
 }
