@@ -35,4 +35,4 @@ build *OPTS:
   {{ justfile_directory() }}/.venv/bin/bakery build --context {{ justfile_directory() }} {{OPTS}}
 
 test *OPTS:
-  {{ justfile_directory() }}/.venv/bin/bakery dgoss {{ justfile_directory() }} {{OPTS}}
+  {{ justfile_directory() }}/.venv/bin/bakery dgoss --context {{ justfile_directory() }} {{OPTS}}

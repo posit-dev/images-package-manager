@@ -38,11 +38,6 @@ file:
     exists: true
   /usr/local/bin/tini:
     exists: true
-  /var/log/rstudio/rstudio-pm/rstudio-pm.log:
-    exists: true
-    filetype: file
-    contents:
-      - "Posit Package Manager service is ready"
   # Check for R installation
   /opt/R/4.4.0/bin/R:
     exists: {{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}

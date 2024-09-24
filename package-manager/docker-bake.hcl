@@ -21,9 +21,7 @@ function get_tags {
   params = [version, os, type, mark_latest]
   result = concat(
     [
-      "${registry}/${namespace}/${image_name}:${os}-${get_clean_version(version)}",
       "${registry}/${namespace}/${image_name}:${os}-${get_clean_version(version)}${get_suffix(type)}",
-      "${registry}/${namespace}/${image_name}:${os}-${get_safe_version(version)}",
       "${registry}/${namespace}/${image_name}:${os}-${get_safe_version(version)}${get_suffix(type)}",
     ],
       mark_latest ? ["${registry}/${namespace}/${image_name}:latest${get_suffix(type)}", "${registry}/${namespace}/${image_name}:${os}${get_suffix(type)}"] :
@@ -49,6 +47,7 @@ target "std" {
     "co.posit.image.version" = "${builds.version}"
     "co.posit.image.name" = "${image_name}"
     "co.posit.internal.goss.test.wait" = "10"
+    "co.posit.internal.goss.test.command" = "/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg",
     "co.posit.internal.goss.test.path" = "${image_name}/${builds.version}/test"
     "co.posit.internal.goss.test.deps" = "${image_name}/${builds.version}/deps"
   }
