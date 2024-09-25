@@ -45,4 +45,5 @@ jobs:
         run: bakery dgoss
 
       - name: Push images
+        if: github.event_name == 'push'
         run: bakery build --push
