@@ -38,6 +38,7 @@ file:
     exists: true
   /usr/local/bin/tini:
     exists: true
+  
   # Check for R installation
   /opt/R/4.4.0/bin/R:
     exists: {{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}

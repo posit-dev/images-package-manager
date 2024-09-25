@@ -1,9 +1,13 @@
 ARG BASE_IMAGE_REGISTRY=docker.io
+
 FROM ${BASE_IMAGE_REGISTRY}/posit/base:ubuntu2204-min
+LABEL org.opencontainers.image.base.name="${REGISTRY}/posit/base:ubuntu2204-min"
+
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
 ARG SCRIPTS_DIR=/opt/posit/scripts
+
 ARG PACKAGE_MANAGER_VERSION="2024.08.0-6"
 
 ENV PPM_LICENSE ""
@@ -17,6 +21,8 @@ RUN $SCRIPTS_DIR/apt.sh --update upgrade \
     && $SCRIPTS_DIR/apt.sh install $(cat /tmp/ubuntu2204_packages.txt) \
     && rm -f /tmp/packages.txt \
     && $SCRIPTS_DIR/apt.sh --clean
+
+
 
 ### Install Package Manager 2024.08.0-6 ###
 COPY package-manager/2024.08.0-6/scripts/install_package_manager.sh /tmp/install_package_manager.sh
@@ -33,6 +39,8 @@ RUN mkdir -p /var/run/rstudio-pm \
 USER rstudio-pm
 
 RUN echo "source <(rspm completion bash)" >> ~/.bashrc
+
+
 
 ENTRYPOINT ["tini", "--"]
 CMD ["/usr/local/bin/startup.sh"]

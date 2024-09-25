@@ -42,6 +42,9 @@ target "std" {
   name = "${builds.os}-${replace(get_clean_version(builds.version), ".", "-")}-std"
   tags = get_tags(builds.version, builds.os, "std", builds.mark_latest)
   labels = {
+    "org.opencontainers.image.title" = "${image_name}"
+    "org.opencontainers.image.description" = "Containerized edition of Posit ${title(image_name)} ${builds.version}"
+    "org.opencontainers.image.version" = "${builds.version}"
     "co.posit.image.type" = "std"
     "co.posit.image.os" = "${builds.os}"
     "co.posit.image.version" = "${builds.version}"
@@ -63,6 +66,9 @@ target "min" {
   name = "${builds.os}-${replace(get_clean_version(builds.version), ".", "-")}-min"
   tags = get_tags(builds.version, builds.os, "min", builds.mark_latest)
   labels = {
+    "org.opencontainers.image.title" = "${image_name}"
+    "org.opencontainers.image.description" = "Containerized minimal edition of Posit ${title(image_name)} ${builds.version}"
+    "org.opencontainers.image.version" = "${builds.version}"
     "co.posit.image.type" = "min"
     "co.posit.image.os" = "${builds.os}"
     "co.posit.image.version" = "${builds.version}"

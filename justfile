@@ -34,5 +34,6 @@ alias bake := build
 build *OPTS:
   {{ justfile_directory() }}/.venv/bin/bakery build --context {{ justfile_directory() }} {{OPTS}}
 
+alias dgoss := test
 test *OPTS:
   {{ justfile_directory() }}/.venv/bin/bakery dgoss --context {{ justfile_directory() }} {{OPTS}}
