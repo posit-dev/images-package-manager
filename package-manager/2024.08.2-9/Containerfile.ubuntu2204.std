@@ -1,7 +1,7 @@
-ARG REGISTRY=docker.io
+ARG BASE_IMAGE_REGISTRY=docker.io
 ARG PYTHON_VERSION="3.12.6"
 ARG R_VERSION="4.4.1"
-FROM ${REGISTRY}/posit/base:ubuntu2204
+FROM ${BASE_IMAGE_REGISTRY}/posit/base:ubuntu2204
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
@@ -16,18 +16,17 @@ ENV PPM_LICENSE_FILE_PATH ""
 ENV STARTUP_DEBUG_MODE 0
 
 ### Install Apt Packages ###
-COPY common/ubuntu/22.04/packages.txt /tmp/packages.txt
+COPY package-manager/2024.08.2-9/deps/ubuntu2204_packages.txt /tmp/ubuntu2204_packages.txt
 RUN $SCRIPTS_DIR/apt.sh --update upgrade \
-    && $SCRIPTS_DIR/apt.sh install $(cat /tmp/packages.txt) \
+    && $SCRIPTS_DIR/apt.sh install $(cat /tmp/ubuntu2204_packages.txt) \
     && rm -f /tmp/packages.txt \
     && $SCRIPTS_DIR/apt.sh --clean
-
 ### Install Python packages ###
-COPY package-manager/2024.08.2-9/deps/requirements.txt /tmp/requirements.txt
-RUN $SCRIPTS_DIR/install_python.sh -r /tmp/requirements.txt -- ${PYTHON_VERSION}
-
+COPY package-manager/2024.08.2-9/deps/python_requirements.txt /tmp/python_requirements.txt
+RUN $SCRIPTS_DIR/install_python.sh -r /tmp/python_requirements.txt -- ${PYTHON_VERSION} \
+    && rm -f /tmp/python_requirements.txt
 ### Install Package Manager 2024.08.2-9 ###
-COPY common/ubuntu/scripts/install_package_manager.sh /tmp/install_package_manager.sh
+COPY package-manager/2024.08.2-9/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN /tmp/install_package_manager.sh \
     && rm -f /tmp/install_package_manager.sh
 

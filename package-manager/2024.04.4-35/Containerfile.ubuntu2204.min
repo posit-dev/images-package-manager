@@ -1,5 +1,5 @@
-ARG REGISTRY=docker.io
-FROM ${REGISTRY}/posit/base:ubuntu2204-min
+ARG BASE_IMAGE_REGISTRY=docker.io
+FROM ${BASE_IMAGE_REGISTRY}/posit/base:ubuntu2204-min
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
@@ -12,16 +12,14 @@ ENV PPM_LICENSE_FILE_PATH ""
 ENV STARTUP_DEBUG_MODE 0
 
 ### Install Apt Packages ###
-COPY common/ubuntu/22.04/packages.txt /tmp/packages.txt
+COPY package-manager/2024.04.4-35/deps/ubuntu2204_packages.txt /tmp/ubuntu2204_packages.txt
 RUN $SCRIPTS_DIR/apt.sh --update upgrade \
-    && $SCRIPTS_DIR/apt.sh install $(cat /tmp/packages.txt) \
+    && $SCRIPTS_DIR/apt.sh install $(cat /tmp/ubuntu2204_packages.txt) \
     && rm -f /tmp/packages.txt \
     && $SCRIPTS_DIR/apt.sh --clean
 
-
-
 ### Install Package Manager 2024.04.4-35 ###
-COPY common/ubuntu/scripts/install_package_manager.sh /tmp/install_package_manager.sh
+COPY package-manager/2024.04.4-35/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN /tmp/install_package_manager.sh \
     && rm -f /tmp/install_package_manager.sh
 
