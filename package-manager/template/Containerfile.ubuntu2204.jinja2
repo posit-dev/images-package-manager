@@ -33,7 +33,7 @@ RUN $SCRIPTS_DIR/apt.sh --update upgrade \
 {% if not is_minimal %}
 ### Install Python packages ###
 COPY {{ rel_path }}/deps/python_requirements.txt /tmp/python_requirements.txt
-RUN $SCRIPTS_DIR/install_python.sh -r /tmp/python_requirements.txt -- ${PYTHON_VERSION} \
+RUN install_python -r /tmp/python_requirements.txt -- ${PYTHON_VERSION} \
     && rm -f /tmp/python_requirements.txt
 {% endif %}
 
