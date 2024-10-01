@@ -39,11 +39,15 @@ jobs:
         run: echo -ne "variable \"registry\" {\n  default = \"${{ secrets.ACR_REGISTRY }}\"\n}" > docker-bake.override.hcl
 
       - name: Build images
+        env:
+          GIT_SHA: ${{ github.sha }}
         run: bakery build --load
 
       - name: Test images
         run: bakery dgoss
 
       - name: Push images
+        env:
+          GIT_SHA: ${{ github.sha }}
         if: github.event_name == 'push'
         run: bakery build --push

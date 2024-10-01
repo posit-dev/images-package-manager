@@ -1,3 +1,8 @@
+{%- set clean_version = image_version | regex_replace('[+-].*', '') -%}
+{%- set version_split = clean_version.split('.') -%}
+{%- set major_version = version_split[0]|int -%}
+{%- set minor_version = version_split[1]|int -%}
+{%- set fix_version = version_split[2]|int -%}
 user:
   rstudio-pm:
     exists: true
@@ -38,6 +43,7 @@ file:
     exists: true
   /usr/local/bin/tini:
     exists: true
+  {% if major_version > 2024 or (major_version == 2024 and minor_version >= 8) %}
   {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}
   /var/log/rstudio/rstudio-pm/rstudio-pm.log:
     exists: true
@@ -45,6 +51,7 @@ file:
     contents:
       - "Posit Package Manager service is ready"
   {{ end }}{% endraw %}
+  {% endif %}
   # Check for R installation
   /opt/R/{{ r_version }}/bin/R:
     exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}

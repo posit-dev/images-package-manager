@@ -1,13 +1,18 @@
 ARG BASE_IMAGE_REGISTRY=docker.io
+
 ARG PYTHON_VERSION="3.12.6"
 ARG R_VERSION="4.4.1"
 FROM ${BASE_IMAGE_REGISTRY}/posit/base:ubuntu2204
+LABEL org.opencontainers.image.base.name="${REGISTRY}/posit/base:ubuntu2204"
+
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
 ARG SCRIPTS_DIR=/opt/posit/scripts
+
 ARG PYTHON_VERSION="3.12.6"
 ARG R_VERSION="4.4.1"
+
 ARG PACKAGE_MANAGER_VERSION="2024.08.2-9"
 
 ENV PPM_LICENSE ""
@@ -21,10 +26,14 @@ RUN $SCRIPTS_DIR/apt.sh --update upgrade \
     && $SCRIPTS_DIR/apt.sh install $(cat /tmp/ubuntu2204_packages.txt) \
     && rm -f /tmp/packages.txt \
     && $SCRIPTS_DIR/apt.sh --clean
+
+
 ### Install Python packages ###
 COPY package-manager/2024.08.2-9/deps/python_requirements.txt /tmp/python_requirements.txt
-RUN $SCRIPTS_DIR/install_python.sh -r /tmp/python_requirements.txt -- ${PYTHON_VERSION} \
+RUN install_python -r /tmp/python_requirements.txt -- ${PYTHON_VERSION} \
     && rm -f /tmp/python_requirements.txt
+
+
 ### Install Package Manager 2024.08.2-9 ###
 COPY package-manager/2024.08.2-9/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN /tmp/install_package_manager.sh \
@@ -40,6 +49,11 @@ RUN mkdir -p /var/run/rstudio-pm \
 USER rstudio-pm
 
 RUN echo "source <(rspm completion bash)" >> ~/.bashrc
+
+
+LABEL co.posit.image.tools.python="3.12.6" \
+      co.posit.image.tools.r="4.4.1"
+
 
 ENTRYPOINT ["tini", "--"]
 CMD ["/usr/local/bin/startup.sh"]
