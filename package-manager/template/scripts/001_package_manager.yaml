@@ -1,0 +1,3 @@
+services:
+  init:
+    command: /startup.sh

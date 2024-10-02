@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -e
+if [[ "${DEBUG:-0}" -eq 1 ]]; then
+  set -x
+fi
+
+# Activate License
+PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH:-/etc/rstudio-pm/license.lic}
+/opt/rstudio-pm/bin/license-manager initialize --userspace || true
+if ! [ -z "$PPM_LICENSE" ]; then
+    /opt/rstudio-pm/bin/license-manager activate $PPM_LICENSE --userspace
+elif ! [ -z "$PPM_LICENSE_SERVER" ]; then
+    /opt/rstudio-pm/bin/license-manager license-server $PPM_LICENSE_SERVER --userspace
+elif test -f "$PPM_LICENSE_FILE_PATH"; then
+    /opt/rstudio-pm/bin/license-manager activate-file $PPM_LICENSE_FILE_PATH --userspace
+fi
+
+
+# Activate License
+RSW_LICENSE_FILE_PATH=${RSW_LICENSE_FILE_PATH:-/etc/rstudio-server/license.lic}
+if test -f "$RSW_LICENSE_FILE_PATH"; then
+  # Clean the license file input in case Snowflake has arbitrarily switched whitespace characters.
+  # This could be done with some nutty regex if someone so desired, but I think this more easier to grasp and is
+  # POSIX compliant.
+  license_file_data=$(cat $RSW_LICENSE_FILE_PATH | tr -d ' \n')
+  license_file_data=$(echo $license_file_data | sed 's/-----BEGINRSTUDIOLICENSE-----/-----BEGIN RSTUDIO LICENSE-----/')
+  license_file_data=$(echo $license_file_data | sed 's/-----ENDRSTUDIOLICENSE-----/-----END RSTUDIO LICENSE-----/')
+  # We have to write the license data into a temporary file. The license-manager activate-file command does not accept
+  # the license being piped in using `<($license_file_data)` or other similar options. `tmp_license_file` does not need
+  # to stick around long-term. Workbench does not utilize a license file in place or via symbolic link. The file always
+  # gets copied into `/var/lib/rstudio-server/<filename>.lic`.
+  tmp_license_file=$(mktemp)
+  echo $license_file_data > $tmp_license_file
+  /usr/lib/rstudio-server/bin/license-manager activate-file $tmp_license_file
+fi
