@@ -1,7 +1,6 @@
-ARG BASE_IMAGE_REGISTRY=docker.io
 
-FROM ${BASE_IMAGE_REGISTRY}/posit/base:ubuntu2204-min
-LABEL org.opencontainers.image.base.name="${REGISTRY}/posit/base:ubuntu2204-min"
+FROM cripittwood.azurecr.io/posit/base:ubuntu2204-min
+LABEL org.opencontainers.image.base.name="cripittwood.azurecr.io/posit/base:ubuntu2204-min"
 
 
 ### ARG declarations ###
