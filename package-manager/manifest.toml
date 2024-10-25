@@ -17,11 +17,12 @@ latest = true
 [[build]]
 version = "2024.08.0-6"
 os = ["Ubuntu 22.04"]
+latest = false
 
 [[build]]
 version = "2024.04.4-35"
 os = ["Ubuntu 22.04"]
-
+latest = false
 [[target]]
 type = "min"
 tags = ["{{ build.version | tag_safe }}-{{ build.os | condense }}-min", "{{ build.version | clean_version }}-{{ build.os | condense }}-min"]

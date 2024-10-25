@@ -9,6 +9,12 @@ R_VERSION=${R_VERSION}
 SCRIPTS_DIR=${SCRIPTS_DIR:-/opt/posit/scripts}
 PACKAGE_MANAGER_VERSION=${PACKAGE_MANAGER_VERSION}
 
+echo "$d Installing script dependencies $d"
+pti container syspkg install \
+  -p curl \
+  -p gpg \
+  -p dpkg-sig
+
 echo "$d Fetching Posit Package Manager package $d"
 
 # fetch latest deb package
@@ -42,4 +48,8 @@ else
 fi
 
 # clean up
+pti container syspkg uninstall \
+  -p curl \
+  -p gpg \
+  -p dpkg-sig
 rm /tmp/rstudio-pm.deb
