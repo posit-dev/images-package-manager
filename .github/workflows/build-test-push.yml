@@ -26,6 +26,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # TODO: replace with docker.io login in the future
+      - name: Azure Container Registry Login
+        uses: Azure/docker-login@v2
+        with:
+          login-server: '${{ secrets.ACR_REGISTRY }}'
+          username: '${{ secrets.ACR_USERNAME }}'
+          password: '${{ secrets.ACR_PASSWORD }}'
+
+      # TODO: remove once publishing to docker hub
+      - name: Override registry
+        run: echo -ne "variable \"registry\" {\n  default = \"${{ secrets.ACR_REGISTRY }}\"\n}" > docker-bake.override.hcl
+
       - name: Build images
         env:
           GIT_SHA: ${{ github.sha }}
