@@ -42,4 +42,5 @@ else
 fi
 
 # clean up
+pti syspkg clean
 rm /tmp/rstudio-pm.deb
