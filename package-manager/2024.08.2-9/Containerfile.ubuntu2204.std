@@ -1,13 +1,11 @@
-
-ARG PYTHON_VERSION="3.12.6"
-ARG R_VERSION="4.4.1"
-FROM cripittwood.azurecr.io/posit/base:ubuntu2204
-LABEL org.opencontainers.image.base.name="cripittwood.azurecr.io/posit/base:ubuntu2204"
-
+FROM --platform=linux/amd64 docker.io/library/ubuntu:22.04
+LABEL org.opencontainers.image.base.name="docker.io/library/ubuntu:22.04"
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
-ARG SCRIPTS_DIR=/opt/posit/scripts
+ARG PTI_VERSION="0.0.1"
+ARG PTI_NO_COLOR="true"
+ARG PTI_LOG_FORMAT="json"
 
 ARG PYTHON_VERSION="3.12.6"
 ARG R_VERSION="4.4.1"
@@ -19,18 +17,28 @@ ENV PPM_LICENSE_SERVER ""
 ENV PPM_LICENSE_FILE_PATH ""
 ENV STARTUP_DEBUG_MODE 0
 
+### Install Posit Tool Installer ###
+ADD --chmod=0755 \
+    https://github.com/posit-dev/pti/releases/download/v${PTI_VERSION}/pti_${PTI_VERSION}_linux_amd64 \
+    /usr/local/bin/pti
+
+### Initialize PTI in container ###
+RUN pti init
+
 ### Install Apt Packages ###
-COPY package-manager/2024.08.2-9/deps/ubuntu2204_packages.txt /tmp/ubuntu2204_packages.txt
-RUN $SCRIPTS_DIR/apt.sh --update upgrade \
-    && $SCRIPTS_DIR/apt.sh install $(cat /tmp/ubuntu2204_packages.txt) \
-    && rm -f /tmp/packages.txt \
-    && $SCRIPTS_DIR/apt.sh --clean
+COPY package-manager/2024.08.2-9/deps/ubuntu2204_packages.txt /tmp/packages.txt
+RUN pti syspkg update \
+    && pti syspkg upgrade --dist \
+    && pti syspkg install -f /tmp/packages.txt \
+    && rm -f /tmp/packages.txt
 
 
 ### Install Python packages ###
-COPY package-manager/2024.08.2-9/deps/python_requirements.txt /tmp/python_requirements.txt
-RUN install_python -r /tmp/python_requirements.txt -- ${PYTHON_VERSION} \
+COPY package-manager/2024.08.2-9/deps/python_requirements.txt /tmp/requirements.txt
+RUN pti python install -V ${PYTHON_VERSION} -r /tmp/python_requirements.txt \
     && rm -f /tmp/python_requirements.txt
+### Install R Packages ###
+RUN pti r install -V ${R_VERSION}
 
 
 ### Install Package Manager 2024.08.2-9 ###
@@ -54,5 +62,4 @@ LABEL co.posit.image.tools.python="3.12.6" \
       co.posit.image.tools.r="4.4.1"
 
 
-ENTRYPOINT ["tini", "--"]
 CMD ["/usr/local/bin/startup.sh"]

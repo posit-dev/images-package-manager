@@ -8,9 +8,12 @@
 
 image_name = "package-manager"
 
+[build."2024.11.0-7"]
+latest = true
+os = ["Ubuntu 2204"]
+
 [build."2024.08.2-9"]
 os = ["Ubuntu 22.04"]
-latest = true
 
 [build."2024.08.0-6"]
 os = ["Ubuntu 22.04"]
@@ -21,6 +24,6 @@ os = ["Ubuntu 22.04"]
 [target.min]
 
 [target.std]
-[target.goss]
+[target.std.goss]
 command = "/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg"
 wait = 10

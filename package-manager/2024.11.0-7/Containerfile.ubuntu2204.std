@@ -6,11 +6,11 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG PTI_VERSION="0.0.1"
 ARG PTI_NO_COLOR="true"
 ARG PTI_LOG_FORMAT="json"
-{% if not image_type == "min" %}
-ARG PYTHON_VERSION="{{ python_version }}"
-ARG R_VERSION="{{ r_version }}"
-{% endif %}
-ARG PACKAGE_MANAGER_VERSION="{{ image_version }}"
+
+ARG PYTHON_VERSION="3.12.8"
+ARG R_VERSION="4.4.2"
+
+ARG PACKAGE_MANAGER_VERSION="2024.11.0-7"
 
 ENV PPM_LICENSE ""
 ENV PPM_LICENSE_SERVER ""
@@ -26,28 +26,28 @@ ADD --chmod=0755 \
 RUN pti init
 
 ### Install Apt Packages ###
-COPY {{ rel_path }}/deps/ubuntu2204_packages.txt /tmp/packages.txt
+COPY package-manager/2024.11.0-7/deps/ubuntu2204_packages.txt /tmp/packages.txt
 RUN pti syspkg update \
     && pti syspkg upgrade --dist \
     && pti syspkg install -f /tmp/packages.txt \
     && rm -f /tmp/packages.txt
 
-{% if not image_type == "min" %}
+
 ### Install Python packages ###
-COPY {{ rel_path }}/deps/python_requirements.txt /tmp/requirements.txt
+COPY package-manager/2024.11.0-7/deps/python_requirements.txt /tmp/requirements.txt
 RUN pti python install -V ${PYTHON_VERSION} -r /tmp/python_requirements.txt \
     && rm -f /tmp/python_requirements.txt
 ### Install R Packages ###
 RUN pti r install -V ${R_VERSION}
-{% endif %}
 
-### Install Package Manager {{ image_version }} ###
-COPY {{ rel_path }}/scripts/install_package_manager.sh /tmp/install_package_manager.sh
+
+### Install Package Manager 2024.11.0-7 ###
+COPY package-manager/2024.11.0-7/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN /tmp/install_package_manager.sh \
     && rm -f /tmp/install_package_manager.sh
 
 ### Add startup.sh script ###
-COPY --chmod=0775 {{ rel_path }}/scripts/startup.sh /usr/local/bin/startup.sh
+COPY --chmod=0775 package-manager/2024.11.0-7/scripts/startup.sh /usr/local/bin/startup.sh
 RUN mkdir -p /var/run/rstudio-pm \
     && chmod +x /usr/local/bin/startup.sh \
     && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \
@@ -57,9 +57,9 @@ USER rstudio-pm
 
 RUN echo "source <(rspm completion bash)" >> ~/.bashrc
 
-{% if not image_type == "min" %}
-LABEL co.posit.image.tools.python="{{ python_version }}" \
-      co.posit.image.tools.r="{{ r_version }}"
-{% endif %}
+
+LABEL co.posit.image.tools.python="3.12.8" \
+      co.posit.image.tools.r="4.4.2"
+
 
 CMD ["/usr/local/bin/startup.sh"]
