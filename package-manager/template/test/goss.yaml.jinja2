@@ -59,10 +59,10 @@ file:
   /opt/R/default/bin/R:
     exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
     filetype: file
-  /usr/local/bin/R:
+  /usr/local/bin/R{{ r_version }}:
     exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
     filetype: symlink
-  /usr/local/bin/Rscript:
+  /usr/local/bin/Rscript{{ r_version }}:
     exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
     filetype: symlink
   # Check for Python installation
@@ -70,6 +70,12 @@ file:
     exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
   /opt/python/default/bin/python:
     exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
+  /usr/local/bin/python{{ python_version }}:
+    exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
+    filetype: symlink
+  /usr/local/bin/pip{{ python_version }}:
+    exists: {% raw %}{{ if eq .Env.IMAGE_TYPE "std" }}true{{ else }}false{{ end }}{% endraw %}
+    filetype: symlink
 
 command:
   "Ensure Package Manager version is correct":

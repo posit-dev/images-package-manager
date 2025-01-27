@@ -36,13 +36,16 @@ RUN pti syspkg update \
     && pti syspkg install -f /tmp/packages.txt \
     && rm -f /tmp/packages.txt
 
+### Install tini ###
+RUN pti tini install
+
 
 ### Install Python packages ###
 COPY package-manager/2024.08.0-6/deps/python_requirements.txt /tmp/requirements.txt
-RUN pti python install -V ${PYTHON_VERSION} -r /tmp/python_requirements.txt \
-    && rm -f /tmp/python_requirements.txt
+RUN pti python install --default --add-to-path -V ${PYTHON_VERSION} -r /tmp/requirements.txt \
+    && rm -f /tmp/requirements.txt
 ### Install R Packages ###
-RUN pti r install -V ${R_VERSION}
+RUN pti r install --default --add-to-path -V ${R_VERSION}
 
 
 ### Install Package Manager 2024.08.0-6 ###

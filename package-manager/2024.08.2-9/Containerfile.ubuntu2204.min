@@ -33,6 +33,9 @@ RUN pti syspkg update \
     && pti syspkg install -f /tmp/packages.txt \
     && rm -f /tmp/packages.txt
 
+### Install tini ###
+RUN pti tini install
+
 
 
 ### Install Package Manager 2024.08.2-9 ###
