@@ -24,6 +24,14 @@ install-goss:
 
 init: init-venv install-bakery install-goss
 
+download-pti:
+  mkdir -p {{justfile_directory()}}/tools
+  curl -sSL \
+      -H 'Accept: application/octet-stream' \
+      -H "Authorization: Bearer {{GITHUB_TOKEN}}" \
+      https://api.github.com/repos/posit-dev/pti/releases/assets/220659328 \
+      -o {{justfile_directory()}}/tools/pti
+
 new product base_image="posit/base":
   bakery new {{product}} --context {{ justfile_directory() }} --image-base {{base_image}} --image-type "product"
 
@@ -35,12 +43,7 @@ render product version r_version python_version *OPTS:
 
 alias bake := build
 build *OPTS:
-  mkdir -p {{justfile_directory()}}/tools
-  curl -sSL \
-      -H 'Accept: application/octet-stream' \
-      -H "Authorization: Bearer {{GITHUB_TOKEN}}" \
-      https://api.github.com/repos/posit-dev/pti/releases/assets/220659328 \
-      -o {{justfile_directory()}}/tools/pti
+  just download-pti
   bakery build --context {{ justfile_directory() }} {{OPTS}}
 
 alias dgoss := test

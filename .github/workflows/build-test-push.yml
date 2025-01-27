@@ -27,17 +27,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          repository: posit-dev/images-shared
-          path: images-shared
-          token: ${{ steps.app-token.outputs.token }}
-          persist-credentials: false
-
       - name: Install Posit Bakery
         run: |
-          pipx install ./images-shared/posit-bakery
+          pipx install 'git+https://${{ steps.app-token.outputs.token }}@github.com/posit-dev/images-shared.git@main#subdirectory=posit-bakery&egg=posit-bakery'
 
       - name: Install goss and dgoss
         uses: posit-dev/images-shared/setup-goss@main
@@ -60,7 +52,9 @@ jobs:
       - name: Build images
         env:
           GIT_SHA: ${{ github.sha }}
-        run: bakery build --load
+        run: |
+          just download-pti
+          bakery build --load
 
       - name: Test images
         run: bakery dgoss
