@@ -26,9 +26,7 @@ jobs:
 
       - name: Install Posit Bakery
         run: |
-          gh auth login -p ssh --with-token <<< "${{ steps.app-token.outputs.token }}"
-          gh auth setup-git
-          pipx install 'git+ssh://git@github.com/posit-dev/images-shared.git@main#subdirectory=posit-bakery&egg=posit-bakery'
+          pipx install 'git+https://${{ steps.app-token.outputs.token }}@github.com/posit-dev/images-shared.git@main#subdirectory=posit-bakery&egg=posit-bakery'
 
       - name: Install goss and dgoss
         uses: posit-dev/images-shared/setup-goss@main
