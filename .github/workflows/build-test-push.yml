@@ -12,9 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: GitHub App Token
         uses: actions/create-github-app-token@v1
         id: app-token
@@ -23,11 +20,19 @@ jobs:
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           repositories: images-shared
 
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: posit-dev/images-shared
+          path: images-shared
+          token: ${{ steps.app-token.outputs.token }}
+
       - name: Install Posit Bakery
         run: |
-          gh auth login -p https --with-token <<< ${{ steps.app-token.outputs.token }}
-          gh auth setup-git
-          pipx install 'git+https://github.com/posit-dev/images-shared.git@main#subdirectory=posit-bakery&egg=posit-bakery'
+          pipx install ./images-shared/posit-bakery
 
       - name: Install goss and dgoss
         uses: posit-dev/images-shared/setup-goss@main
