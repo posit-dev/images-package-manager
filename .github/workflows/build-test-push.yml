@@ -18,7 +18,11 @@ jobs:
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-          repositories: images-shared
+          owner: posit-dev
+          repositories: |
+            images-package-manager
+            images-shared
+            pti
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,6 +33,7 @@ jobs:
           repository: posit-dev/images-shared
           path: images-shared
           token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
 
       - name: Install Posit Bakery
         run: |
