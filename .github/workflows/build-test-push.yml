@@ -18,7 +18,8 @@ jobs:
         uses: extractions/setup-just@v2
 
       - name: Install Posit Bakery
-        uses: posit-dev/images-shared/setup-posit-bakery@main
+        run: |
+          pipx install 'git+ssh://git@github.com/posit-dev/images-shared.git@main#subdirectory=posit-bakery&egg=posit-bakery'
 
       - name: Install goss and dgoss
         uses: posit-dev/images-shared/setup-goss@main
