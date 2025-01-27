@@ -1,6 +1,7 @@
 #!/usr/bin/env just --justfile
 
 BAKERY_VERSION := "0.2.0.dev0"
+GITHUB_TOKEN := `gh auth token`
 
 init-venv:
   #!/bin/bash
@@ -11,7 +12,7 @@ init-venv:
 install-bakery:
   #!/bin/bash
   # TODO: Update this after package is published somewhere
-  {{justfile_directory()}}/.venv/bin/pip3 install https://saipittwood.blob.core.windows.net/packages/posit_bakery-{{ BAKERY_VERSION }}-py3-none-any.whl
+  pipx install 'git+ssh://git@github.com/posit-dev/images-shared.git@main#egg=posit-bakery&subdirectory=posit-bakery'
 
 install-goss:
   #!/bin/bash
@@ -24,18 +25,24 @@ install-goss:
 init: init-venv install-bakery install-goss
 
 new product base_image="posit/base":
-  {{ justfile_directory() }}/.venv/bin/bakery new {{product}} --context {{ justfile_directory() }} --image-base {{base_image}} --image-type "product"
+  bakery new {{product}} --context {{ justfile_directory() }} --image-base {{base_image}} --image-type "product"
 
 alias generate := render
 render product version r_version python_version *OPTS:
-  {{ justfile_directory() }}/.venv/bin/bakery render {{product}} {{version}} \
+  bakery render {{product}} {{version}} \
     --value r_version={{r_version}} \
     --value python_version={{python_version}} {{OPTS}}
 
 alias bake := build
 build *OPTS:
-  {{ justfile_directory() }}/.venv/bin/bakery build --context {{ justfile_directory() }} {{OPTS}}
+  mkdir -p {{justfile_directory()}}/tools
+  curl -sSL \
+      -H 'Accept: application/octet-stream' \
+      -H "Authorization: Bearer {{GITHUB_TOKEN}}" \
+      https://api.github.com/repos/posit-dev/pti/releases/assets/220659328 \
+      -o {{justfile_directory()}}/tools/pti
+  bakery build --context {{ justfile_directory() }} {{OPTS}}
 
 alias dgoss := test
 test *OPTS:
-  {{ justfile_directory() }}/.venv/bin/bakery dgoss --context {{ justfile_directory() }} {{OPTS}}
+  bakery dgoss --context {{ justfile_directory() }} {{OPTS}}

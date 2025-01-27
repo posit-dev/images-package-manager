@@ -18,9 +18,13 @@ ENV PPM_LICENSE_FILE_PATH ""
 ENV STARTUP_DEBUG_MODE 0
 
 ### Install Posit Tool Installer ###
-ADD --chmod=0755 \
-    https://github.com/posit-dev/pti/releases/download/v${PTI_VERSION}/pti_${PTI_VERSION}_linux_amd64 \
-    /usr/local/bin/pti
+# FIXME(ianpittwood): Uncomment when PTI is available as a public repository
+#ADD --chmod=0755 \
+#    https://github.com/posit-dev/pti/releases/download/v${PTI_VERSION}/pti_${PTI_VERSION}_linux_amd64 \
+#    /usr/local/bin/pti
+# FIXME(ianpittwood): This is a shim to get around Github private repo authentication. ADD is a better solution once
+#                     pti is available publicly.
+COPY --chmod=0755 ./tools/pti /usr/local/bin/pti
 
 ### Initialize PTI in container ###
 RUN pti init
@@ -42,7 +46,7 @@ RUN pti r install -V ${R_VERSION}
 {% endif %}
 
 ### Install Package Manager {{ image_version }} ###
-COPY {{ rel_path }}/scripts/install_package_manager.sh /tmp/install_package_manager.sh
+COPY --chmod=0755 {{ rel_path }}/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN /tmp/install_package_manager.sh \
     && rm -f /tmp/install_package_manager.sh
 
