@@ -9,15 +9,18 @@ R_VERSION=${R_VERSION}
 SCRIPTS_DIR=${SCRIPTS_DIR:-/opt/posit/scripts}
 PACKAGE_MANAGER_VERSION=${PACKAGE_MANAGER_VERSION}
 
+
 echo "$d Fetching Posit Package Manager package $d"
 
 # fetch latest deb package
+pti syspkg install -p curl -p dpkg-sig -p gnupg -p gnupg-agent
 curl -fsSL "https://cdn.posit.co/package-manager/deb/amd64/rstudio-pm_${PACKAGE_MANAGER_VERSION}_amd64.deb" -o /tmp/rstudio-pm.deb
 
 echo "$d Verify Posit Package Manager package $d"
 # Verify the deb package
 gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60
 dpkg-sig --verify /tmp/rstudio-pm.deb
+pti syspkg uninstall -p curl -p dpkg-sig -p gnupg -p gnupg-agent
 
 echo "$d Install Posit Package Manager $d"
 # install latest deb package, dont initialize
@@ -42,4 +45,5 @@ else
 fi
 
 # clean up
+pti syspkg clean
 rm /tmp/rstudio-pm.deb
