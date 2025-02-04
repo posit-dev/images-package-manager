@@ -10,7 +10,7 @@ image_name = "package-manager"
 
 [build."2024.11.0-7"]
 latest = true
-os = ["Ubuntu 2204"]
+os = ["Ubuntu 22.04"]
 
 [build."2024.08.2-9"]
 os = ["Ubuntu 22.04"]

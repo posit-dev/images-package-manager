@@ -3,16 +3,10 @@
 BAKERY_VERSION := "0.2.0.dev0"
 GITHUB_TOKEN := `gh auth token`
 
-init-venv:
-  #!/bin/bash
-  set -ex
-  rm -rf .venv
-  python3 -m venv .venv
-
-install-bakery:
+install-bakery *OPTS:
   #!/bin/bash
   # TODO: Update this after package is published somewhere
-  pipx install 'git+ssh://git@github.com/posit-dev/images-shared.git@main#egg=posit-bakery&subdirectory=posit-bakery'
+  pipx install {{OPTS}} 'git+ssh://git@github.com/posit-dev/images-shared.git@main#egg=posit-bakery&subdirectory=posit-bakery'
 
 install-goss:
   #!/bin/bash
@@ -22,7 +16,7 @@ install-goss:
   curl -fsSL https://github.com/goss-org/goss/releases/latest/download/dgoss -o {{justfile_directory()}}/tools/dgoss
   chmod +rx {{justfile_directory()}}/tools/dgoss
 
-init: init-venv install-bakery install-goss
+init: install-bakery install-goss
 
 download-pti:
   mkdir -p {{justfile_directory()}}/tools
@@ -33,7 +27,7 @@ download-pti:
       -o {{justfile_directory()}}/tools/pti
 
 new product base_image="posit/base":
-  bakery new {{product}} --context {{ justfile_directory() }} --image-base {{base_image}} --image-type "product"
+  bakery new {{product}} --context {{ justfile_directory() }} --image-base {{base_image}}
 
 alias generate := render
 render product version r_version python_version *OPTS:

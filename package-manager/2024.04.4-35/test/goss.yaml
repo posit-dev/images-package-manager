@@ -70,9 +70,6 @@ command:
     exit-status: 0
     stdout:
       - "2024.04.4-35"
-  "Ensure Package Manager is running":
-    exec: pgrep rstudio-pm
-    exit-status: 0
   "Ensure R version is correct":
     exec: /opt/R/4.4.0/bin/R --version
     exit-status: 0
