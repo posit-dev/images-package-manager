@@ -27,7 +27,7 @@ download-pti:
       -o {{justfile_directory()}}/tools/pti
 
 new product base_image="posit/base":
-  bakery new {{product}} --context {{ justfile_directory() }} --image-base {{base_image}} --image-type "product"
+  bakery new {{product}} --context {{ justfile_directory() }} --image-base {{base_image}}
 
 alias generate := render
 render product version r_version python_version *OPTS:
