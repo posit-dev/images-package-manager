@@ -62,7 +62,7 @@ jobs:
           bakery build --load
 
       - name: Test images
-        run: bakery dgoss
+        run: bakery run dgoss
 
       - name: Push images
         env:
