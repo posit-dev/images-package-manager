@@ -1,6 +1,5 @@
 #!/usr/bin/env just --justfile
 
-BAKERY_VERSION := "0.2.0.dev0"
 GITHUB_TOKEN := `gh auth token`
 
 install-bakery *OPTS:
@@ -25,21 +24,3 @@ download-pti:
       -H "Authorization: Bearer {{GITHUB_TOKEN}}" \
       https://api.github.com/repos/posit-dev/pti/releases/assets/220659328 \
       -o {{justfile_directory()}}/tools/pti
-
-new product *OPTS:
-  bakery new {{product}} --context {{ justfile_directory() }} *OPTS
-
-alias generate := render
-render product version r_version python_version *OPTS:
-  bakery render {{product}} {{version}} \
-    --value r_version={{r_version}} \
-    --value python_version={{python_version}} {{OPTS}}
-
-alias bake := build
-build *OPTS:
-  just download-pti
-  bakery build --context {{ justfile_directory() }} {{OPTS}}
-
-alias dgoss := test
-test *OPTS:
-  bakery dgoss --context {{ justfile_directory() }} {{OPTS}}
