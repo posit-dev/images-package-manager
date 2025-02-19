@@ -26,8 +26,8 @@ download-pti:
       https://api.github.com/repos/posit-dev/pti/releases/assets/220659328 \
       -o {{justfile_directory()}}/tools/pti
 
-new product base_image="posit/base":
-  bakery new {{product}} --context {{ justfile_directory() }} --image-base {{base_image}}
+new product *OPTS:
+  bakery new {{product}} --context {{ justfile_directory() }} *OPTS
 
 alias generate := render
 render product version r_version python_version *OPTS:
