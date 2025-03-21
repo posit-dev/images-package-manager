@@ -20,7 +20,7 @@ echo "$d Verify Posit Package Manager package $d"
 # Verify the deb package
 gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60
 dpkg-sig --verify /tmp/rstudio-pm.deb
-pti syspkg uninstall -p curl -p dpkg-sig -p gnupg -p gnupg-agent
+pti syspkg remove -p curl -p dpkg-sig -p gnupg -p gnupg-agent
 
 echo "$d Install Posit Package Manager $d"
 # install latest deb package, dont initialize
