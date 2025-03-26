@@ -9,6 +9,8 @@ jobs:
   ubuntu:
     env:
       image-name: 'ubuntu'
+    permissions:
+      packages: write
     runs-on: ubuntu-latest
     steps:
 
