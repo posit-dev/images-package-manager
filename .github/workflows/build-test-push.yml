@@ -42,17 +42,12 @@ jobs:
       - name: Setup just
         uses: extractions/setup-just@v2
 
-      # TODO: replace with docker.io login in the future
-      - name: Azure Container Registry Login
-        uses: Azure/docker-login@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          login-server: '${{ secrets.ACR_REGISTRY }}'
-          username: '${{ secrets.ACR_USERNAME }}'
-          password: '${{ secrets.ACR_PASSWORD }}'
-
-      # TODO: remove once publishing to docker hub
-      - name: Override registry
-        run: echo -ne "variable \"registry\" {\n  default = \"${{ secrets.ACR_REGISTRY }}\"\n}" > docker-bake.override.hcl
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build images
         env:
