@@ -10,6 +10,7 @@ jobs:
     env:
       image-name: 'ubuntu'
     permissions:
+      contents: read
       packages: write
     runs-on: ubuntu-latest
     steps:
