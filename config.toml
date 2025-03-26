@@ -3,13 +3,14 @@
 #######################################################################################################################
 
 [[registries]]
-host = "docker.io"
-namespace = "posit"
+host = "ghcr.io"
+namespace = "posit-dev"
 
 [repository]
-url = "github.com/rstudio/proto-posit-images-package-manager"
+url = "github.com/posit-dev/images-package-manager"
 vendor = "Posit Software, PBC"
 maintainer = "docker@posit.co"
 authors = [
-    "Ian H. Pittwood <ian.pittwood@posit.co>"
+    "Ian H. Pittwood <ian.pittwood@posit.co>",
+    "Ben Schwedler <ben@posit.co>"
 ]
