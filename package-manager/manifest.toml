@@ -8,8 +8,14 @@
 
 image_name = "package-manager"
 
-[build."2024.11.0-7"]
+[build."2025.04.2-8"]
+os = ["Ubuntu 22.04"]
 latest = true
+
+[build."2025.04.0-4"]
+os = ["Ubuntu 22.04"]
+
+[build."2024.11.0-7"]
 os = ["Ubuntu 22.04"]
 
 [build."2024.08.2-9"]
