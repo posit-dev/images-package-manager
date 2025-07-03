@@ -6,6 +6,10 @@
 host = "ghcr.io"
 namespace = "posit-dev"
 
+[[registries]]
+host = "docker.io"
+namespace = "posit"
+
 [repository]
 url = "github.com/posit-dev/images-package-manager"
 vendor = "Posit Software, PBC"
