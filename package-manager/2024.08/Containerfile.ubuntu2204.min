@@ -7,12 +7,12 @@ ARG PTI_VERSION="0.0.4"
 ARG PTI_NO_COLOR="true"
 ARG PTI_LOG_FORMAT="json"
 
-ARG PACKAGE_MANAGER_VERSION="2025.04.0-4"
+ARG PACKAGE_MANAGER_VERSION="2024.08.2-9"
 
-ENV PPM_LICENSE ""
-ENV PPM_LICENSE_SERVER ""
-ENV PPM_LICENSE_FILE_PATH ""
-ENV STARTUP_DEBUG_MODE 0
+ENV PPM_LICENSE=""
+ENV PPM_LICENSE_SERVER=""
+ENV PPM_LICENSE_FILE_PATH=""
+ENV STARTUP_DEBUG_MODE=0
 
 ### Install Posit Tool Installer ###
 # FIXME(ianpittwood): Uncomment when PTI is available as a public repository
@@ -27,7 +27,7 @@ COPY --chmod=0755 ./tools/pti /usr/local/bin/pti
 RUN pti init
 
 ### Install Apt Packages ###
-COPY package-manager/2025.04.0-4/deps/ubuntu2204_packages.txt /tmp/packages.txt
+COPY package-manager/2024.08/deps/ubuntu2204_packages.txt /tmp/packages.txt
 RUN pti syspkg update \
     && pti syspkg upgrade --dist \
     && pti syspkg install -f /tmp/packages.txt \
@@ -38,13 +38,13 @@ RUN pti container tini install
 
 
 
-### Install Package Manager 2025.04.0-4 ###
-COPY --chmod=0755 package-manager/2025.04.0-4/scripts/install_package_manager.sh /tmp/install_package_manager.sh
+### Install Package Manager 2024.08.2-9 ###
+COPY --chmod=0755 package-manager/2024.08/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN /tmp/install_package_manager.sh \
     && rm -f /tmp/install_package_manager.sh
 
 ### Add startup.sh script ###
-COPY --chmod=0775 package-manager/2025.04.0-4/scripts/startup.sh /usr/local/bin/startup.sh
+COPY --chmod=0775 package-manager/2024.08/scripts/startup.sh /usr/local/bin/startup.sh
 RUN mkdir -p /var/run/rstudio-pm \
     && chmod +x /usr/local/bin/startup.sh \
     && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \
