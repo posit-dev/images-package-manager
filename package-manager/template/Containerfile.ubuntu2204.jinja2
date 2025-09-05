@@ -6,16 +6,16 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG PTI_VERSION="0.0.4"
 ARG PTI_NO_COLOR="true"
 ARG PTI_LOG_FORMAT="json"
-{% if not image_type == "min" %}
+{% if not Image.Variant == "Minimal" %}
 ARG PYTHON_VERSION="{{ python_version }}"
 ARG R_VERSION="{{ r_version }}"
 {% endif %}
-ARG PACKAGE_MANAGER_VERSION="{{ image_version }}"
+ARG PACKAGE_MANAGER_VERSION="{{ Image.Version }}"
 
-ENV PPM_LICENSE ""
-ENV PPM_LICENSE_SERVER ""
-ENV PPM_LICENSE_FILE_PATH ""
-ENV STARTUP_DEBUG_MODE 0
+ENV PPM_LICENSE=""
+ENV PPM_LICENSE_SERVER=""
+ENV PPM_LICENSE_FILE_PATH=""
+ENV STARTUP_DEBUG_MODE=0
 
 ### Install Posit Tool Installer ###
 # FIXME(ianpittwood): Uncomment when PTI is available as a public repository
@@ -30,7 +30,7 @@ COPY --chmod=0755 ./tools/pti /usr/local/bin/pti
 RUN pti init
 
 ### Install Apt Packages ###
-COPY {{ rel_path }}/deps/ubuntu2204_packages.txt /tmp/packages.txt
+COPY {{ Path.Version }}/deps/ubuntu2204_packages.txt /tmp/packages.txt
 RUN pti syspkg update \
     && pti syspkg upgrade --dist \
     && pti syspkg install -f /tmp/packages.txt \
@@ -39,22 +39,22 @@ RUN pti syspkg update \
 ### Install tini ###
 RUN pti container tini install
 
-{% if not image_type == "min" %}
+{% if not Image.Variant == "Minimal" %}
 ### Install Python packages ###
-COPY {{ rel_path }}/deps/python_requirements.txt /tmp/requirements.txt
+COPY {{ Path.Version }}/deps/python_requirements.txt /tmp/requirements.txt
 RUN pti python install --default --add-to-path -r /tmp/requirements.txt "${PYTHON_VERSION}" \
     && rm -f /tmp/requirements.txt
 ### Install R Packages ###
 RUN pti r install --default --add-to-path "${R_VERSION}"
 {% endif %}
 
-### Install Package Manager {{ image_version }} ###
-COPY --chmod=0755 {{ rel_path }}/scripts/install_package_manager.sh /tmp/install_package_manager.sh
+### Install Package Manager {{ Image.Version }} ###
+COPY --chmod=0755 {{ Path.Version }}/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN /tmp/install_package_manager.sh \
     && rm -f /tmp/install_package_manager.sh
 
 ### Add startup.sh script ###
-COPY --chmod=0775 {{ rel_path }}/scripts/startup.sh /usr/local/bin/startup.sh
+COPY --chmod=0775 {{ Path.Version }}/scripts/startup.sh /usr/local/bin/startup.sh
 RUN mkdir -p /var/run/rstudio-pm \
     && chmod +x /usr/local/bin/startup.sh \
     && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \
@@ -64,7 +64,7 @@ USER rstudio-pm
 
 RUN echo "source <(rspm completion bash)" >> ~/.bashrc
 
-{% if not image_type == "min" %}
+{% if not Image.Variant == "Minimal" %}
 LABEL co.posit.image.tools.python="{{ python_version }}" \
       co.posit.image.tools.r="{{ r_version }}"
 {% endif %}

@@ -1,0 +1,66 @@
+#######################################################################################################################
+# BAKERY REPOSITORY CONFIG
+#
+# This file is used to define global properties for builds inside a repo managed by Posit's Bakery tool.
+#######################################################################################################################
+
+# Define properties of the local repository. This information will be used when labeling image builds.
+repository:
+  url: "github.com/posit-dev/images-package-manager"
+  vendor: "Posit Software, PBC"
+  maintainer: "Posit Docker Team <docker@posit.co>"
+  authors:
+    - name: Ian H. Pittwood
+      email: ian.pittwood@posit.co
+    - name: Ben Schwedler
+      email: ben@posit.co
+
+# Define image registries used by builds in this repository. Images will be tagged appropriately for each registry.
+# Logins for private registries should be managed independently of Bakery.
+registries:
+  - host: "docker.io"
+    namespace: "posit"
+  - host: "ghcr.io"
+    namespace: "posit-dev"
+
+images:
+  - name: package-manager
+    displayName: "Posit Package Manager"
+    description: "A containerized image of Posit Package Manager (PPM), which organizes
+      and centralizes data science packages across your team, department, or the entire
+      organization."
+    documentationUrl: https://docs.posit.co/rspm/
+    variants:
+      - name: Standard
+        extension: std
+        tagDisplayName: std
+        primary: true
+        options:
+          - tool: goss
+            wait: 10
+            command: "/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg"
+      - name: Minimal
+        extension: min
+        tagDisplayName: min
+    versions:
+      - name: 2025.04.4-13
+        subpath: '2025.04'
+        latest: true
+        os:
+          - name: Ubuntu 22.04
+            primary: true
+      - name: 2024.11.0-7
+        subpath: '2024.11'
+        os:
+          - name: Ubuntu 22.04
+            primary: true
+      - name: 2024.08.2-9
+        subpath: '2024.08'
+        os:
+          - name: Ubuntu 22.04
+            primary: true
+      - name: 2024.04.4-35
+        subpath: '2024.04'
+        os:
+          - name: Ubuntu 22.04
+            primary: true
