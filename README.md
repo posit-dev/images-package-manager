@@ -18,3 +18,6 @@ If you encounter any issues or have any questions, please [open an issue](https:
 
 We expect all contributors to adhere to the project's [Code of Conduct](CODE_OF_CONDUCT.md) and create a positive and inclusive community.
 
+## License
+
+Posit Container Images and associated tooling are licensed under the [MIT License](LICENSE.md)
