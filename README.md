@@ -14,9 +14,9 @@ Additional Posit container images are published to [Docker Hub](https://hub.dock
 
 You can interact with this repository in multiple ways:
 
-* [Build container images](#build) directly from the Containerfile.
-* Manage and build container images using the [bakery](https://github.com/posit-dev/images-shared/tree/main/posit-bakery) CLI.
-* Extend the functionality by using the Minimal base image ([examples](https://github.com/posit-dev/images-examples))
+* [Build container images directly](#build) from the Containerfile.
+* [Use the `bakery` CLI](#using-bakery) to manage and build container images.
+* Extend the functionality by using the Minimal base image (see [examples](https://github.com/posit-dev/images-examples)).
 
 ## Build
 
@@ -25,13 +25,8 @@ You can build OCI container images from the defitions in this repository using o
 * [buildah](https://github.com/containers/buildah/blob/main/install.md)
 * [docker buildx](https://github.com/docker/buildx#installing)
 
-The root of the repository is used as the build context for each Containerfile.
-
-```shell
-# Download the pti binary
-# TODO: Delete when we have fully removed `pti` usage
-just download-pti
-```
+The root of the bakery project is used as the build context for each Containerfile.
+Here, the `bakery.yaml` file, or project, is in the root of this repository.
 
 ```shell
 PPM_VERSION="2025.04"
@@ -48,6 +43,53 @@ buildah build \
     --file package-manager/${PPM_VERSION}/Containerfile.ubuntu2204.min \
     .
 ```
+
+## Using `bakery`
+
+The structure and contents of this reposity were created following the steps in [bakery usage](https://github.com/posit-dev/images-shared/tree/main/posit-bakery#usage).
+
+### Prerequisites
+
+Build prerequisites
+
+* [python](https://docs.astral.sh/uv/guides/install-python/)
+* [pipx](https://pipx.pypa.io/stable/installation/)
+* [docker buildx bake](https://github.com/docker/buildx#installing)
+* [just](https://just.systems/man/en/prerequisites.html)
+* [gh](https://github.com/cli/cli#installation) (required while repositories are private)
+* `bakery`
+
+    ```shell
+    just install bakery
+    ```
+
+* `goss` and `dgoss` for running image validation tests
+
+    ```shell
+    just install-goss
+    ```
+
+### Build with `bakery`
+
+By default, bakery creates a ephemeral JSON [bakefile](https://docs.bakefile.org/en/latest/language.html) to render all containers in parallel.
+
+```shell
+bakery build
+```
+
+You can view the bake plan using `bakery build --plan`.
+
+You can use CLI flags to build only a subset of images in the project.
+
+### Test images
+
+After building the container images, run the test suite for all images:
+
+```shell
+bakery run dgoss
+```
+
+You can use CLI flags to limit the tests to run against a subset of images.
 
 ## Issues
 
