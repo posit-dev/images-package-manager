@@ -4,27 +4,11 @@ set -eo pipefail
 # Output delimiter
 d="===="
 
-PYTHON_VERSION=${PYTHON_VERSION}
-R_VERSION=${R_VERSION}
-SCRIPTS_DIR=${SCRIPTS_DIR:-/opt/posit/scripts}
-PACKAGE_MANAGER_VERSION=${PACKAGE_MANAGER_VERSION}
+apt-get update -yq
 
+echo "$d Install Posit Package Manager 2024.04.4-35 $d"
 
-echo "$d Fetching Posit Package Manager package $d"
-
-# fetch latest deb package
-pti syspkg install -p curl -p dpkg-sig -p gnupg -p gnupg-agent
-curl -fsSL "https://cdn.posit.co/package-manager/deb/amd64/rstudio-pm_${PACKAGE_MANAGER_VERSION}_amd64.deb" -o /tmp/rstudio-pm.deb
-
-echo "$d Verify Posit Package Manager package $d"
-# Verify the deb package
-gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60
-dpkg-sig --verify /tmp/rstudio-pm.deb
-pti syspkg remove -p curl -p dpkg-sig -p gnupg -p gnupg-agent
-
-echo "$d Install Posit Package Manager $d"
-# install latest deb package, dont initialize
-RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 apt-get install -yf /tmp/rstudio-pm.deb
+RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 apt-get install -yf rstudio-pm=2024.04.4-35
 
 PPM_CONFIG_FILE="/etc/rstudio-pm/rstudio-pm.gcfg"
 
@@ -37,13 +21,13 @@ then
     cat << EOF >> $PPM_CONFIG_FILE
 [Server]
 ; provided during automated install
-RVersion = /opt/R/${R_VERSION}
-PythonVersion = /opt/python/${PYTHON_VERSION}/bin/python
+RVersion = /opt/R/$R_VERSION
+PythonVersion = /opt/python/cpython-$PYTHON_VERSION-linux-x86_64-gnu/bin/python
 EOF
 else
     echo "$d No R or Python version provided $d"
 fi
 
 # clean up
-pti syspkg clean
-rm /tmp/rstudio-pm.deb
+apt-get clean -yqq && \
+rm -rf /var/lib/apt/lists/*
