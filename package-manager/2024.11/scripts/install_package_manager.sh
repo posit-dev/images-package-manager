@@ -9,6 +9,7 @@ apt-get update -yq
 echo "$d Install Posit Package Manager 2024.11.0-7 $d"
 
 RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 apt-get install -yf rstudio-pm=2024.11.0-7
+apt-mark hold rstudio-pm
 
 PPM_CONFIG_FILE="/etc/rstudio-pm/rstudio-pm.gcfg"
 

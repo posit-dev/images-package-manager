@@ -35,7 +35,8 @@ RUN apt-get update -yqq && \
 
 ### Install Package Manager 2025.04.4-13 ###
 COPY --chmod=0755 package-manager/2025.04/scripts/install_package_manager.sh /tmp/install_package_manager.sh
-RUN /tmp/install_package_manager.sh \
+RUN \
+    /tmp/install_package_manager.sh \
     && rm -f /tmp/install_package_manager.sh
 
 ### Add startup.sh script ###

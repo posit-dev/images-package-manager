@@ -56,7 +56,8 @@ RUN RUN_UNATTENDED=1 R_VERSION=4.4.1 bash -c "$(curl -fsSL https://rstd.io/r-ins
 
 ### Install Package Manager 2024.08.2-9 ###
 COPY --chmod=0755 package-manager/2024.08/scripts/install_package_manager.sh /tmp/install_package_manager.sh
-RUN PYTHON_VERSION=3.12.6 R_VERSION=4.4.1 /tmp/install_package_manager.sh \
+RUN PYTHON_VERSION=3.12.6 R_VERSION=4.4.1 \
+    /tmp/install_package_manager.sh \
     && rm -f /tmp/install_package_manager.sh
 
 ### Add startup.sh script ###

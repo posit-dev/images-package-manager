@@ -17,7 +17,7 @@ apt-get update -yq
 echo "$d Fetching Posit Package Manager {{ Image.Version }} package $d"
 
 # fetch dev build deb package
-curl -fsSL "{{ Image.DownloadURL }}" -o /tmp/rstudio-pm.deb
+curl -fsSL "$DOWNLOAD_URL" -o /tmp/rstudio-pm.deb
 
 echo "$d Install Posit Package Manager {{ Image.Version }} $d"
 # install latest deb package, dont initialize
@@ -28,6 +28,7 @@ rm -f /tmp/rstudio-pm.deb
 echo "$d Install Posit Package Manager {{ Image.Version }} $d"
 
 RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 apt-get install -yf rstudio-pm={{ Image.Version }}
+apt-mark hold rstudio-pm
 {%- endif %}
 
 PPM_CONFIG_FILE="/etc/rstudio-pm/rstudio-pm.gcfg"
