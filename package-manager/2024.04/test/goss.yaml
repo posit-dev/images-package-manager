@@ -38,31 +38,14 @@ file:
     exists: true
   /usr/local/bin/tini:
     exists: true
-
+  
   # Check for R installation
   /opt/R/4.4.0/bin/R:
     exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
     filetype: file
-  /opt/R/default/bin/R:
+  # Check for Python installation/opt/python/3.12.1/bin/python:
     exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-    filetype: file
-  /usr/local/bin/R4.4.0:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-    filetype: symlink
-  /usr/local/bin/Rscript4.4.0:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-    filetype: symlink
-  # Check for Python installation
-  /opt/python/3.12.1/bin/python:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-  /opt/python/default/bin/python:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-  /usr/local/bin/python3.12.1:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-    filetype: symlink
-  /usr/local/bin/pip3.12.1:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-    filetype: symlink
+  
 
 command:
   "Ensure Package Manager version is correct":
