@@ -1,6 +1,7 @@
 tools/*goss
 tools/pti
-config.override.toml
+results
+.dev-*
 docker-bake.json
 .docker-bake.json
 .idea
