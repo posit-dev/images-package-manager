@@ -46,13 +46,13 @@ COPY --from=python-builder /opt/python /opt/python
 
 ### Install Python packages ###
 COPY package-manager/2024.08/deps/python_requirements.txt /tmp/requirements.txt
-RUN /opt/python/cpython-3.12.6-linux-x86_64-gnu/bin/pip install --no-cache-dir --upgrade \
+RUN /opt/python/cpython-3.12.6-linux-x86_64-gnu/bin/pip install --no-cache-dir --upgrade --break-system-packages \
         -r /tmp/requirements.txt && \
     rm -f /tmp/requirements.txt
 
 ### Install R ###
 RUN RUN_UNATTENDED=1 R_VERSION=4.4.1 bash -c "$(curl -fsSL https://rstd.io/r-install)" && \
-    find . -type f -name '[rR]-4.4.3.*\.(deb|rpm)' -delete
+    find . -type f -name '[rR]-4.4.1.*\.(deb|rpm)' -delete
 
 ### Install Package Manager 2024.08.2-9 ###
 COPY --chmod=0755 package-manager/2024.08/scripts/install_package_manager.sh /tmp/install_package_manager.sh
@@ -69,8 +69,5 @@ RUN mkdir -p /var/run/rstudio-pm \
 USER rstudio-pm
 
 RUN echo "source <(rspm completion bash)" >> ~/.bashrc
-
-LABEL co.posit.image.tools.python="3.12.6" \
-      co.posit.image.tools.r="4.4.1"
 
 CMD ["/usr/local/bin/startup.sh"]

@@ -46,7 +46,7 @@ COPY --from=python-builder /opt/python /opt/python
 
 ### Install Python packages ###
 COPY package-manager/2025.04/deps/python_requirements.txt /tmp/requirements.txt
-RUN /opt/python/cpython-3.12.11-linux-x86_64-gnu/bin/pip install --no-cache-dir --upgrade \
+RUN /opt/python/cpython-3.12.11-linux-x86_64-gnu/bin/pip install --no-cache-dir --upgrade --break-system-packages \
         -r /tmp/requirements.txt && \
     rm -f /tmp/requirements.txt
 
@@ -69,8 +69,5 @@ RUN mkdir -p /var/run/rstudio-pm \
 USER rstudio-pm
 
 RUN echo "source <(rspm completion bash)" >> ~/.bashrc
-
-LABEL co.posit.image.tools.python="3.12.11" \
-      co.posit.image.tools.r="4.4.3"
 
 CMD ["/usr/local/bin/startup.sh"]

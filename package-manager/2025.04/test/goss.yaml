@@ -36,8 +36,6 @@ file:
     exists: true
   /usr/local/bin/rspm:
     exists: true
-  /usr/local/bin/tini:
-    exists: true
   {{ if eq .Env.IMAGE_VARIANT "Standard" }}
   /var/log/rstudio/rstudio-pm/rstudio-pm.log:
     exists: true
@@ -50,7 +48,7 @@ file:
     exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
     filetype: file
   # Check for Python installation
-  /opt/python/3.12.11/bin/python:
+  /opt/python/cpython-3.12.11-linux-x86_64-gnu/bin/python:
     exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
   /etc/rstudio-pm/rstudio-pm.gcfg:
     exists: true

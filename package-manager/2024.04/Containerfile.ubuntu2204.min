@@ -49,6 +49,4 @@ USER rstudio-pm
 
 RUN echo "source <(rspm completion bash)" >> ~/.bashrc
 
-
-
 CMD ["/usr/local/bin/startup.sh"]
