@@ -53,29 +53,16 @@ file:
   {{ end }}{% endraw %}
   {% endif %}
   # Check for R installation
+  {% for r_version in Dependencies.R -%}
   /opt/R/{{ r_version }}/bin/R:
     exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
     filetype: file
-  /opt/R/default/bin/R:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-    filetype: file
-  /usr/local/bin/R{{ r_version }}:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-    filetype: symlink
-  /usr/local/bin/Rscript{{ r_version }}:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-    filetype: symlink
+  {%- endfor %}
   # Check for Python installation
+  {%- for python_version in Dependencies.python -%}
   /opt/python/{{ python_version }}/bin/python:
     exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-  /opt/python/default/bin/python:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-  /usr/local/bin/python{{ python_version }}:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-    filetype: symlink
-  /usr/local/bin/pip{{ python_version }}:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-    filetype: symlink
+  {% endfor %}
 
 command:
   "Ensure Package Manager version is correct":
@@ -83,15 +70,19 @@ command:
     exit-status: 0
     stdout:
       - "{{ Image.Version }}"
+  {% for r_version in Dependencies.R -%}
   "Ensure R version is correct":
     exec: /opt/R/{{ r_version }}/bin/R --version
     exit-status: 0
     stdout:
       - "{{ r_version }}"
     skip: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}{% endraw %}
+  {%- endfor %}
+  {% for python_version in Dependencies.python -%}
   "Ensure Python version is correct":
     exec: /opt/python/{{ python_version }}/bin/python --version
     exit-status: 0
     stdout:
       - "{{ python_version }}"
     skip: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}{% endraw %}
+  {%- endfor %}
