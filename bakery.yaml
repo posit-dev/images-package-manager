@@ -30,6 +30,26 @@ images:
       and centralizes data science packages across your team, department, or the entire
       organization."
     documentationUrl: https://docs.posit.co/rspm/
+    dependencyConstraints:
+      - dependency: R
+        constraint:
+          latest: true
+      - dependency: python
+        constraint:
+          latest: true
+    devVersions:
+      - sourceType: "stream"
+        product: "package-manager"
+        stream: "preview"
+        os:
+          - name: "Ubuntu 22.04"
+            primary: true
+      - sourceType: "stream"
+        product: "package-manager"
+        stream: "daily"
+        os:
+          - name: "Ubuntu 22.04"
+            primary: true
     variants:
       - name: Standard
         extension: std
@@ -49,18 +69,38 @@ images:
         os:
           - name: Ubuntu 22.04
             primary: true
+        dependencies:
+          - dependency: R
+            version: 4.4.3
+          - dependency: python
+            version: 3.12.11
       - name: 2024.11.0-7
         subpath: '2024.11'
         os:
           - name: Ubuntu 22.04
             primary: true
+        dependencies:
+          - dependency: R
+            version: 4.4.2
+          - dependency: python
+            version: 3.12.8
       - name: 2024.08.2-9
         subpath: '2024.08'
         os:
           - name: Ubuntu 22.04
             primary: true
+        dependencies:
+          - dependency: R
+            version: 4.4.1
+          - dependency: python
+            version: 3.12.6
       - name: 2024.04.4-35
         subpath: '2024.04'
         os:
           - name: Ubuntu 22.04
             primary: true
+        dependencies:
+          - dependency: R
+            version: 4.4.0
+          - dependency: python
+            version: 3.12.1

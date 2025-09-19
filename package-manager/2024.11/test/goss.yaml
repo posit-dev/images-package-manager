@@ -36,9 +36,6 @@ file:
     exists: true
   /usr/local/bin/rspm:
     exists: true
-  /usr/local/bin/tini:
-    exists: true
-
   {{ if eq .Env.IMAGE_VARIANT "Standard" }}
   /var/log/rstudio/rstudio-pm/rstudio-pm.log:
     exists: true
@@ -46,31 +43,21 @@ file:
     contents:
       - "Posit Package Manager service is ready"
   {{ end }}
-
   # Check for R installation
   /opt/R/4.4.2/bin/R:
     exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
     filetype: file
-  /opt/R/default/bin/R:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-    filetype: file
-  /usr/local/bin/R4.4.2:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-    filetype: symlink
-  /usr/local/bin/Rscript4.4.2:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-    filetype: symlink
   # Check for Python installation
-  /opt/python/3.12.8/bin/python:
+  /opt/python/cpython-3.12.8-linux-x86_64-gnu/bin/python:
     exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-  /opt/python/default/bin/python:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-  /usr/local/bin/python3.12.8:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-    filetype: symlink
-  /usr/local/bin/pip3.12.8:
-    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
-    filetype: symlink
+  /etc/rstudio-pm/rstudio-pm.gcfg:
+    exists: true
+    filetype: file
+    {{ if eq .Env.IMAGE_VARIANT "Standard" }}
+    contents:
+      - RVersion = /opt/R/4.4.2
+      - PythonVersion = /opt/python/cpython-3.12.8-linux-x86_64-gnu/bin/python
+    {{ end }}
 
 command:
   "Ensure Package Manager version is correct":
@@ -85,7 +72,7 @@ command:
       - "4.4.2"
     skip: {{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}
   "Ensure Python version is correct":
-    exec: /opt/python/3.12.8/bin/python --version
+    exec: /opt/python/cpython-3.12.8-linux-x86_64-gnu/bin/python --version
     exit-status: 0
     stdout:
       - "3.12.8"

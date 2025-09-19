@@ -3,10 +3,6 @@ LABEL org.opencontainers.image.base.name="docker.io/library/ubuntu:22.04"
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
-ARG PTI_VERSION="0.0.4"
-ARG PTI_NO_COLOR="true"
-ARG PTI_LOG_FORMAT="json"
-
 ARG PACKAGE_MANAGER_VERSION="2025.04.4-13"
 
 ENV PPM_LICENSE=""
@@ -14,33 +10,33 @@ ENV PPM_LICENSE_SERVER=""
 ENV PPM_LICENSE_FILE_PATH=""
 ENV STARTUP_DEBUG_MODE=0
 
-### Install Posit Tool Installer ###
-# FIXME(ianpittwood): Uncomment when PTI is available as a public repository
-#ADD --chmod=0755 \
-#    https://github.com/posit-dev/pti/releases/download/v${PTI_VERSION}/pti_${PTI_VERSION}_linux_amd64 \
-#    /usr/local/bin/pti
-# FIXME(ianpittwood): This is a shim to get around Github private repo authentication. ADD is a better solution once
-#                     pti is available publicly.
-COPY --chmod=0755 ./tools/pti /usr/local/bin/pti
-
-### Initialize PTI in container ###
-RUN pti init
+### Setup environment ###
+RUN apt-get update -yqq --fix-missing && \
+    apt-get upgrade -yqq && \
+    apt-get dist-upgrade -yqq && \
+    apt-get autoremove -yqq --purge && \
+    apt-get install -yqq --no-install-recommends \
+        curl \
+        ca-certificates \
+        gnupg \
+        tar && \
+    bash -c "$(curl -1fsSL 'https://dl.posit.co/public/pro/setup.deb.sh')" && \
+    apt-get clean -yqq && \
+    rm -rf /var/lib/apt/lists/*
 
 ### Install Apt Packages ###
 COPY package-manager/2025.04/deps/ubuntu2204_packages.txt /tmp/packages.txt
-RUN pti syspkg update \
-    && pti syspkg upgrade --dist \
-    && pti syspkg install -f /tmp/packages.txt \
-    && rm -f /tmp/packages.txt
-
-### Install tini ###
-RUN pti container tini install
+RUN apt-get update -yqq && \
+    xargs -a /tmp/packages.txt apt-get install -yqq --no-install-recommends && \
+    apt-get clean -yqq && \
+    rm -rf /var/lib/apt/lists/*
 
 
 
 ### Install Package Manager 2025.04.4-13 ###
 COPY --chmod=0755 package-manager/2025.04/scripts/install_package_manager.sh /tmp/install_package_manager.sh
-RUN /tmp/install_package_manager.sh \
+RUN \
+    /tmp/install_package_manager.sh \
     && rm -f /tmp/install_package_manager.sh
 
 ### Add startup.sh script ###
@@ -53,7 +49,5 @@ RUN mkdir -p /var/run/rstudio-pm \
 USER rstudio-pm
 
 RUN echo "source <(rspm completion bash)" >> ~/.bashrc
-
-
 
 CMD ["/usr/local/bin/startup.sh"]

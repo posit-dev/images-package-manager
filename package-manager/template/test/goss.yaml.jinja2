@@ -1,3 +1,9 @@
+{#-
+Below are imports for Bakery's macros. If any are unneeded, they can be removed.
+Bakery handles bootstrapping the files into template rendering.
+-#}
+{%- import "python.j2" as python -%}
+{%- import "r.j2" as r -%}
 {%- set clean_version = Image.Version | stripMetadata -%}
 {%- set version_split = clean_version.split('.') -%}
 {%- set major_version = version_split[0]|int -%}
@@ -41,9 +47,7 @@ file:
     exists: true
   /usr/local/bin/rspm:
     exists: true
-  /usr/local/bin/tini:
-    exists: true
-  {% if major_version > 2024 or (major_version == 2024 and minor_version >= 8) %}
+  {% if major_version > 2024 or (major_version == 2024 and minor_version >= 8) -%}
   {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}
   /var/log/rstudio/rstudio-pm/rstudio-pm.log:
     exists: true
@@ -51,31 +55,26 @@ file:
     contents:
       - "Posit Package Manager service is ready"
   {{ end }}{% endraw %}
-  {% endif %}
+  {%- endif %}
   # Check for R installation
+  {% for r_version in Dependencies.R -%}
   /opt/R/{{ r_version }}/bin/R:
     exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
     filetype: file
-  /opt/R/default/bin/R:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-    filetype: file
-  /usr/local/bin/R{{ r_version }}:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-    filetype: symlink
-  /usr/local/bin/Rscript{{ r_version }}:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-    filetype: symlink
+  {%- endfor %}
   # Check for Python installation
-  /opt/python/{{ python_version }}/bin/python:
+  {% for python_version in Dependencies.python -%}
+  {{ python.get_version_directory(python_version) }}/bin/python:
     exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-  /opt/python/default/bin/python:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-  /usr/local/bin/python{{ python_version }}:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-    filetype: symlink
-  /usr/local/bin/pip{{ python_version }}:
-    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
-    filetype: symlink
+  {%- endfor %}
+  /etc/rstudio-pm/rstudio-pm.gcfg:
+    exists: true
+    filetype: file
+    {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}{% endraw %}
+    contents:
+      - RVersion = {{ r.get_version_directory(Dependencies.R.0) }}
+      - PythonVersion = {{ python.get_version_directory(Dependencies.python.0) }}/bin/python
+    {% raw %}{{ end }}{% endraw %}
 
 command:
   "Ensure Package Manager version is correct":
@@ -83,15 +82,19 @@ command:
     exit-status: 0
     stdout:
       - "{{ Image.Version }}"
+  {% for r_version in Dependencies.R -%}
   "Ensure R version is correct":
-    exec: /opt/R/{{ r_version }}/bin/R --version
+    exec: {{ r.get_version_directory(r_version) }}/bin/R --version
     exit-status: 0
     stdout:
       - "{{ r_version }}"
     skip: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}{% endraw %}
+  {%- endfor %}
+  {% for python_version in Dependencies.python -%}
   "Ensure Python version is correct":
-    exec: /opt/python/{{ python_version }}/bin/python --version
+    exec: {{ python.get_version_directory(python_version) }}/bin/python --version
     exit-status: 0
     stdout:
       - "{{ python_version }}"
     skip: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}{% endraw %}
+  {%- endfor %}
