@@ -63,9 +63,19 @@ images:
         extension: min
         tagDisplayName: min
     versions:
+      - name: 2025.09.0-7
+        subpath: '2025.09'
+        latest: true
+        os:
+          - name: Ubuntu 22.04
+            primary: true
+        dependencies:
+          - dependency: R
+            version: 4.5.1
+          - dependency: python
+            version: 3.13.7
       - name: 2025.04.4-13
         subpath: '2025.04'
-        latest: true
         os:
           - name: Ubuntu 22.04
             primary: true
