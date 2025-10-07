@@ -1,14 +1,12 @@
 # Build Python using uv in a separate stage
 FROM ghcr.io/astral-sh/uv:bookworm-slim AS python-builder
+
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
-
 ENV UV_PYTHON_INSTALL_DIR=/opt/python
-
 ENV UV_PYTHON_PREFERENCE=only-managed
-
 RUN uv python install 3.12.6
 
-FROM --platform=linux/amd64 docker.io/library/ubuntu:22.04
+FROM docker.io/library/ubuntu:22.04
 LABEL org.opencontainers.image.base.name="docker.io/library/ubuntu:22.04"
 
 ### ARG declarations ###
