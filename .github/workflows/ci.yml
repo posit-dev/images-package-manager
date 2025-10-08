@@ -52,6 +52,7 @@ jobs:
 
     uses: "posit-dev/images-shared/.github/workflows/bakery-build.yml@main"
     secrets:
+      DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
       APP_ID: ${{ secrets.APP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
     with:
