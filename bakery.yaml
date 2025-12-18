@@ -44,12 +44,18 @@ images:
         os:
           - name: "Ubuntu 22.04"
             primary: true
+        overrideRegistries:
+          - host: "528395739535.dkr.ecr.us-east-2.amazonaws.com"
+            repository: "package-manager-preview"
       - sourceType: "stream"
         product: "package-manager"
         stream: "daily"
         os:
           - name: "Ubuntu 22.04"
             primary: true
+        overrideRegistries:
+          - host: "528395739535.dkr.ecr.us-east-2.amazonaws.com"
+            repository: "package-manager-preview"
     variants:
       - name: Standard
         extension: std
