@@ -2,8 +2,8 @@ tools/*goss
 tools/pti
 results
 .dev-*
-docker-bake.json
-.docker-bake.json
+bakery-bake.json
+.bakery-bake.json
 .idea
 
 ### Python template
