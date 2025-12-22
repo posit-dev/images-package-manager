@@ -54,7 +54,8 @@ jobs:
     # Builds all versions of each image in parallel.
     #
     # Run on merges to main, or on weekly scheduled re-builds.
-    if: contains(fromJSON('["push", "pull_request"]'), github.event_name) || github.event.schedule == '15 3 * * 0'
+    # if: contains(fromJSON('["push", "pull_request"]'), github.event_name) || github.event.schedule == '15 3 * * 0'
+    if: false
     permissions:
       contents: read
       packages: write
@@ -83,12 +84,14 @@ jobs:
       packages: write
       id-token: write  # Required for AWS OIDC login
 
-    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@add-ppm-arm-installer"
     secrets:
       AWS_ROLE: ${{ secrets.AWS_ROLE }}
       APP_ID: ${{ secrets.APP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
     with:
       dev-versions: "only"
+      version: add-ppm-arm-installer
       # Push images only for merges into main and hourly schduled re-builds.
-      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event.schedule == '45 * * * *' }}
+      # push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event.schedule == '45 * * * *' }}
+      push: true
