@@ -59,7 +59,7 @@ jobs:
       contents: read
       packages: write
 
-    uses: "posit-dev/images-shared/.github/workflows/bakery-build.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
     secrets:
       DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
       APP_ID: ${{ secrets.APP_ID }}
@@ -83,7 +83,7 @@ jobs:
       packages: write
       id-token: write  # Required for AWS OIDC login
 
-    uses: "posit-dev/images-shared/.github/workflows/bakery-build.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
     secrets:
       AWS_ROLE: ${{ secrets.AWS_ROLE }}
       APP_ID: ${{ secrets.APP_ID }}

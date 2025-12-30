@@ -24,6 +24,8 @@ ENV PPM_LICENSE_SERVER=""
 ENV PPM_LICENSE_FILE_PATH=""
 ENV STARTUP_DEBUG_MODE=0
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 ### Setup environment ###
 {{ apt.run_setup() }}
 

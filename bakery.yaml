@@ -44,6 +44,9 @@ images:
         os:
           - name: Ubuntu 24.04
             primary: true
+            platforms:
+              - linux/amd64
+              - linux/arm64
           - name: Ubuntu 22.04
         overrideRegistries:
           - host: "528395739535.dkr.ecr.us-east-2.amazonaws.com"
@@ -54,6 +57,9 @@ images:
         os:
           - name: Ubuntu 24.04
             primary: true
+            platforms:
+              - linux/amd64
+              - linux/arm64
           - name: Ubuntu 22.04
         overrideRegistries:
           - host: "528395739535.dkr.ecr.us-east-2.amazonaws.com"
@@ -71,9 +77,23 @@ images:
         extension: min
         tagDisplayName: min
     versions:
+      - name: 2025.12.0-14
+        subpath: '2025.12'
+        latest: true
+        os:
+          - name: Ubuntu 24.04
+            primary: true
+            platforms:
+              - linux/amd64
+              - linux/arm64
+          - name: Ubuntu 22.04
+        dependencies:
+          - dependency: R
+            version: 4.5.2
+          - dependency: python
+            version: 3.14.2
       - name: 2025.09.0-7
         subpath: '2025.09'
-        latest: true
         os:
           - name: Ubuntu 22.04
             primary: true

@@ -1,9 +1,19 @@
+# Build Python using uv in a separate stage
+FROM ghcr.io/astral-sh/uv:bookworm-slim AS python-builder
+
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+ENV UV_PYTHON_INSTALL_DIR=/opt/python
+ENV UV_PYTHON_PREFERENCE=only-managed
+RUN uv python install 3.14.2
+RUN mv /opt/python/cpython-3.14.2-linux-*/ /opt/python/3.14.2
+
+
 FROM docker.io/library/ubuntu:22.04
 LABEL org.opencontainers.image.base.name="docker.io/library/ubuntu:22.04"
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
-ARG PACKAGE_MANAGER_VERSION="2024.08.2-9"
+ARG PACKAGE_MANAGER_VERSION="2025.12.0-14"
 
 ENV PPM_LICENSE=""
 ENV PPM_LICENSE_SERVER=""
@@ -27,22 +37,33 @@ RUN apt-get update -yqq --fix-missing && \
     rm -rf /var/lib/apt/lists/*
 
 ### Install Apt Packages ###
-COPY package-manager/2024.08/deps/ubuntu2204_packages.txt /tmp/packages.txt
+COPY package-manager/2025.12/deps/ubuntu2204_packages.txt /tmp/packages.txt
 RUN apt-get update -yqq && \
     xargs -a /tmp/packages.txt apt-get install -yqq --no-install-recommends && \
     apt-get clean -yqq && \
     rm -rf /var/lib/apt/lists/*
 
+### Install Python from previous stage ###
+COPY --from=python-builder /opt/python /opt/python
 
+### Install Python packages ###
+COPY package-manager/2025.12/deps/python_requirements.txt /tmp/requirements.txt
+RUN /opt/python/3.14.2/bin/pip install --no-cache-dir --upgrade --break-system-packages \
+        -r /tmp/requirements.txt && \
+    rm -f /tmp/requirements.txt
 
-### Install Package Manager 2024.08.2-9 ###
-COPY --chmod=0755 package-manager/2024.08/scripts/install_package_manager.sh /tmp/install_package_manager.sh
-RUN \
+### Install R ###
+RUN RUN_UNATTENDED=1 R_VERSION=4.5.2 bash -c "$(curl -fsSL https://rstd.io/r-install)" && \
+    find . -type f -name '[rR]-4.5.2.*\.(deb|rpm)' -delete
+
+### Install Package Manager 2025.12.0-14 ###
+COPY --chmod=0755 package-manager/2025.12/scripts/install_package_manager.sh /tmp/install_package_manager.sh
+RUN PYTHON_VERSION=3.14.2 R_VERSION=4.5.2 \
     /tmp/install_package_manager.sh \
     && rm -f /tmp/install_package_manager.sh
 
 ### Add startup.sh script ###
-COPY --chmod=0775 package-manager/2024.08/scripts/startup.sh /usr/local/bin/startup.sh
+COPY --chmod=0775 package-manager/2025.12/scripts/startup.sh /usr/local/bin/startup.sh
 RUN mkdir -p /var/run/rstudio-pm \
     && chmod +x /usr/local/bin/startup.sh \
     && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \

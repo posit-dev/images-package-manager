@@ -42,7 +42,7 @@ file:
     exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
     filetype: file
   # Check for Python installation
-  /opt/python/cpython-3.12.1-linux-x86_64-gnu/bin/python:
+  /opt/python/3.12.1/bin/python:
     exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
   /etc/rstudio-pm/rstudio-pm.gcfg:
     exists: true
@@ -50,7 +50,7 @@ file:
     {{ if eq .Env.IMAGE_VARIANT "Standard" }}
     contents:
       - RVersion = /opt/R/4.4.0
-      - PythonVersion = /opt/python/cpython-3.12.1-linux-x86_64-gnu/bin/python
+      - PythonVersion = /opt/python/3.12.1/bin/python
     {{ end }}
 
 command:
@@ -66,7 +66,7 @@ command:
       - "4.4.0"
     skip: {{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}
   "Ensure Python version is correct":
-    exec: /opt/python/cpython-3.12.1-linux-x86_64-gnu/bin/python --version
+    exec: /opt/python/3.12.1/bin/python --version
     exit-status: 0
     stdout:
       - "3.12.1"
