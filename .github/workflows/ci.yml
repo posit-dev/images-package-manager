@@ -59,15 +59,17 @@ jobs:
       contents: read
       packages: write
 
-    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@cache-tag-platform"
     secrets:
       DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
       APP_ID: ${{ secrets.APP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
     with:
+      version: cache-tag-platform
       dev-versions: "exclude"
       # Push images only for merges into main and weekly schduled re-builds.
-      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event.schedule == '15 3 * * 0' }}
+      # push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event.schedule == '15 3 * * 0' }}
+      push: true
 
   dev:
     name: Dev Build
@@ -83,12 +85,14 @@ jobs:
       packages: write
       id-token: write  # Required for AWS OIDC login
 
-    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@cache-tag-platform"
     secrets:
       AWS_ROLE: ${{ secrets.AWS_ROLE }}
       APP_ID: ${{ secrets.APP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
     with:
+      version: cache-tag-platform
       dev-versions: "only"
       # Push images only for merges into main and hourly schduled re-builds.
-      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event.schedule == '45 * * * *' }}
+      # push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event.schedule == '45 * * * *' }}
+      push: true
