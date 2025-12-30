@@ -2,6 +2,7 @@ FROM docker.io/library/ubuntu:24.04
 LABEL org.opencontainers.image.base.name="docker.io/library/ubuntu:24.04"
 
 ### ARG declarations ###
+ARG TARGETARCH
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PACKAGE_MANAGER_VERSION="2025.04.4-13"
 
@@ -9,6 +10,8 @@ ENV PPM_LICENSE=""
 ENV PPM_LICENSE_SERVER=""
 ENV PPM_LICENSE_FILE_PATH=""
 ENV STARTUP_DEBUG_MODE=0
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 ### Setup environment ###
 RUN apt-get update -yqq --fix-missing && \

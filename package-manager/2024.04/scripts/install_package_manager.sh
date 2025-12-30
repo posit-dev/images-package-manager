@@ -23,7 +23,7 @@ then
 [Server]
 ; provided during automated install
 RVersion = /opt/R/$R_VERSION
-PythonVersion = /opt/python/cpython-$PYTHON_VERSION-linux-x86_64-gnu/bin/python
+PythonVersion = /opt/python/$PYTHON_VERSION/bin/python
 EOF
 else
     echo "$d No R or Python version provided $d"
