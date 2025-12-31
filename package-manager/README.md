@@ -75,7 +75,7 @@ Both `PPM_` and legacy `RSPM_` environment variable prefixes are supported for b
 | `RSPM_LICENSE_SERVER`    | `PPM_LICENSE_SERVER`    | Same behavior |
 | `RSPM_LICENSE_FILE_PATH` | `PPM_LICENSE_FILE_PATH` | Same behavior |
 
-**Note:** Legacy `RSPM_` variables are fully supported but are planned for deprecation after 2025. For more details and updates, see the [Posit Package Manager release notes](https://docs.posit.co/rspm/news/). For new deployments, always use the `PPM_` prefix to ensure forward compatibility.
+**Note:** Legacy `RSPM_` variables are supported but are planned for deprecation after 2025. For more details and updates, see the [Posit Package Manager release notes](https://docs.posit.co/rspm/news/). For new deployments, always use the `PPM_` prefix to ensure forward compatibility.
 
 ### Volume Mounts
 

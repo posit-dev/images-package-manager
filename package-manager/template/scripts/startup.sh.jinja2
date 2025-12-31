@@ -29,6 +29,11 @@ deactivate() {
 }
 trap deactivate EXIT
 
+# Backward compatibility: fall back to RSPM_ prefixed variables if PPM_ not set
+PPM_LICENSE=${PPM_LICENSE:-$RSPM_LICENSE}
+PPM_LICENSE_SERVER=${PPM_LICENSE_SERVER:-$RSPM_LICENSE_SERVER}
+PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH:-$RSPM_LICENSE_FILE_PATH}
+
 # Activate License
 PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH:-/etc/rstudio-pm/license.lic}
 /opt/rstudio-pm/bin/license-manager initialize --userspace || true
@@ -43,6 +48,8 @@ fi
 # ensure these cannot be inherited by child processes
 unset PPM_LICENSE
 unset PPM_LICENSE_SERVER
+unset RSPM_LICENSE
+unset RSPM_LICENSE_SERVER
 
 # Start RStudio Package Manager
 /opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg
