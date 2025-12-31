@@ -6,7 +6,7 @@ Container images for [Posit Package Manager](https://docs.posit.co/rspm/).
 
 | Image | Docker Hub | GitHub Container Registry |
 |:------|:-----------|:--------------------------|
-| [package-manager](./package-manager/) | [`docker.io/posit/package-manager`](https://hub.docker.com/repository/docker/posit/package-manager/tags) | [`ghcr.io/posit-dev/package-manager`](https://github.com/posit-dev/images-package-manager/pkgs/container/package-manager) |
+| [package-manager](./package-manager/) | `docker.io/posit/package-manager` | [`ghcr.io/posit-dev/package-manager`](https://github.com/posit-dev/images-package-manager/pkgs/container/package-manager) |
 
 Additional Posit container images are published to [Docker Hub](https://hub.docker.com/u/posit) and [GitHub Container Registry](https://github.com/orgs/posit-dev/packages).
 
