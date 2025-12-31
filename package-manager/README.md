@@ -2,6 +2,11 @@
 
 This container image provides [Posit Package Manager](https://docs.posit.co/rspm/) (PPM), a repository management server that organizes and centralizes R and Python packages across teams, departments, or organizations.
 
+> [!IMPORTANT]
+> This image is under active development and testing and is not yet supported by Posit.
+>
+> Please see [rstudio-package-manager image](https://github.com/rstudio/rstudio-docker-products/tree/main/package-manager) in `rstudio/rstudio-docker-products` for the officially supported image.
+
 ## Quick Start
 
 ```bash

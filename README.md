@@ -2,6 +2,11 @@
 
 Container images for [Posit Package Manager](https://docs.posit.co/rspm/).
 
+> [!IMPORTANT]
+> These images are under active development and testing and are not yet supported by Posit.
+>
+> Please see [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products) for officially supported images.
+
 ## Images
 
 | Image | Docker Hub | GitHub Container Registry |
@@ -90,6 +95,10 @@ bakery run dgoss
 ```
 
 You can use CLI flags to limit the tests to run against a subset of images.
+
+## Share your Feedback
+
+We invite you to join us on [GitHub Discussions](https://github.com/posit-dev/images/discussions) to ask questions and share feedback.
 
 ## Issues
 
