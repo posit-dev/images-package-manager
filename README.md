@@ -39,13 +39,19 @@ PPM_VERSION="2025.04"
 # Build the standard Package Manager image using docker
 docker buildx build \
     --tag package-manager:${PPM_VERSION} \
-    --file package-manager/${PPM_VERSION}/Containerfile.ubuntu2204.std \
+    --file package-manager/${PPM_VERSION}/Containerfile.ubuntu2404.std \
     .
 
 # Build the minimal Package Manager image using buildah
 buildah build \
     --tag package-manager:${PPM_VERSION} \
-    --file package-manager/${PPM_VERSION}/Containerfile.ubuntu2204.min \
+    --file package-manager/${PPM_VERSION}/Containerfile.ubuntu2404.min \
+    .
+
+# Build the minimal Package Manager image using podman
+podman build \
+    --tag package-manager:${PPM_VERSION} \
+    --file package-manager/${PPM_VERSION}/Containerfile.ubuntu2404.min \
     .
 ```
 

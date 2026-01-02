@@ -10,11 +10,12 @@ This container image provides [Posit Package Manager](https://docs.posit.co/rspm
 ## Quick Start
 
 ```bash
+PPM_VERSION="2025.12.0-14"
 docker run -d \
   --name package-manager \
   -p 4242:4242 \
   -v /path/to/license.lic:/etc/rstudio-pm/license.lic \
-  posit/package-manager:2025.09.0-7
+  posit/package-manager:${PPM_VERSION}-ubuntu-24.04
 ```
 
 Access Package Manager at `http://localhost:4242`.
@@ -23,10 +24,10 @@ Access Package Manager at `http://localhost:4242`.
 
 Two variants are available:
 
-| Variant          | Description                                               |
-|------------------|-----------------------------------------------------------|
-| `std` (Standard) | Includes R and Python for package building and validation |
-| `min` (Minimal)  | Package Manager only, smaller image size                  |
+| Variant | Description |
+|---------|-------------|
+| `std` (Standard) | Opinionated image, runs out of the box |
+| `min` (Minimal) | Small image you can extend with desired dependencies, *will not run as is* |
 
 ## Image Tags
 
@@ -51,14 +52,14 @@ A valid license is required. Choose one method:
 docker run -v /path/to/license.lic:/etc/rstudio-pm/license.lic ...
 ```
 
-**Option 2: Floating License Server**
-```bash
-docker run -e PPM_LICENSE_SERVER="http://license-server:8989" ...
-```
-
-**Option 3: License Key**
+**Option 2: License Key**
 ```bash
 docker run -e PPM_LICENSE="your-license-key" ...
+```
+
+**Option 3: Floating License Server**
+```bash
+docker run -e PPM_LICENSE_SERVER="http://license-server:8989" ...
 ```
 
 ### Environment Variables
@@ -68,9 +69,7 @@ docker run -e PPM_LICENSE="your-license-key" ...
 | `PPM_LICENSE`           | License key for activation                                    |
 | `PPM_LICENSE_SERVER`    | URL of floating license server                                |
 | `PPM_LICENSE_FILE_PATH` | Path to license file (default: `/etc/rstudio-pm/license.lic`) |
-| `STARTUP_DEBUG_MODE`    | Set to `1` for verbose startup logging                        |
-
-Both `PPM_` and legacy `RSPM_` environment variable prefixes are supported for backward compatibility; however, use the `PPM_` prefix for new deployments as it is preferred going forward.
+| `PPM STARTUP_DEBUG`     | Set to `1` for verbose startup logging                        |
 
 #### Legacy Environment Variables
 
@@ -120,12 +119,12 @@ Runs as the `rstudio-pm` user (UID/GID 999).
 
 This image differs from the legacy [`rstudio/rstudio-package-manager`](https://hub.docker.com/r/rstudio/rstudio-package-manager) image:
 
-| Aspect           | This Image                             | rstudio/rstudio-package-manager                                                  |
-|------------------|----------------------------------------|----------------------------------------------------------------------------------|
-| Registry         | `posit/package-manager`                | `rstudio/rstudio-package-manager`                                                |
-| License env vars | `PPM_` prefix                          | `RSPM_` prefix                                                                   |
-| Variants         | `std` (with R/Python), `min` (minimal) | Single variant; multiple tags for different R/Python versions (not simultaneous) |
-| Base OS options  | Ubuntu 22.04, Ubuntu 24.04             | Ubuntu 22.04                                                                     |
+| Aspect           | This Image                             | rstudio/rstudio-package-manager                               |
+|------------------|----------------------------------------|---------------------------------------------------------------|
+| Registry         | `posit/package-manager`                | `rstudio/rstudio-package-manager`                             |
+| License env vars | `PPM_` prefix                          | `RSPM_` prefix                                                |
+| Variants         | `std` (with R/Python), `min` (minimal) | Single variant; multiple tags for different R/Python versions |
+| Base OS options  | Ubuntu 24.04, Ubuntu 22.04             | Ubuntu 22.04                                                  |
 
 ## Caveats
 
@@ -133,7 +132,9 @@ This image differs from the legacy [`rstudio/rstudio-package-manager`](https://h
 
 These images should be reviewed before production use. Organizations with specific CVE or vulnerability requirements should rebuild these images to meet their security standards.
 
-### Licensing
+Published images for Posit Product editions under active support are re-built on a weekly basis to pull in operating system patches.
+
+### License Keys
 
 License keys used in containers risk activation slot loss if containers aren't gracefully stopped. The license deactivates on container exit, but ungraceful shutdowns (crashes, `docker kill`) may leave the activation slot consumed on Posit's license server.
 
@@ -150,7 +151,7 @@ For production deployments, license files are recommended over license keys.
 
 ### Hardware Locking
 
-License state files are hardware-locked. Changes to MAC addresses, hostnames, or container orchestration platforms may invalidate existing license state, requiring reactivation.
+License state files are hardware-locked. Changes to MAC addresses, hostnames, or container orchestration platforms, such as Kubernetes, may invalidate existing license state, requiring reactivation.
 
 ## Documentation
 
