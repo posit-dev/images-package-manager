@@ -2,11 +2,16 @@
 
 Container images for [Posit Package Manager](https://docs.posit.co/rspm/).
 
+> [!IMPORTANT]
+> These images are under active development and testing and are not yet supported by Posit.
+>
+> Please see [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products) for officially supported images.
+
 ## Images
 
 | Image | Docker Hub | GitHub Container Registry |
 |:------|:-----------|:--------------------------|
-| [package-manager](./package-manager/) | [`docker.io/posit/package-manager`](https://hub.docker.com/repository/docker/posit/package-manager/tags) | [`ghcr.io/posit-dev/package-manager`](https://github.com/posit-dev/images-package-manager/pkgs/container/package-manager) |
+| [package-manager](./package-manager/) | `docker.io/posit/package-manager` | [`ghcr.io/posit-dev/package-manager`](https://github.com/posit-dev/images-package-manager/pkgs/container/package-manager) |
 
 Additional Posit container images are published to [Docker Hub](https://hub.docker.com/u/posit) and [GitHub Container Registry](https://github.com/orgs/posit-dev/packages).
 
@@ -34,13 +39,19 @@ PPM_VERSION="2025.04"
 # Build the standard Package Manager image using docker
 docker buildx build \
     --tag package-manager:${PPM_VERSION} \
-    --file package-manager/${PPM_VERSION}/Containerfile.ubuntu2204.std \
+    --file package-manager/${PPM_VERSION}/Containerfile.ubuntu2404.std \
     .
 
 # Build the minimal Package Manager image using buildah
 buildah build \
     --tag package-manager:${PPM_VERSION} \
-    --file package-manager/${PPM_VERSION}/Containerfile.ubuntu2204.min \
+    --file package-manager/${PPM_VERSION}/Containerfile.ubuntu2404.min \
+    .
+
+# Build the minimal Package Manager image using podman
+podman build \
+    --tag package-manager:${PPM_VERSION} \
+    --file package-manager/${PPM_VERSION}/Containerfile.ubuntu2404.min \
     .
 ```
 
@@ -90,6 +101,10 @@ bakery run dgoss
 ```
 
 You can use CLI flags to limit the tests to run against a subset of images.
+
+## Share your Feedback
+
+We invite you to join us on [GitHub Discussions](https://github.com/posit-dev/images/discussions) to ask questions and share feedback.
 
 ## Issues
 
