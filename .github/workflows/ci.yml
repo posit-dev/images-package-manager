@@ -62,8 +62,6 @@ jobs:
     uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
     secrets:
       DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      APP_ID: ${{ secrets.APP_ID }}
-      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
     with:
       dev-versions: "exclude"
       # Push images only for merges into main and weekly schduled re-builds.
@@ -86,9 +84,20 @@ jobs:
     uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
     secrets:
       AWS_ROLE: ${{ secrets.AWS_ROLE }}
-      APP_ID: ${{ secrets.APP_ID }}
-      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
     with:
       dev-versions: "only"
       # Push images only for merges into main and hourly schduled re-builds.
       push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event.schedule == '45 * * * *' }}
+
+  clean:
+    name: Clean
+    permissions:
+      contents: read
+      packages: write
+    uses: "posit-dev/images-shared/.github/workflows/clean.yml@main"
+    with:
+      remove-dangling-caches: true
+      remove-caches-older-than: 14
+      remove-dangling-temporary-images: false
+      remove-temporary-images-older-than: 3
+
