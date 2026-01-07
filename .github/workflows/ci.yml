@@ -94,6 +94,10 @@ jobs:
     permissions:
       contents: read
       packages: write
+    needs:
+      - build
+      - dev
+
     uses: "posit-dev/images-shared/.github/workflows/clean.yml@main"
     with:
       remove-dangling-caches: true
