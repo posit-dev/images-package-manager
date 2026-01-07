@@ -90,5 +90,5 @@ jobs:
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
     with:
       dev-versions: "only"
-      # Push images only for merges into main and hourly schduled re-builds.
+      # Push images only for merges into main and hourly scheduled re-builds.
       push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event.schedule == '45 * * * *' }}
