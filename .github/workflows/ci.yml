@@ -67,7 +67,7 @@ jobs:
     with:
       dev-versions: "exclude"
       # Push images only for merges into main and weekly schduled re-builds.
-      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event.schedule == '15 3 * * 0' }}
+      push: true
 
   dev:
     name: Dev Build
