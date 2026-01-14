@@ -19,9 +19,43 @@ Additional Posit container images are published to [Docker Hub](https://hub.dock
 
 You can interact with this repository in multiple ways:
 
+* Run on Kuberentes [using Helm](#helm).
 * [Build container images directly](#build) from the Containerfile.
 * [Use the `bakery` CLI](#using-bakery) to manage and build container images.
 * Extend the functionality by using the Minimal base image (see [examples](https://github.com/posit-dev/images-examples)).
+
+## Helm
+
+You can run Package Package manager on Kubernetes using the [Package Manager helm chart](https://docs.posit.co/helm/charts/rstudio-pm/README.html).
+
+These instructions will work for both ARM and x86_64 (AMD64) Kubernetes nodes.
+
+1. Add the `rstudio` helm repository and update to recieve the latest charts.
+
+    ```shell
+    helm repo add rstudio https://helm.rstudio.com
+    helm repo update
+    ```
+
+2. Include the following image information in the [values file](https://docs.posit.co/helm/charts/rstudio-pm/README.html#values):
+
+    ```yaml
+    image:
+      # Can also use  docker.io/posit/package-manager
+      repository: ghcr.io/posit-dev/package-manager
+      tag: 2025.12.0-ubuntu-24.04
+      # Tags use a different structure compared to rstudio-docker-products builds
+      tagPrefix: ""
+    ```
+
+3. Install Package Manager with Helm
+
+    ```shell
+    helm upgrade --install \
+        --values values.yaml \
+        package-manager
+        rstudio/rstudio-pm
+    ```
 
 ## Build
 
@@ -34,7 +68,7 @@ The root of the bakery project is used as the build context for each Containerfi
 Here, the `bakery.yaml` file, or project, is in the root of this repository.
 
 ```shell
-PPM_VERSION="2025.04"
+PPM_VERSION="2025.12"
 
 # Build the standard Package Manager image using docker
 docker buildx build \
