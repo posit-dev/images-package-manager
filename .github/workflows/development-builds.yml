@@ -44,13 +44,45 @@ jobs:
       packages: write
       id-token: write  # Required for AWS OIDC login
 
-    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@cache-tag"
     secrets:
       AWS_ROLE: ${{ secrets.AWS_ROLE }}
     with:
+      version: "cache-tag"
       dev-versions: "only"
       # Push images only for merges into main and hourly schduled re-builds.
       push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+
+  update-helm:
+    name: Update Helm Charts
+    # Trigger the helm-package-manager workflow to update charts with the new dev image.
+    # Only runs when dev images were actually pushed.
+    if: needs.dev.result == 'success' && (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule')
+    needs:
+      - dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install bakery
+        uses: "posit-dev/images-shared/setup-bakery@cache-tag"
+
+      - name: Trigger helm-package-manager workflow
+        env:
+          GH_TOKEN: ${{ secrets.HELM_DISPATCH_TOKEN }}
+        run: |
+          bakery ci matrix --quiet --dev-versions only --exclude platform | jq -c '.[]' | while read -r entry; do
+            VERSION=$(echo "$entry" | jq -r '.version')
+            # Make version tag-safe (replace + with -)
+            TAG=$(echo "$VERSION" | tr '+' '-')
+
+            gh workflow run arbitrary-deploy.yml \
+              -R rstudio/helm-package-manager \
+              --field ppm-image-version="$TAG" \
+              --field ppm-image-repository="528395739535.dkr.ecr.us-east-2.amazonaws.com/package-manager-preview"
+          done
 
   clean:
     name: Clean
