@@ -14,17 +14,20 @@ deactivate() {
       /opt/rstudio-pm/bin/license-manager deactivate --userspace >/dev/null 2>&1
       is_deactivated=1
       ((retries+=1))
-      for file in $(ls -A /home/rstudio-pm/.local); do
-        if [ -s /home/rstudio-pm/.local/$file ]; then
-          if [[ $retries -lt 3 ]]; then
-            echo "License did not deactivate, retry ${retries}..."
-            is_deactivated=0
-          else
-            echo "Unable to deactivate license. If you encounter issues activating your product in the future, please contact Posit support."
+      # TODO: this may not longer be necessary, but I need more context for why it's here first.
+      if [ -d /home/rstudio-pm/.local ]; then
+        for file in $(ls -A /home/rstudio-pm/.local); do
+          if [ -s /home/rstudio-pm/.local/$file ]; then
+            if [[ $retries -lt 3 ]]; then
+              echo "License did not deactivate, retry ${retries}..."
+              is_deactivated=0
+            else
+              echo "Unable to deactivate license. If you encounter issues activating your product in the future, please contact Posit support."
+            fi
+            continue
           fi
-          continue
-        fi
-      done
+        done
+      fi
     done
 }
 trap deactivate EXIT
