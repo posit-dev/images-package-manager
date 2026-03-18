@@ -42,3 +42,129 @@ git -C ../images-shared worktree remove .claude/worktrees/<name>
 > roots, not to worktree paths. File reads and writes via those directories will access the
 > repo root (typically on `main`). Always use the full worktree path when reading or writing
 > files in a sibling worktree.
+
+## Product Naming
+
+| Current Name | Legacy Name | ENV Prefix | Legacy Prefix |
+|---|---|---|---|
+| Posit Package Manager | RStudio Package Manager | `PPM_` | `RSPM_` |
+| Posit Connect | RStudio Connect | `PCT_` | `RSC_` |
+| Posit Workbench | RStudio Workbench | `PWB_` | `RSW_`, `RSP_` |
+
+## Image: package-manager
+
+Two variants:
+
+- **Standard** (`std`, primary) — includes R and Python. Goss tests with 10s startup wait.
+- **Minimal** (`min`) — base image for customers to extend.
+
+Supports multi-platform builds: `linux/amd64` and `linux/arm64`.
+
+**Key env vars** (set in Containerfile, consumed by `startup.sh`):
+- `PPM_LICENSE` — license key (falls back to `RSPM_LICENSE`)
+- `PPM_LICENSE_SERVER` — floating license server URL (falls back to `RSPM_LICENSE_SERVER`)
+- `PPM_LICENSE_FILE_PATH` — path to license file, default `/etc/rstudio-pm/license.lic` (falls back to `RSPM_LICENSE_FILE_PATH`)
+- `PPM_STARTUP_DEBUG` — set to `1` for verbose startup logging
+
+All license env vars are unset after activation to prevent child process inheritance.
+
+## Template Pipeline
+
+**Always edit Jinja2 templates in `template/`, never rendered files in version directories.**
+
+After changing templates, re-render: `bakery update files`
+
+```
+package-manager/
+├── template/                          # EDIT THESE
+│   ├── Containerfile.ubuntu2204.jinja2
+│   ├── Containerfile.ubuntu2404.jinja2
+│   ├── deps/
+│   │   ├── python_requirements.txt.jinja2
+│   │   ├── ubuntu2204_packages.txt.jinja2
+│   │   └── ubuntu2404_packages.txt.jinja2
+│   ├── scripts/
+│   │   ├── install_package_manager.sh.jinja2
+│   │   └── startup.sh.jinja2
+│   └── test/goss.yaml.jinja2
+├── 2025.12/                           # Rendered (do not edit)
+├── 2025.09/
+└── ...
+```
+
+Rendered version directories contain `.min` and `.std` variants of each Containerfile
+(e.g., `Containerfile.ubuntu2404.min`, `Containerfile.ubuntu2404.std`).
+
+### Macros imported in templates
+
+```jinja2
+{%- import "apt.j2" as apt -%}
+{%- import "python.j2" as python -%}
+{%- import "r.j2" as r -%}
+```
+
+No `quarto.j2` — Package Manager doesn't ship Quarto.
+
+### Template variables
+
+- `Image.Version`, `Image.Variant`, `Image.OS`, `Image.IsDevelopmentVersion`
+- `Dependencies.python`, `Dependencies.R` (lists of version strings)
+- `Path.Version`, `Path.Image`
+
+## Build and Test
+
+```bash
+# Install bakery and goss
+just init
+
+# Preview the build plan
+bakery build --plan
+
+# Build all images
+bakery build
+
+# Build a specific version/variant
+bakery build --image-name package-manager --image-version 2025.12.0 --image-variant Standard
+
+# Build for a specific platform
+bakery build --image-name package-manager --image-platform linux/arm64
+
+# Run goss tests
+bakery run dgoss
+
+# Re-render templates after changes
+bakery update files
+```
+
+## CI Workflows
+
+All workflows call shared reusable workflows from `images-shared`:
+
+| Workflow | Schedule | What it builds | Shared workflow |
+|---|---|---|---|
+| `production-builds.yml` | Weekly (Sun 03:15 UTC), PR, push to main | Production versions (excludes dev) | `bakery-build-native.yml` |
+| `development-builds.yml` | Hourly, PR, push to main | Dev versions only (preview + daily streams) | `bakery-build-native.yml` |
+
+Both workflows use `bakery-build-native.yml` for native multi-platform builds (amd64 + arm64).
+Images push to `docker.io/posit` and `ghcr.io/posit-dev` on main merges and scheduled runs.
+Dev images push to AWS ECR.
+
+### CI failure checklist
+
+1. **Check which workflow failed** — production vs development have different scopes
+2. **Read the failing step** — usually Build or Test
+3. **Common failures:**
+   - Python version not available in UV — a new Python minor version may not be in UV's release metadata yet
+   - ARM64 build failures — may be runner availability or platform-specific package issues
+   - Registry auth — Docker Hub requires `DOCKER_HUB_ACCESS_TOKEN`, ECR requires AWS OIDC
+4. **Cache issues** — builds use `--cache-registry ghcr.io/posit-dev` for layer caching; stale caches can cause unexpected behavior
+
+## Helm Integration
+
+The corresponding Helm chart is `rstudio-pm` in `../helm/charts/rstudio-pm/`.
+
+- Chart `appVersion` in `Chart.yaml` drives the default image tag
+- Image tag pattern: `{appVersion}-{os}` (e.g., `2025.12.0-ubuntu-24.04`)
+- `values.yaml` references `ghcr.io/posit-dev/package-manager`
+
+When bumping image versions, coordinate updates to the helm chart's `appVersion`.
