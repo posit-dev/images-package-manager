@@ -19,12 +19,7 @@ then
     sed -i 's/RVersion =/;RVersion =/' $PPM_CONFIG_FILE
 
     echo "$d Setting R and Python version configuration $d"
-    cat << EOF >> $PPM_CONFIG_FILE
-[Server]
-; provided during automated install
-RVersion = /opt/R/$R_VERSION
-PythonVersion = /opt/python/$PYTHON_VERSION/bin/python
-EOF
+    sed -i "0,/.*RVersion.*/s||RVersion = /opt/R/$R_VERSION\nPythonVersion = /opt/python/$PYTHON_VERSION/bin/python|" $PPM_CONFIG_FILE
 else
     echo "$d No R or Python version provided $d"
 fi
