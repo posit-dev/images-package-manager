@@ -44,6 +44,8 @@ jobs:
     uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
     secrets:
       DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      DOCKER_HUB_README_USERNAME: ${{ secrets.DOCKER_HUB_README_USERNAME }}
+      DOCKER_HUB_README_PASSWORD: ${{ secrets.DOCKER_HUB_README_PASSWORD }}
     with:
       dev-versions: "exclude"
       # Push images only for merges into main and weekly schduled re-builds.
