@@ -2,23 +2,26 @@
 
 This container image provides [Posit Package Manager](https://docs.posit.co/rspm/) (PPM), a repository management server that organizes and centralizes R and Python packages across teams, departments, or organizations.
 
-> [!IMPORTANT]
-> This image is under active development and testing and is not yet supported by Posit.
->
-> Please see [rstudio-package-manager image](https://github.com/rstudio/rstudio-docker-products/tree/main/package-manager) in `rstudio/rstudio-docker-products` for the officially supported image.
+> [!NOTE]
+> These images are in preview as Posit migrates container images from [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products). The existing images remain supported.
 
 ## Quick Start
 
 ```bash
-PPM_VERSION="2025.12.0-14"
+PPM_VERSION="2025.12.0"
+PPM_IMAGE="ghcr.io/posit-dev/package-manager"  # or docker.io/posit/package-manager
+PPM_LICENSE="/path/to/license.lic"
 docker run -d \
   --name package-manager \
   -p 4242:4242 \
-  -v /path/to/license.lic:/etc/rstudio-pm/license.lic \
-  posit/package-manager:${PPM_VERSION}-ubuntu-24.04
+  -v ${PPM_LICENSE}:/etc/rstudio-pm/license.lic \
+  ${PPM_IMAGE}:${PPM_VERSION}
 ```
 
 Access Package Manager at `http://localhost:4242`.
+
+> [!NOTE]
+> This example does not mount a data volume. Package data will not persist when the container stops. See [Volume Mounts](#volume-mounts) for persistent storage.
 
 ## Image Variants
 
@@ -37,17 +40,20 @@ Images are published to:
 - Docker Hub: `docker.io/posit/package-manager`
 - GitHub Container Registry: `ghcr.io/posit-dev/package-manager`
 
+Ubuntu 24.04 is the default OS.
+
 Tag formats:
-- `2025.09.0-7` - Full version (standard variant, Ubuntu 22.04)
-- `2025.09.0-7-ubuntu-22.04-std` - Explicit OS and variant
-- `2025.09.0-7-ubuntu-24.04-min` - Ubuntu 24.04 minimal variant
-- `latest` - Latest stable release (standard variant, Ubuntu 22.04)
+- `2025.12.0` - Latest OS, standard variant
+- `2025.12.0-ubuntu-24.04` - Explicit OS, standard variant
+- `2025.12.0-ubuntu-24.04-std` - Explicit OS and variant
+- `2025.12.0-ubuntu-24.04-min` - Minimal variant
+- `latest` - Latest version, default OS, standard variant
 
 ## Configuration
 
 ### License Activation
 
-A valid license is required. Choose one method:
+A [product license](https://docs.posit.co/licensing/licensing-faq.html) is required. Posit recommends license file activation. Choose one method:
 
 **Option 1: License File (Recommended)**
 ```bash
@@ -71,7 +77,7 @@ docker run -e PPM_LICENSE_SERVER="http://license-server:8989" ...
 | `PPM_LICENSE`           | License key for activation                                    |
 | `PPM_LICENSE_SERVER`    | URL of floating license server                                |
 | `PPM_LICENSE_FILE_PATH` | Path to license file (default: `/etc/rstudio-pm/license.lic`) |
-| `PPM STARTUP_DEBUG`     | Set to `1` for verbose startup logging                        |
+| `PPM_STARTUP_DEBUG`     | Set to `1` for verbose startup logging                        |
 
 #### Legacy Environment Variables
 
