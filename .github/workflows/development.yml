@@ -42,11 +42,8 @@ jobs:
     permissions:
       contents: read
       packages: write
-      id-token: write  # Required for AWS OIDC login
 
     uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
-    secrets:
-      AWS_ROLE: ${{ secrets.AWS_ROLE }}
     with:
       dev-versions: "only"
       # Push images only for merges into main and hourly schduled re-builds.
