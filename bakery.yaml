@@ -49,7 +49,8 @@ images:
               - linux/arm64
           - name: Ubuntu 22.04
         overrideRegistries:
-          - host: "528395739535.dkr.ecr.us-east-2.amazonaws.com"
+          - host: "ghcr.io"
+            namespace: "posit-dev"
             repository: "package-manager-preview"
       - sourceType: "stream"
         product: "package-manager"
@@ -62,7 +63,8 @@ images:
               - linux/arm64
           - name: Ubuntu 22.04
         overrideRegistries:
-          - host: "528395739535.dkr.ecr.us-east-2.amazonaws.com"
+          - host: "ghcr.io"
+            namespace: "posit-dev"
             repository: "package-manager-preview"
     variants:
       - name: Standard
