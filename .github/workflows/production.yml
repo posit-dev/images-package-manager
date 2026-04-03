@@ -1,6 +1,8 @@
 name: Production
 
 on:
+  workflow_dispatch:
+
   schedule:
     # Weekly rebuild of all images, to pick up any upstream changes.
     - cron: "15 3 * * 0" # At 03:15 on Sunday
@@ -29,6 +31,7 @@ jobs:
       - uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+          allowed-skips: update-helm
 
   build:
     name: Build
@@ -48,8 +51,47 @@ jobs:
       DOCKER_HUB_README_PASSWORD: ${{ secrets.DOCKER_HUB_README_PASSWORD }}
     with:
       dev-versions: "exclude"
-      # Push images only for merges into main and weekly schduled re-builds.
-      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+
+  update-helm:
+    name: Update Helm
+    if: ${{ needs.build.result == 'success' && (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') }}
+    needs:
+      - build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install bakery
+        uses: posit-dev/images-shared/setup-bakery@main
+
+      - name: Get latest version
+        id: version
+        run: |
+          APP_VERSION=$(bakery get version package-manager)
+          # Strip build number for helm appVersion (e.g. 2025.12.0-14 → 2025.12.0)
+          APP_VERSION="${APP_VERSION%%-*}"
+          echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: rstudio
+          repositories: helm
+
+      - name: Dispatch Helm update
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh workflow run product-release.yml \
+            --repo rstudio/helm \
+            --field product=package-manager \
+            --field app-version=${{ steps.version.outputs.app-version }}
 
   clean:
     name: Clean
