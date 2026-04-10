@@ -49,7 +49,7 @@ kubectl create secret generic posit-package-manager-license \
 ```yaml
 image:
   repository: ghcr.io/posit-dev/package-manager
-  tag: "2025.12.0"
+  tag: "2026.04.0"
 
 license:
   file:
@@ -83,7 +83,7 @@ The root of the bakery project is used as the build context for each Containerfi
 Here, the [`bakery.yaml`](https://github.com/posit-dev/images-shared/blob/main/posit-bakery/CONFIGURATION.md#bakery-configuration) file, or project, is in the root of this repository.
 
 ```shell
-PPM_VERSION="2025.12"
+PPM_VERSION="2026.04"
 
 # Build the standard Package Manager image using docker
 docker buildx build \
