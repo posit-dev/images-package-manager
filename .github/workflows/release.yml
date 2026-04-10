@@ -1,4 +1,5 @@
 name: Release
+
 on:
   workflow_dispatch:
     inputs:
@@ -6,6 +7,8 @@ on:
         description: "Product version (e.g. 2026.01.0-15)"
         required: true
         type: string
+
+permissions: {}
 
 jobs:
   release:
