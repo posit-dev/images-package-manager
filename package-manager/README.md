@@ -8,7 +8,7 @@ This container image provides [Posit Package Manager](https://docs.posit.co/rspm
 ## Quick Start
 
 ```bash
-PPM_VERSION="2025.12.0"
+PPM_VERSION="2026.04.0"
 PPM_IMAGE="ghcr.io/posit-dev/package-manager"  # or docker.io/posit/package-manager
 PPM_LICENSE="/path/to/license.lic"
 docker run -d \
@@ -43,10 +43,10 @@ Images are published to:
 Ubuntu 24.04 is the default OS.
 
 Tag formats:
-- `2025.12.0` - Latest OS, standard variant
-- `2025.12.0-ubuntu-24.04` - Explicit OS, standard variant
-- `2025.12.0-ubuntu-24.04-std` - Explicit OS and variant
-- `2025.12.0-ubuntu-24.04-min` - Minimal variant
+- `2026.04.0` - Latest OS, standard variant
+- `2026.04.0-ubuntu-24.04` - Explicit OS, standard variant
+- `2026.04.0-ubuntu-24.04-std` - Explicit OS and variant
+- `2026.04.0-ubuntu-24.04-min` - Minimal variant
 - `latest` - Latest version, default OS, standard variant
 
 ## Configuration
