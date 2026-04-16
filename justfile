@@ -1,7 +1,5 @@
 #!/usr/bin/env just --justfile
 
-GITHUB_TOKEN := `gh auth token`
-
 install-bakery *OPTS:
   #!/bin/bash
   # TODO: Update this after package is published somewhere
