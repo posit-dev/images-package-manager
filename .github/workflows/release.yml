@@ -14,5 +14,5 @@ jobs:
       version: ${{ inputs.version }}
       images: "package-manager"
     secrets:
-      APP_ID: ${{ secrets.APP_ID }}
-      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+      APP_ID: ${{ secrets.PPM_AUTOMATION_APP_ID }}
+      APP_PRIVATE_KEY: ${{ secrets.PPM_AUTOMATION_PEM }}
