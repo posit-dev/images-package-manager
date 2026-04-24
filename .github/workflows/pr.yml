@@ -27,7 +27,7 @@ jobs:
     name: Production
     permissions:
       contents: read
-      packages: read
+      packages: write
     uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
     with:
       dev-versions: "exclude"
@@ -36,7 +36,7 @@ jobs:
     name: Development
     permissions:
       contents: read
-      packages: read
+      packages: write
     uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
     with:
       dev-versions: "only"
