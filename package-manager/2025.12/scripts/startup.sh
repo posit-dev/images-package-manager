@@ -16,8 +16,9 @@ deactivate() {
       ((retries+=1))
       # TODO: this may not longer be necessary, but I need more context for why it's here first.
       if [ -d /home/rstudio-pm/.local ]; then
+        # shellcheck disable=SC2045
         for file in $(ls -A /home/rstudio-pm/.local); do
-          if [ -s /home/rstudio-pm/.local/$file ]; then
+          if [ -s "/home/rstudio-pm/.local/$file" ]; then
             if [[ $retries -lt 3 ]]; then
               echo "License did not deactivate, retry ${retries}..."
               is_deactivated=0
@@ -41,11 +42,11 @@ PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH:-$RSPM_LICENSE_FILE_PATH}
 PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH:-/etc/rstudio-pm/license.lic}
 /opt/rstudio-pm/bin/license-manager initialize --userspace || true
 if ! [ -z "$PPM_LICENSE" ]; then
-    /opt/rstudio-pm/bin/license-manager activate $PPM_LICENSE --userspace
+    /opt/rstudio-pm/bin/license-manager activate "$PPM_LICENSE" --userspace
 elif ! [ -z "$PPM_LICENSE_SERVER" ]; then
-    /opt/rstudio-pm/bin/license-manager license-server $PPM_LICENSE_SERVER --userspace
+    /opt/rstudio-pm/bin/license-manager license-server "$PPM_LICENSE_SERVER" --userspace
 elif test -f "$PPM_LICENSE_FILE_PATH"; then
-    /opt/rstudio-pm/bin/license-manager activate-file $PPM_LICENSE_FILE_PATH --userspace
+    /opt/rstudio-pm/bin/license-manager activate-file "$PPM_LICENSE_FILE_PATH" --userspace
 fi
 
 # ensure these cannot be inherited by child processes
