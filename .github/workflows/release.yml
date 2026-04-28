@@ -12,7 +12,6 @@ on:
 jobs:
   release:
     if: github.event_name == 'workflow_dispatch'
-    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write
