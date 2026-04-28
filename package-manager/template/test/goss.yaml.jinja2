@@ -23,6 +23,14 @@ group:
 package:
   rstudio-pm:
     installed: true
+  {% raw -%}
+  {{ $apt_package_list_path := printf "/tmp/version/deps/%s-%s_packages.txt" (toLower .Env.IMAGE_OS_NAME) .Env.IMAGE_OS_VERSION }}
+  {{ $apt_package_list := readFile $apt_package_list_path | splitList "\n" }}
+  {{- range $apt_package_list }}
+  {{ . }}:
+    installed: true
+  {{ end }}
+  {%- endraw %}
 
 process:
   rstudio-pm:

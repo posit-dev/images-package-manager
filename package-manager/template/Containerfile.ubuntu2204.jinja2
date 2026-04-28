@@ -30,7 +30,7 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 {{ apt.run_setup() }}
 
 ### Install Apt Packages ###
-COPY {{ Path.Version }}/deps/ubuntu2204_packages.txt /tmp/packages.txt
+COPY {{ Path.Version }}/deps/ubuntu-22.04_packages.txt /tmp/packages.txt
 {{ apt.run_install(files = '/tmp/packages.txt') }}
 
 {% if not Image.Variant == "Minimal" -%}
