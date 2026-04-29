@@ -106,7 +106,7 @@ jobs:
           ARGS=(--dev-versions only --exclude platform --quiet)
           [[ -n "$DEV_STREAM" ]] && ARGS+=(--dev-stream "$DEV_STREAM")
 
-          bakery ci matrix "${ARGS[@]}" | jq -r '.[].version' | while read -r version; do
+          bakery ci matrix "${ARGS[@]}" | jq -r '.[].version' | sort -u | while read -r version; do
             tag="${version//+/-}"
             echo "Dispatching version: $tag"
             gh workflow run arbitrary-deploy.yml \
