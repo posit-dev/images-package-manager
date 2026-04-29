@@ -68,6 +68,52 @@ jobs:
       # Push on merges to main, scheduled rebuilds, and dispatches targeting main.
       push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
 
+  dispatch:
+    name: Dispatch
+    if: >-
+      needs.dev.result == 'success' &&
+      (github.event_name == 'push' && github.ref == 'refs/heads/main' ||
+       github.event_name == 'schedule' ||
+       github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    needs:
+      - dev
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Setup bakery
+        uses: posit-dev/images-shared/setup-bakery@main
+
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@136412a57a7081aa63f0f2b81902682e9d31d843  # v1.11.7
+        with:
+          app-id: ${{ secrets.PPM_AUTOMATION_APP_ID }}
+          private-key: ${{ secrets.PPM_AUTOMATION_PEM }}
+          owner: rstudio
+          repositories: helm-package-manager
+
+      - name: Dispatch to helm-package-manager
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          DEV_STREAM: ${{ inputs.stream }}
+        run: |
+          ARGS=(--dev-versions only --exclude platform --quiet)
+          [[ -n "$DEV_STREAM" ]] && ARGS+=(--dev-stream "$DEV_STREAM")
+
+          bakery ci matrix "${ARGS[@]}" | jq -r '.[].version' | while read -r version; do
+            tag="${version//+/-}"
+            echo "Dispatching version: $tag"
+            gh workflow run arbitrary-deploy.yml \
+              --repo rstudio/helm-package-manager \
+              --field ppm-image-version="$tag"
+          done
+
   clean:
     name: Clean
     if: always() && github.ref == 'refs/heads/main'
