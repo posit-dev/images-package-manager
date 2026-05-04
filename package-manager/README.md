@@ -1,11 +1,11 @@
-# Posit Package Manager Container Image
+# Posit Package Manager container image
 
 This container image provides [Posit Package Manager](https://docs.posit.co/rspm/) (PPM), a repository management server that organizes and centralizes R and Python packages across teams, departments, or organizations.
 
 > [!NOTE]
 > These images are in preview as Posit migrates container images from [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products). The existing images remain supported.
 
-## Quick Start
+## Quick start
 
 ```bash
 PPM_VERSION="2026.04.1"
@@ -23,7 +23,7 @@ Access Package Manager at `http://localhost:4242`.
 > [!NOTE]
 > This example does not mount a data volume. Package data will not persist when the container stops. See [Volume Mounts](#volume-mounts) for persistent storage.
 
-## Image Variants
+## Image variants
 
 Two variants are available:
 
@@ -34,7 +34,7 @@ Two variants are available:
 
 See [extending examples](https://github.com/posit-dev/images-examples/tree/main/extending) for how to build on the Minimal image.
 
-## Image Tags
+## Image tags
 
 Images are published to:
 - Docker Hub: `docker.io/posit/package-manager`
@@ -51,7 +51,7 @@ Tag formats:
 
 ## Configuration
 
-### License Activation
+### License activation
 
 A [product license](https://docs.posit.co/licensing/licensing-faq.html) is required. Posit recommends license file activation. Choose one method:
 
@@ -70,7 +70,7 @@ docker run -e PPM_LICENSE="your-license-key" ...
 docker run -e PPM_LICENSE_SERVER="http://license-server:8989" ...
 ```
 
-### Environment Variables
+### Environment variables
 
 | Variable                | Description                                                   |
 |-------------------------|---------------------------------------------------------------|
@@ -79,7 +79,7 @@ docker run -e PPM_LICENSE_SERVER="http://license-server:8989" ...
 | `PPM_LICENSE_FILE_PATH` | Path to license file (default: `/etc/rstudio-pm/license.lic`) |
 | `PPM_STARTUP_DEBUG`     | Set to `1` for verbose startup logging                        |
 
-#### Legacy Environment Variables
+#### Legacy environment variables
 
 | Legacy Variable          | Preferred Equivalent    | Notes         |
 |--------------------------|-------------------------|---------------|
@@ -89,7 +89,7 @@ docker run -e PPM_LICENSE_SERVER="http://license-server:8989" ...
 
 **Note:** Legacy `RSPM_` variables are supported but are planned for deprecation after 2025. For more details and updates, see the [Posit Package Manager release notes](https://docs.posit.co/rspm/news/). For new deployments, always use the `PPM_` prefix to ensure forward compatibility.
 
-### Volume Mounts
+### Volume mounts
 
 For persistent data, add these volume mounts to your `docker run` command:
 
@@ -103,7 +103,7 @@ For persistent data, add these volume mounts to your `docker run` command:
 | `/var/lib/rstudio-pm` | Package data and database |
 | `/etc/rstudio-pm`     | Configuration files       |
 
-### Custom Configuration
+### Custom configuration
 
 Mount a custom configuration file:
 
@@ -113,7 +113,7 @@ docker run -v /path/to/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg ...
 
 See the [configuration documentation](https://docs.posit.co/rspm/admin/appendix/configuration/) for available options.
 
-## Exposed Ports
+## Exposed ports
 
 | Port | Description |
 |------|-------------|
@@ -142,7 +142,7 @@ These images should be reviewed before production use. Organizations with specif
 
 Published images for Posit Product editions under active support are re-built on a weekly basis to pull in operating system patches.
 
-### License Keys
+### License keys
 
 License keys used in containers risk activation slot loss if containers aren't gracefully stopped. The license deactivates on container exit, but ungraceful shutdowns (crashes, `docker kill`) may leave the activation slot consumed on Posit's license server.
 
@@ -157,7 +157,7 @@ docker run -d \
 
 For production deployments, license files are recommended over license keys.
 
-### Hardware Locking
+### Hardware locking
 
 License state files are hardware-locked. Changes to MAC addresses, hostnames, or container orchestration platforms, such as Kubernetes, may invalidate existing license state, requiring reactivation.
 
