@@ -1,4 +1,4 @@
-# Posit Package Manager Container Images
+# Posit Package Manager container images
 
 Container images for [Posit Package Manager](https://docs.posit.co/rspm/).
 
@@ -22,7 +22,7 @@ Container images for [Posit Package Manager](https://docs.posit.co/rspm/).
 
 Additional Posit container images are published to [Docker Hub](https://hub.docker.com/u/posit) and [GitHub Container Registry](https://github.com/orgs/posit-dev/packages).
 
-## Running the Image
+## Running the image
 
 The fastest way to get started is to pull and run a pre-built image.
 
@@ -64,7 +64,7 @@ helm upgrade --install package-manager rstudio/rstudio-pm --values values.yaml
 
 See the [full chart documentation](https://docs.posit.co/helm/charts/rstudio-pm/README.html) for all available values.
 
-## Building from Source
+## Building from source
 
 You can interact with this repository in multiple ways:
 
@@ -162,11 +162,11 @@ bakery run dgoss
 
 You can use CLI flags to limit the tests to run against a subset of images.
 
-## Related Repositories
+## Related repositories
 
 This repository is part of the [Posit Container Images](https://github.com/posit-dev/images) ecosystem. To extend the Minimal image with additional languages or system dependencies, see the [extending examples](https://github.com/posit-dev/images-examples/tree/main/extending). For shared build tooling and CI workflows, see [images-shared](https://github.com/posit-dev/images-shared).
 
-## Share your Feedback
+## Share your feedback
 
 We invite you to join us on [GitHub Discussions](https://github.com/posit-dev/images/discussions) to ask questions and share feedback.
 
