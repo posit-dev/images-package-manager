@@ -1,9 +1,9 @@
 # Posit Package Manager container images
 
-Container images for [Posit Package Manager](https://docs.posit.co/rspm/).
+Container images for [Package Manager](https://docs.posit.co/rspm/).
 
 > [!NOTE]
-> These images are in preview as Posit migrates container images from [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products). The existing images remain supported.
+> Posit is migrating container images from [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products). The previous images remain supported.
 
 ## Prerequisites
 
@@ -20,19 +20,19 @@ Container images for [Posit Package Manager](https://docs.posit.co/rspm/).
 |:------|:-----------|:--------------------------|
 | [package-manager](./package-manager/) | [`docker.io/posit/package-manager`](https://hub.docker.com/r/posit/package-manager) | [`ghcr.io/posit-dev/package-manager`](https://github.com/posit-dev/images-package-manager/pkgs/container/package-manager) |
 
-Additional Posit container images are published to [Docker Hub](https://hub.docker.com/u/posit) and [GitHub Container Registry](https://github.com/orgs/posit-dev/packages).
+Posit publishes additional container images to [Docker Hub](https://hub.docker.com/u/posit) and [GitHub Container Registry](https://github.com/orgs/posit-dev/packages).
 
 ## Running the image
 
 The fastest way to get started is to pull and run a pre-built image.
 
-- [Posit Package Manager](./package-manager/) — Quick Start, configuration, and environment variables
+- [Package Manager](./package-manager/): Quick start, configuration, and environment variables
 
 See the [Package Manager installation guide](https://docs.posit.co/rspm/admin/getting-started/installation/) for full setup instructions.
 
 ## Deploying on Kubernetes
 
-Use the [Posit Package Manager Helm chart](https://docs.posit.co/helm/charts/rstudio-pm/README.html) to deploy on Kubernetes. These instructions work for both ARM and x86_64 (AMD64) Kubernetes nodes.
+Use the [Package Manager Helm chart](https://docs.posit.co/helm/charts/rstudio-pm/README.html) to deploy on Kubernetes. These instructions work for both ARM and x86_64 (AMD64) Kubernetes nodes.
 
 ```bash
 helm repo add rstudio https://helm.rstudio.com
@@ -70,17 +70,16 @@ You can interact with this repository in multiple ways:
 
 * [Build container images directly](#build) from the Containerfile.
 * [Use the `bakery` CLI](#using-bakery) to manage and build container images.
-* Extend the functionality by using the Minimal base image (see [examples](https://github.com/posit-dev/images-examples)).
+* Extend the functionality by using the Minimal base image. See the [examples](https://github.com/posit-dev/images-examples) repository.
 
 ## Build
 
-You can build OCI container images from the definitions in this repository using one of the following container build tools:
+You can build Open Container Initiative (OCI) container images from the definitions in this repository using one of the following container build tools:
 
 * [buildah](https://github.com/containers/buildah/blob/main/install.md)
 * [docker buildx](https://github.com/docker/buildx#installing)
 
-The root of the bakery project is used as the build context for each Containerfile.
-Here, the [`bakery.yaml`](https://github.com/posit-dev/images-shared/blob/main/posit-bakery/CONFIGURATION.md#bakery-configuration) file, or project, is in the root of this repository.
+Each Containerfile uses the root of the repository as the build context. The [`bakery.yaml`](https://github.com/posit-dev/images-shared/blob/main/posit-bakery/CONFIGURATION.md#bakery-configuration) file, or project, is in the root of this repository.
 
 ```shell
 PPM_VERSION="2026.04"
@@ -106,12 +105,12 @@ podman build \
 
 ## Using `bakery`
 
-The structure and contents of this repository were created following the steps in [bakery usage](https://github.com/posit-dev/images-shared/tree/main/posit-bakery#usage).
+This repository follows the structure described in [bakery usage](https://github.com/posit-dev/images-shared/tree/main/posit-bakery#usage).
 
 Additional documentation:
-- [Configuration Reference](https://github.com/posit-dev/images-shared/blob/main/posit-bakery/CONFIGURATION.md) — `bakery.yaml` schema and options
-- [Templating Reference](https://github.com/posit-dev/images-shared/blob/main/posit-bakery/TEMPLATING.md) — Jinja2 macros for Containerfile templates
-- [CI Workflows](https://github.com/posit-dev/images-shared/blob/main/CI.md) — Shared GitHub Actions workflows for building and pushing images
+- [Configuration Reference](https://github.com/posit-dev/images-shared/blob/main/posit-bakery/CONFIGURATION.md): `bakery.yaml` schema and options
+- [Templating Reference](https://github.com/posit-dev/images-shared/blob/main/posit-bakery/TEMPLATING.md): Jinja2 macros for Containerfile templates
+- [CI Workflows](https://github.com/posit-dev/images-shared/blob/main/CI.md): Shared GitHub Actions workflows for building and pushing images
 
 ### Prerequisites
 
@@ -172,7 +171,7 @@ We invite you to join us on [GitHub Discussions](https://github.com/posit-dev/im
 
 ## Issues
 
-If you encounter any issues or have any questions, please [open an issue](https://github.com/posit-dev/images-package-manager/issues). We appreciate your feedback.
+If you encounter any issues or have any questions, [open an issue](https://github.com/posit-dev/images-package-manager/issues). We appreciate your feedback.
 
 ## Code of Conduct
 
