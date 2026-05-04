@@ -1,9 +1,9 @@
 # Posit Package Manager container image
 
-This container image provides [Posit Package Manager](https://docs.posit.co/rspm/) (PPM), a repository management server that organizes and centralizes R and Python packages across teams, departments, or organizations.
+This container image provides [Package Manager](https://docs.posit.co/rspm/), a repository management server that organizes and centralizes R and Python packages across teams, departments, or organizations.
 
 > [!NOTE]
-> These images are in preview as Posit migrates container images from [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products). The existing images remain supported.
+> These images are in preview as Posit migrates container images from [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products). The previous images remain supported.
 
 ## Quick start
 
@@ -21,7 +21,7 @@ docker run -d \
 Access Package Manager at `http://localhost:4242`.
 
 > [!NOTE]
-> This example does not mount a data volume. Package data will not persist when the container stops. See [Volume Mounts](#volume-mounts) for persistent storage.
+> This example does not mount a data volume. Application data will not persist when the container stops. See [Volume mounts](#volume-mounts) for persistent storage.
 
 ## Image variants
 
@@ -30,13 +30,13 @@ Two variants are available:
 | Variant | Description |
 |---------|-------------|
 | `std` (Standard) | Opinionated image, runs out of the box |
-| `min` (Minimal) | Small image you can extend with desired dependencies, *will not run as is* |
+| `min` (Minimal) | Small image you can extend with desired dependencies. Will not run unmodified. |
 
 See [extending examples](https://github.com/posit-dev/images-examples/tree/main/extending) for how to build on the Minimal image.
 
 ## Image tags
 
-Images are published to:
+Posit publishes images to:
 - Docker Hub: `docker.io/posit/package-manager`
 - GitHub Container Registry: `ghcr.io/posit-dev/package-manager`
 
@@ -53,19 +53,22 @@ Tag formats:
 
 ### License activation
 
-A [product license](https://docs.posit.co/licensing/licensing-faq.html) is required. Posit recommends license file activation. Choose one method:
+Package Manager requires a [product license](https://docs.posit.co/licensing/licensing-faq.html). Posit recommends activating with a license file. Choose one method:
 
-**Option 1: License File (Recommended)**
+#### Option 1: License file (recommended)
+
 ```bash
 docker run -v /path/to/license.lic:/etc/rstudio-pm/license.lic ...
 ```
 
-**Option 2: License Key**
+#### Option 2: License key
+
 ```bash
 docker run -e PPM_LICENSE="your-license-key" ...
 ```
 
-**Option 3: Floating License Server**
+#### Option 3: Floating license server
+
 ```bash
 docker run -e PPM_LICENSE_SERVER="http://license-server:8989" ...
 ```
@@ -87,7 +90,8 @@ docker run -e PPM_LICENSE_SERVER="http://license-server:8989" ...
 | `RSPM_LICENSE_SERVER`    | `PPM_LICENSE_SERVER`    | Same behavior |
 | `RSPM_LICENSE_FILE_PATH` | `PPM_LICENSE_FILE_PATH` | Same behavior |
 
-**Note:** Legacy `RSPM_` variables are supported but are planned for deprecation after 2025. For more details and updates, see the [Posit Package Manager release notes](https://docs.posit.co/rspm/news/). For new deployments, always use the `PPM_` prefix to ensure forward compatibility.
+> [!NOTE]
+> Posit supports legacy RSPM_ variables but plans to deprecate them after 2026. For more details and updates, see the [Package Manager release notes](https://docs.posit.co/rspm/news/). For future deployments, always use the PPM_ prefix to ensure forward compatibility.
 
 ### Volume mounts
 
@@ -100,7 +104,7 @@ For persistent data, add these volume mounts to your `docker run` command:
 
 | Mount Point           | Description               |
 |-----------------------|---------------------------|
-| `/var/lib/rstudio-pm` | Package data and database |
+| `/var/lib/rstudio-pm` | Application data and database |
 | `/etc/rstudio-pm`     | Configuration files       |
 
 ### Custom configuration
@@ -121,7 +125,7 @@ See the [configuration documentation](https://docs.posit.co/rspm/admin/appendix/
 
 ## User
 
-Runs as the `rstudio-pm` user (UID/GID 999).
+Runs as the rstudio-pm user with user ID (UID) and group ID (GID) 999.
 
 ## Differences from rstudio/rstudio-package-manager
 
@@ -138,13 +142,13 @@ This image differs from the legacy [`rstudio/rstudio-package-manager`](https://h
 
 ### Security
 
-These images should be reviewed before production use. Organizations with specific CVE or vulnerability requirements should rebuild these images to meet their security standards.
+Review these images before using them in production. Organizations with specific Common Vulnerabilities and Exposures (CVE) or vulnerability requirements should rebuild these images to meet their security standards.
 
-Published images for Posit Product editions under active support are re-built on a weekly basis to pull in operating system patches.
+Posit rebuilds published images weekly for Posit Product editions under active support to pull in operating system patches.
 
 ### License keys
 
-License keys used in containers risk activation slot loss if containers aren't gracefully stopped. The license deactivates on container exit, but ungraceful shutdowns (crashes, `docker kill`) may leave the activation slot consumed on Posit's license server.
+License keys used in containers risk activation slot loss if containers are not gracefully stopped. The license deactivates on container exit, but ungraceful shutdowns (crashes, `docker kill`) can leave the activation slot consumed on the Posit license server.
 
 To ensure proper license deactivation, use a sufficient stop timeout:
 
@@ -155,14 +159,14 @@ docker run -d \
   ...
 ```
 
-For production deployments, license files are recommended over license keys.
+For production deployments, use license files rather than license keys.
 
 ### Hardware locking
 
-License state files are hardware-locked. Changes to MAC addresses, hostnames, or container orchestration platforms, such as Kubernetes, may invalidate existing license state, requiring reactivation.
+Hardware locks license state files to a specific machine. Changes to MAC addresses, hostnames, or container orchestration platforms, such as Kubernetes, can invalidate the license state, requiring reactivation.
 
 ## Documentation
 
-- [Posit Package Manager Documentation](https://docs.posit.co/rspm/)
+- [Package Manager documentation](https://docs.posit.co/rspm/)
 - [Admin Guide](https://docs.posit.co/rspm/admin/)
 - [Configuration Reference](https://docs.posit.co/rspm/admin/appendix/configuration/)
