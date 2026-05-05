@@ -179,16 +179,67 @@ install.packages("demo1", repos = "http://localhost:4242/demopkgs/latest")
 
 See the [Package Manager admin guide](https://docs.posit.co/rspm/admin/getting-started/configuration.html) for managing repositories.
 
-## Differences from rstudio/rstudio-package-manager
+## Migrating from rstudio/rstudio-package-manager
 
-This image differs from the legacy [`rstudio/rstudio-package-manager`](https://hub.docker.com/r/rstudio/rstudio-package-manager) image:
+This image replaces the legacy [`rstudio/rstudio-package-manager`](https://hub.docker.com/r/rstudio/rstudio-package-manager) image. Package Manager itself is unchanged — the application reads `rstudio-pm.gcfg`, listens on `4242`, persists data to `Server.DataDir`, and runs as the `rstudio-pm` user (UID/GID `999`). Existing data and configuration volumes mount unchanged. The differences are in how the image is published and configured.
 
-| Aspect           | This Image                             | rstudio/rstudio-package-manager                               |
-|------------------|----------------------------------------|---------------------------------------------------------------|
-| Registry         | `posit/package-manager`                | `rstudio/rstudio-package-manager`                             |
-| License env vars | `PPM_` prefix                          | `RSPM_` prefix                                                |
-| Variants         | `std` (with R/Python), `min` (minimal) | Single variant; multiple tags for different R/Python versions |
-| Base OS options  | Ubuntu 24.04, Ubuntu 22.04             | Ubuntu 22.04                                                  |
+### Image references
+
+| Aspect          | This image                                                                                                                                          | rstudio/rstudio-package-manager                                          |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| Docker Hub      | `posit/package-manager`                                                                                                                             | `rstudio/rstudio-package-manager`                                        |
+| GHCR            | `ghcr.io/posit-dev/package-manager`                                                                                                                 | `ghcr.io/rstudio/rstudio-package-manager`                                |
+| Tag formats     | `2026.04.1`, `2026.04.1-ubuntu-24.04`, `2026.04.1-ubuntu-24.04-std`, `2026.04.1-ubuntu-24.04-min`, `latest`                                          | `jammy`, `ubuntu2204`, `jammy-<version>`, `ubuntu2204-<version>`         |
+| Architectures   | `linux/amd64`, `linux/arm64`                                                                                                                        | `linux/amd64`                                                            |
+| Default OS      | Ubuntu 24.04 (Ubuntu 22.04 also available)                                                                                                          | Ubuntu 22.04                                                             |
+
+Update your image reference and pick a [tag](#image-tags) that pins to your desired Package Manager version, OS, and variant.
+
+### Variants
+
+The legacy image shipped a single variant containing R and Python. This image splits into:
+
+- `std` — R and Python included; runs out of the box. Closest to the legacy behavior. Bundled R and Python versions are locked at build time and may differ from what the legacy image shipped.
+- `min` — no R or Python; smaller footprint. Will not run unmodified; build a custom image on top. See [extending examples](https://github.com/posit-dev/images-examples/tree/main/extending).
+
+### Environment variables
+
+License and debug environment variables now use the `PPM_` prefix. The image accepts the legacy `RSPM_` license names as a fallback during the deprecation window:
+
+| Legacy variable          | New variable            |
+|--------------------------|-------------------------|
+| `RSPM_LICENSE`           | `PPM_LICENSE`           |
+| `RSPM_LICENSE_SERVER`    | `PPM_LICENSE_SERVER`    |
+| `RSPM_LICENSE_FILE_PATH` | `PPM_LICENSE_FILE_PATH` |
+| `STARTUP_DEBUG_MODE`     | `PPM_STARTUP_DEBUG`     |
+
+Posit plans to drop the `RSPM_` fallback after 2026. `STARTUP_DEBUG_MODE` is not honored — switch to `PPM_STARTUP_DEBUG`.
+
+### License file location
+
+The legacy image picked up a license file from any of these paths:
+
+- `$RSPM_LICENSE_FILE_PATH` (default `/etc/rstudio-pm/license.lic`)
+- `/var/lib/rstudio-pm/*.lic`
+- `/home/rstudio-pm/.rstudio-pm/*.lic`
+
+This image only activates from `$PPM_LICENSE_FILE_PATH` (default `/etc/rstudio-pm/license.lic`). If your license file lives in a different path, either mount it to `/etc/rstudio-pm/license.lic` or set `PPM_LICENSE_FILE_PATH` to its existing location.
+
+### Git package builds
+
+The `std` variant sets `AllowUnsandboxedGitBuilds = true` in the `[Git]` configuration section so Git package builds work in containers, where Package Manager's process sandbox is unavailable. The legacy image did not set this option. Customers who do not want unsandboxed Git builds should override the option in their custom configuration. See [Git package builds](#git-package-builds).
+
+### `--privileged` no longer needed
+
+The legacy README's license key example used `docker run --privileged`. This image does not require privileged mode for any activation method — drop the `--privileged` flag when migrating.
+
+### What did not change
+
+- Application port (`4242`)
+- Configuration file path (`/etc/rstudio-pm/rstudio-pm.gcfg`)
+- Persistent data path (`Server.DataDir`, default `/var/lib/rstudio-pm`)
+- Service user (`rstudio-pm`, UID/GID `999`)
+- `rspm` CLI commands and on-disk repository layout
 
 ## Caveats
 
