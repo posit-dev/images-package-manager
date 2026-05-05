@@ -53,6 +53,16 @@ Tag formats:
 - `2026.04.1-ubuntu-24.04-min` - Minimal variant
 - `latest` - Latest version, default OS, standard variant
 
+## Exposed ports
+
+| Port | Description |
+|------|-------------|
+| 4242 | HTTP web interface and API |
+
+## User
+
+Runs as the rstudio-pm user with user ID (UID) and group ID (GID) 999.
+
 ## Configuration
 
 ### License activation
@@ -168,16 +178,6 @@ install.packages("demo1", repos = "http://localhost:4242/demopkgs/latest")
 ```
 
 See the [Package Manager admin guide](https://docs.posit.co/rspm/admin/getting-started/configuration.html) for managing repositories.
-
-## Exposed ports
-
-| Port | Description |
-|------|-------------|
-| 4242 | HTTP web interface and API |
-
-## User
-
-Runs as the rstudio-pm user with user ID (UID) and group ID (GID) 999.
 
 ## Differences from rstudio/rstudio-package-manager
 
