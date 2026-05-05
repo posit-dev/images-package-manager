@@ -93,20 +93,12 @@ State files are hardware-locked and not transferable between hosts. To avoid the
 
 ### Environment variables
 
-| Variable                | Description                                                   |
-|-------------------------|---------------------------------------------------------------|
-| `PPM_LICENSE`           | License key for activation                                    |
-| `PPM_LICENSE_SERVER`    | URL of floating license server                                |
-| `PPM_LICENSE_FILE_PATH` | Path to license file (default: `/etc/rstudio-pm/license.lic`) |
-| `PPM_STARTUP_DEBUG`     | Set to `1` for verbose startup logging                        |
-
-#### Legacy environment variables
-
-| Legacy Variable          | Preferred Equivalent    | Notes         |
-|--------------------------|-------------------------|---------------|
-| `RSPM_LICENSE`           | `PPM_LICENSE`           | Same behavior |
-| `RSPM_LICENSE_SERVER`    | `PPM_LICENSE_SERVER`    | Same behavior |
-| `RSPM_LICENSE_FILE_PATH` | `PPM_LICENSE_FILE_PATH` | Same behavior |
+| Variable                | Legacy variable          | Description                                                   |
+|-------------------------|--------------------------|---------------------------------------------------------------|
+| `PPM_LICENSE`           | `RSPM_LICENSE`           | License key for activation                                    |
+| `PPM_LICENSE_SERVER`    | `RSPM_LICENSE_SERVER`    | URL of floating license server                                |
+| `PPM_LICENSE_FILE_PATH` | `RSPM_LICENSE_FILE_PATH` | Path to license file (default: `/etc/rstudio-pm/license.lic`) |
+| `PPM_STARTUP_DEBUG`     | —                        | Set to `1` for verbose startup logging                        |
 
 > [!NOTE]
 > Posit supports legacy RSPM_ variables but plans to deprecate them after 2026. For more details and updates, see the [Package Manager release notes](https://docs.posit.co/rspm/news/). For future deployments, always use the PPM_ prefix to ensure forward compatibility.
