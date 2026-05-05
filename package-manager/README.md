@@ -71,11 +71,25 @@ docker run -v /path/to/license.lic:/etc/rstudio-pm/license.lic ...
 docker run -e PPM_LICENSE="your-license-key" ...
 ```
 
+License key activations can leak when a container shuts down ungracefully, consuming an activation slot that cannot be recovered through normal means. To help preserve license state across container restarts, mount these directories to persistent storage:
+
+- `/home/rstudio-pm/.local`
+- `/home/rstudio-pm/.prof`
+- `/home/rstudio-pm/.rstudio-pm`
+
+State files are hardware-locked and not transferable between hosts. Mounting these paths reduces the chance of a leak but does not eliminate it. To avoid the leak risk entirely, use a license file (Option 1). See the [License keys](#license-keys) caveat for more detail.
+
 #### Option 3: Floating license server
 
 ```bash
 docker run -e PPM_LICENSE_SERVER="http://license-server:8989" ...
 ```
+
+Floating license activations can also leak on ungraceful shutdown. To help preserve license state across container restarts, mount this directory to persistent storage:
+
+- `/home/rstudio-pm/.TurboFloat`
+
+State files are hardware-locked and not transferable between hosts. To avoid the leak risk entirely, use a license file (Option 1).
 
 ### Environment variables
 
