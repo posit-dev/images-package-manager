@@ -29,8 +29,12 @@ Two variants are available:
 
 | Variant | Description |
 |---------|-------------|
-| `std` (Standard) | Opinionated image, runs out of the box |
+| `std` (Standard) | Opinionated image, runs out of the box. Bundles one R version and one Python version alongside Package Manager. |
 | `min` (Minimal) | Small image you can extend with desired dependencies. Will not run unmodified. |
+
+Each tagged image bundles a fixed set of dependencies. Both variants ship the `YYYY.MM` release of Package Manager at the latest patch release available when the image was built. The `std` variant additionally ships one R version and one Python version, locked to the latest available at build time. The Containerfiles in this repository under `package-manager/<version>/` document the exact versions in any tag.
+
+Package Manager is not particular about which R or Python version is installed. See [R and Python installation requirements](https://docs.posit.co/rspm/admin/getting-started/requirements.html#r-and-python-installation-requirements) in the Package Manager admin guide for details.
 
 See [extending examples](https://github.com/posit-dev/images-examples/tree/main/extending) for how to build on the Minimal image.
 
@@ -102,10 +106,12 @@ For persistent data, add these volume mounts to your `docker run` command:
 -v /data/rstudio-pm-config:/etc/rstudio-pm
 ```
 
-| Mount Point           | Description               |
-|-----------------------|---------------------------|
+| Mount Point           | Description                   |
+|-----------------------|-------------------------------|
 | `/var/lib/rstudio-pm` | Application data and database |
-| `/etc/rstudio-pm`     | Configuration files       |
+| `/etc/rstudio-pm`     | Configuration files           |
+
+The data path is set by the `Server.DataDir` option in `rstudio-pm.gcfg` (default `/var/lib/rstudio-pm`). If you change this option in a custom configuration, mount the persistent volume to the new path.
 
 ### Custom configuration
 
@@ -116,6 +122,46 @@ docker run -v /path/to/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg ...
 ```
 
 See the [configuration documentation](https://docs.posit.co/rspm/admin/appendix/configuration/) for available options.
+
+## Examples
+
+### Adding a Workbench-built package
+
+Workbench can build a source tarball you publish through Package Manager. This example assumes a Package Manager container running per [Quick start](#quick-start).
+
+Build the package in Workbench. The build pane writes the tarball on the host (e.g. `data/pwb/rstudio/demo1_0.1.0.tar.gz`).
+
+Find the Package Manager container ID:
+
+```bash
+docker ps
+# CONTAINER ID   IMAGE
+# b8ae944b7f2d   ghcr.io/posit-dev/package-manager:2026.04.1
+```
+
+Copy the tarball into the container and open a shell:
+
+```bash
+docker cp data/pwb/rstudio/demo1_0.1.0.tar.gz b8ae944b7f2d:/tmp
+docker exec -it b8ae944b7f2d /bin/bash
+```
+
+Create a local source, repository, and subscription:
+
+```bash
+rspm create source --name=demopkgs
+rspm add --source=demopkgs --path=/tmp/demo1_0.1.0.tar.gz
+rspm create repo --name=demopkgs --description="demo package repo"
+rspm subscribe --repo=demopkgs --source=demopkgs
+```
+
+Install the package from R:
+
+```r
+install.packages("demo1", repos = "http://localhost:4242/demopkgs/latest")
+```
+
+See the [Package Manager admin guide](https://docs.posit.co/rspm/admin/getting-started/configuration.html) for managing repositories.
 
 ## Exposed ports
 
@@ -150,13 +196,11 @@ Posit rebuilds published images weekly for Posit Product editions under active s
 
 License keys used in containers risk activation slot loss if containers are not gracefully stopped. The license deactivates on container exit, but ungraceful shutdowns (crashes, `docker kill`) can leave the activation slot consumed on the Posit license server.
 
-To ensure proper license deactivation, use a sufficient stop timeout:
+To ensure proper license deactivation, use a sufficient stop timeout for both `docker run` and `docker stop`:
 
 ```bash
-docker run -d \
-  --stop-timeout 120 \
-  -e PPM_LICENSE="your-license-key" \
-  ...
+docker run -d --stop-timeout 120 -e PPM_LICENSE="your-license-key" ...
+docker stop --time 120 <container>
 ```
 
 For production deployments, use license files rather than license keys.
@@ -165,8 +209,16 @@ For production deployments, use license files rather than license keys.
 
 Hardware locks license state files to a specific machine. Changes to MAC addresses, hostnames, or container orchestration platforms, such as Kubernetes, can invalidate the license state, requiring reactivation.
 
-## Documentation
+### Git package builds
 
-- [Package Manager documentation](https://docs.posit.co/rspm/)
-- [Admin Guide](https://docs.posit.co/rspm/admin/)
-- [Configuration Reference](https://docs.posit.co/rspm/admin/appendix/configuration/)
+Package Manager refuses Git package builds when its [process sandbox](https://docs.posit.co/rspm/admin/process-management/) is unavailable. Containers cannot use the sandbox, so the `std` variant enables `AllowUnsandboxedGitBuilds = true` in the `[Git]` configuration section to support Git builds out of the box.
+
+The `min` variant does not enable this option. Git builds require R or Python, which `min` does not ship, and customers extending the image may not want unsandboxed builds. To enable Git builds in an extension, install R or Python and add `AllowUnsandboxedGitBuilds = true` to the `[Git]` section of `rstudio-pm.gcfg`. Customers who require sandboxed Git builds should run Package Manager outside a container or in an environment that supports sandboxing.
+
+## Getting help
+
+- [Package Manager documentation](https://docs.posit.co/rspm/) — setup, configuration, and admin reference
+- [Posit Community Forum](https://forum.posit.co/c/posit-professional-hosted/package-manager/21) — community questions and answers
+- [Posit Support](https://support.posit.co/hc/en-us) — for licensed customers
+- [Image issues](https://github.com/posit-dev/images-package-manager/issues) — bugs or requests for this container image
+- [Image discussions](https://github.com/posit-dev/images/discussions) — questions about Posit container images generally
