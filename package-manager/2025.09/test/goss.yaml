@@ -63,6 +63,7 @@ file:
     contents:
       - RVersion = /opt/R/4.5.1
       - PythonVersion = /opt/python/3.13.7/bin/python
+      - "AllowUnsandboxedGitBuilds = true"
     {{ end }}
 
 command:

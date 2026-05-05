@@ -20,6 +20,19 @@ then
 
     echo "$d Setting R and Python version configuration $d"
     sed -i "0,/.*RVersion.*/s||RVersion = /opt/R/$R_VERSION\nPythonVersion = /opt/python/$PYTHON_VERSION/bin/python|" $PPM_CONFIG_FILE
+
+    # Git package builds require R or Python and would otherwise fail because
+    # Package Manager's process sandbox is unavailable in containers. Allow
+    # unsandboxed Git builds so they work out of the box. This is gated on
+    # R_VERSION/PYTHON_VERSION being set, which is true only for the Standard
+    # variant -- Minimal users extending the image opt in by setting the
+    # option themselves once they install R or Python.
+    echo "$d Allowing unsandboxed Git builds $d"
+    if grep -q '^\[Git\]' $PPM_CONFIG_FILE; then
+        sed -i '/^\[Git\]/a AllowUnsandboxedGitBuilds = true' $PPM_CONFIG_FILE
+    else
+        printf '\n[Git]\nAllowUnsandboxedGitBuilds = true\n' >> $PPM_CONFIG_FILE
+    fi
 else
     echo "$d No R or Python version provided $d"
 fi
