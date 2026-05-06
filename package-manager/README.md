@@ -2,13 +2,28 @@
 
 This container image provides [Package Manager](https://docs.posit.co/rspm/), a repository management server that organizes and centralizes R and Python packages across teams, departments, or organizations.
 
+![Docker Pulls](https://img.shields.io/docker/pulls/posit/package-manager)
+![Docker Image Size](https://img.shields.io/docker/image-size/posit/package-manager/latest)
+
 > [!NOTE]
 > These images are in preview as Posit migrates container images from [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products). The previous images remain supported.
 
 > [!TIP]
 > Deploying on Kubernetes? Try the [Posit Package Manager Helm chart](https://docs.posit.co/helm/charts/rstudio-pm/README.html)!
 
-## Quick start
+## Quick reference
+
+| | |
+|---|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Maintained by** | [the Posit Docker team](https://github.com/posit-dev/images)                                                                                                                                                                                                                                   |
+| **Where to get help** | [GitHub Issues](https://github.com/posit-dev/images-package-manager/issues), [Images Discussion Board](https://github.com/posit-dev/images/discussions), [the Posit Community Forum](https://forum.posit.co/c/posit-professional-hosted/5), [Posit Support](https://support.posit.co/hc/en-us) |
+| **Where to file issues** | [https://github.com/posit-dev/images-package-manager/issues](https://github.com/posit-dev/images-package-manager/issues)                                                                                                                                                                       |
+| **Source** | [https://github.com/posit-dev/images-package-manager](https://github.com/posit-dev/images-package-manager)                                                                                                                                                                                     |
+| **License** | [MIT](https://github.com/posit-dev/images-package-manager/blob/main/LICENSE.md)                                                                                                                                                                                                                |
+
+## How to use this image
+
+### Quick start
 
 ```bash
 PPM_VERSION="2026.04.1"
@@ -287,11 +302,3 @@ Hardware locks license state files to a specific machine. Changes to MAC address
 Package Manager refuses Git package builds when its [process sandbox](https://docs.posit.co/rspm/admin/process-management/) is unavailable. Containers cannot use the sandbox, so the `std` variant enables `AllowUnsandboxedGitBuilds = true` in the `[Git]` configuration section to support Git builds out of the box.
 
 The `min` variant does not enable this option. Git builds require R or Python, which `min` does not ship, and customers extending the image may not want unsandboxed builds. To enable Git builds in an extension, install R or Python and add `AllowUnsandboxedGitBuilds = true` to the `[Git]` section of `rstudio-pm.gcfg`. Customers who require sandboxed Git builds should run Package Manager outside a container or in an environment that supports sandboxing.
-
-## Getting help
-
-- [Package Manager documentation](https://docs.posit.co/rspm/) — setup, configuration, and admin reference
-- [Posit Community Forum](https://forum.posit.co/c/posit-professional-hosted/package-manager/21) — community questions and answers
-- [Posit Support](https://support.posit.co/hc/en-us) — for licensed customers
-- [Image issues](https://github.com/posit-dev/images-package-manager/issues) — bugs or requests for this container image
-- [Image discussions](https://github.com/posit-dev/images/discussions) — questions about Posit container images generally
