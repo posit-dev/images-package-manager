@@ -106,11 +106,11 @@ Posit publishes images to:
 
 Ubuntu 24.04 is the default OS.
 
-Tag formats:
-- `2026.04.1` - Latest OS, standard variant
-- `2026.04.1-ubuntu-24.04` - Explicit OS, standard variant
-- `2026.04.1-ubuntu-24.04-std` - Explicit OS and variant
-- `2026.04.1-ubuntu-24.04-min` - Minimal variant
+Tag formats where `YYYY.MM.P` is any supported Package Manager version:
+- `YYYY.MM.P` - Latest OS, standard variant
+- `YYYY.MM.P-ubuntu-24.04` - Explicit OS, standard variant
+- `YYYY.MM.P-ubuntu-24.04-std` - Explicit OS and variant
+- `YYYY.MM.P-ubuntu-24.04-min` - Minimal variant
 - `latest` - Latest version, default OS, standard variant
 
 ## Architectures
