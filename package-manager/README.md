@@ -100,9 +100,19 @@ Package Manager requires a [product license](https://docs.posit.co/licensing/lic
 
 #### Option 1: License file (recommended)
 
+Mount the license file to any path in the container and set `PPM_LICENSE_FILE_PATH` to that path. The default search path is `/etc/rstudio-pm/license.lic`, so mounting to that path does not require setting the environment variable. The environment variable is only included for illustrative purposes below.
+
 ```bash
-docker run -v /path/to/license.lic:/etc/rstudio-pm/license.lic ...
+docker run -v /path/to/license.lic:/etc/rstudio-pm/license.lic -e PPM_LICENSE_FILE_PATH=/etc/rstudio-pm/license.lic ...
 ```
+
+or mount to a path Package Manager will natively search for license files in, either `/home/rstudio-pm/.rstudio-pm/license.lic` or `/var/lib/rstudio-pm/license.lic`:
+
+```bash
+docker run -v /path/to/license.lic:/home/rstudio-pm/.rstudio-pm/license.lic ...
+```
+
+If the container is unable to activate the license, ensure the file has correct permissions (`0600`) and is owned by the `rstudio-pm` user (UID 999).
 
 #### Option 2: License key
 
@@ -234,16 +244,6 @@ The image accepts the legacy `RSPM_` license names as a fallback during the depr
 
 > [!NOTE]
 > Posit supports legacy RSPM_ variables but plans to deprecate them after 2026. For more details and updates, see the [Package Manager release notes](https://docs.posit.co/rspm/news/). For future deployments, always use the PPM_ prefix to ensure forward compatibility.
-
-### License file location
-
-The legacy image picked up a license file from any of these paths:
-
-- `$RSPM_LICENSE_FILE_PATH` (default `/etc/rstudio-pm/license.lic`)
-- `/var/lib/rstudio-pm/*.lic`
-- `/home/rstudio-pm/.rstudio-pm/*.lic`
-
-This image only activates from `$PPM_LICENSE_FILE_PATH` (default `/etc/rstudio-pm/license.lic`). If your license file lives in a different path, either mount it to `/etc/rstudio-pm/license.lic` or set `PPM_LICENSE_FILE_PATH` to its existing location.
 
 ### Git package builds
 
