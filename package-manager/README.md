@@ -10,11 +10,13 @@ This container image provides [Package Manager](https://docs.posit.co/rspm/), a 
 ```bash
 PPM_VERSION="2026.04.1"
 PPM_IMAGE="ghcr.io/posit-dev/package-manager"  # or docker.io/posit/package-manager
-PPM_LICENSE="/path/to/license.lic"
+PPM_LICENSE_FILE_HOST_PATH="/path/to/license.lic"
+PPM_LICENSE_FILE_PATH="/etc/rstudio-pm/license.lic"
 docker run -d \
   --name package-manager \
   -p 4242:4242 \
-  -v ${PPM_LICENSE}:/etc/rstudio-pm/license.lic \
+  -e PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH} \
+  -v ${PPM_LICENSE_FILE_HOST_PATH}:${PPM_LICENSE_FILE_PATH} \
   ${PPM_IMAGE}:${PPM_VERSION}
 ```
 
