@@ -44,6 +44,45 @@ Access Package Manager at `http://localhost:4242`.
 
 The data volume above persists application data between container restarts. See [Volume mounts](#volume-mounts) for additional mount points such as configuration overrides.
 
+### With a custom configuration file
+
+```bash
+PPM_VERSION="2026.04.1"
+PPM_IMAGE="ghcr.io/posit-dev/package-manager"  # or docker.io/posit/package-manager
+PPM_LICENSE_FILE_HOST_PATH="/path/to/license.lic"
+PPM_LICENSE_FILE_PATH="/etc/rstudio-pm/license.lic"
+PPM_DATA_HOST_PATH="/data/rstudio-pm"
+PPM_CONFIG_HOST_PATH="/path/to/rstudio-pm.gcfg"
+docker run -d \
+  --name package-manager \
+  -p 4242:4242 \
+  -e PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH} \
+  -v ${PPM_LICENSE_FILE_HOST_PATH}:${PPM_LICENSE_FILE_PATH} \
+  -v ${PPM_DATA_HOST_PATH}:/var/lib/rstudio-pm \
+  -v ${PPM_CONFIG_HOST_PATH}:/etc/rstudio-pm/rstudio-pm.gcfg:ro \
+  ${PPM_IMAGE}:${PPM_VERSION}
+```
+
+### With Docker Compose
+
+```yaml
+services:
+  package-manager:
+    image: ghcr.io/posit-dev/package-manager:latest
+    ports:
+    - "4242:4242"
+    environment:
+      PPM_LICENSE_FILE_PATH: /etc/rstudio-pm/license.lic
+    volumes:
+    - /path/to/license.lic:/etc/rstudio-pm/license.lic
+    - /path/to/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg:ro
+    - package-manager-data:/var/lib/rstudio-pm
+    restart: unless-stopped
+
+volumes:
+  package-manager-data:
+```
+
 ## Image variants
 
 Two variants are available:
