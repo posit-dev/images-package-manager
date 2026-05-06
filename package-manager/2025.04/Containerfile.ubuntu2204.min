@@ -52,4 +52,7 @@ USER rstudio-pm
 
 RUN echo "source <(rspm completion bash)" >> ~/.bashrc
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -fsS http://localhost:4242/__ping__ || exit 1
+
 CMD ["/usr/local/bin/startup.sh"]
