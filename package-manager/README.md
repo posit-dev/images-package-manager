@@ -117,34 +117,38 @@ Tag formats where `YYYY.MM.P` is any supported Package Manager version:
 
 Posit publishes multi-arch images for both `linux/amd64` and `linux/arm64`. Pull the same tag from either platform; Docker selects the matching manifest automatically.
 
+## Environment variables
+
+| Variable                | Description                                                   |
+|-------------------------|---------------------------------------------------------------|
+| `PPM_LICENSE`           | License key for activation                                    |
+| `PPM_LICENSE_SERVER`    | URL of floating license server                                |
+| `PPM_LICENSE_FILE_PATH` | Path to license file (default: `/etc/rstudio-pm/license.lic`) |
+| `PPM_STARTUP_DEBUG`     | Set to `1` for verbose startup logging                        |
+
+If you are migrating from `rstudio/rstudio-package-manager`, see [Environment variables](#environment-variables-1) under the migration guide for the legacy `RSPM_` names and deprecation timeline.
+
 ## Exposed ports
 
 | Port | Description |
 |------|-------------|
 | 4242 | HTTP web interface and API |
 
-## Healthcheck
+## Volumes
 
-Package Manager exposes an unauthenticated health endpoint at `/__ping__` on port `4242` that returns `200 OK` once the application is ready to serve traffic.
+For persistent data, add these volume mounts to your `docker run` command:
 
 ```bash
-curl http://localhost:4242/__ping__
+-v /data/rstudio-pm:/var/lib/rstudio-pm \
+-v /data/rstudio-pm-config:/etc/rstudio-pm
 ```
 
-The image declares a Docker `HEALTHCHECK` against this endpoint:
+| Mount Point           | Description                   |
+|-----------------------|-------------------------------|
+| `/var/lib/rstudio-pm` | Application data and database |
+| `/etc/rstudio-pm`     | Configuration files           |
 
-```dockerfile
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD curl -fsS http://localhost:4242/__ping__ || exit 1
-```
-
-Both variants inherit the same directive. The `min` variant will report unhealthy until extended with R and Python, since Package Manager does not run without them. To disable the directive in a derived image, add `HEALTHCHECK NONE`.
-
-For Kubernetes liveness and readiness probes, or load balancer health checks, hit the same endpoint directly rather than relying on the Docker healthcheck.
-
-## User
-
-Runs as the rstudio-pm user with user ID (UID) and group ID (GID) 999.
+The data path is set by the `Server.DataDir` option in `rstudio-pm.gcfg` (default `/var/lib/rstudio-pm`). If you change this option in a custom configuration, mount the persistent volume to the new path.
 
 ## Configuration
 
@@ -194,33 +198,6 @@ Floating license activations can also leak on ungraceful shutdown. To help prese
 
 State files are hardware-locked and not transferable between hosts. To avoid the leak risk entirely, use a license file (Option 1).
 
-### Environment variables
-
-| Variable                | Description                                                   |
-|-------------------------|---------------------------------------------------------------|
-| `PPM_LICENSE`           | License key for activation                                    |
-| `PPM_LICENSE_SERVER`    | URL of floating license server                                |
-| `PPM_LICENSE_FILE_PATH` | Path to license file (default: `/etc/rstudio-pm/license.lic`) |
-| `PPM_STARTUP_DEBUG`     | Set to `1` for verbose startup logging                        |
-
-If you are migrating from `rstudio/rstudio-package-manager`, see [Environment variables](#environment-variables-1) under the migration guide for the legacy `RSPM_` names and deprecation timeline.
-
-### Volume mounts
-
-For persistent data, add these volume mounts to your `docker run` command:
-
-```bash
--v /data/rstudio-pm:/var/lib/rstudio-pm \
--v /data/rstudio-pm-config:/etc/rstudio-pm
-```
-
-| Mount Point           | Description                   |
-|-----------------------|-------------------------------|
-| `/var/lib/rstudio-pm` | Application data and database |
-| `/etc/rstudio-pm`     | Configuration files           |
-
-The data path is set by the `Server.DataDir` option in `rstudio-pm.gcfg` (default `/var/lib/rstudio-pm`). If you change this option in a custom configuration, mount the persistent volume to the new path.
-
 ### Custom configuration
 
 Mount a custom configuration file:
@@ -230,6 +207,29 @@ docker run -v /path/to/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg ...
 ```
 
 See the [configuration documentation](https://docs.posit.co/rspm/admin/appendix/configuration/) for available options.
+
+## Healthcheck
+
+Package Manager exposes an unauthenticated health endpoint at `/__ping__` on port `4242` that returns `200 OK` once the application is ready to serve traffic.
+
+```bash
+curl http://localhost:4242/__ping__
+```
+
+The image declares a Docker `HEALTHCHECK` against this endpoint:
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -fsS http://localhost:4242/__ping__ || exit 1
+```
+
+Both variants inherit the same directive. The `min` variant will report unhealthy until extended with R and Python, since Package Manager does not run without them. To disable the directive in a derived image, add `HEALTHCHECK NONE`.
+
+For Kubernetes liveness and readiness probes, or load balancer health checks, hit the same endpoint directly rather than relying on the Docker healthcheck.
+
+## User
+
+Runs as the rstudio-pm user with user ID (UID) and group ID (GID) 999.
 
 ## Examples
 
