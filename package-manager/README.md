@@ -5,6 +5,9 @@ This container image provides [Package Manager](https://docs.posit.co/rspm/), a 
 > [!NOTE]
 > These images are in preview as Posit migrates container images from [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products). The previous images remain supported.
 
+> [!TIP]
+> Deploying on Kubernetes? Use the [Posit Package Manager Helm chart](https://docs.posit.co/helm/charts/rstudio-pm/README.html), which references this image by default.
+
 ## Quick start
 
 ```bash
@@ -12,18 +15,20 @@ PPM_VERSION="2026.04.1"
 PPM_IMAGE="ghcr.io/posit-dev/package-manager"  # or docker.io/posit/package-manager
 PPM_LICENSE_FILE_HOST_PATH="/path/to/license.lic"
 PPM_LICENSE_FILE_PATH="/etc/rstudio-pm/license.lic"
+PPM_DATA_HOST_PATH="/data/rstudio-pm"
 docker run -d \
   --name package-manager \
   -p 4242:4242 \
   -e PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH} \
   -v ${PPM_LICENSE_FILE_HOST_PATH}:${PPM_LICENSE_FILE_PATH} \
+  -v ${PPM_DATA_HOST_PATH}:/var/lib/rstudio-pm \
   ${PPM_IMAGE}:${PPM_VERSION}
 ```
 
 Access Package Manager at `http://localhost:4242`.
 
 > [!NOTE]
-> This example does not mount a data volume. Application data will not persist when the container stops. See [Volume mounts](#volume-mounts) for persistent storage.
+> The data volume above persists application data between container restarts. See [Volume mounts](#volume-mounts) for additional mount points such as configuration overrides.
 
 ## Image variants
 
@@ -32,7 +37,7 @@ Two variants are available:
 | Variant | Description |
 |---------|-------------|
 | `std` (Standard) | Opinionated image, runs out of the box. Bundles one R version and one Python version alongside Package Manager. |
-| `min` (Minimal) | Small image you can extend with desired dependencies. Will not run unmodified. |
+| `min` (Minimal) | Small image you can extend with desired dependencies. Does not include R or Python — Package Manager requires both at runtime, so this variant will not run unmodified. |
 
 Each tagged image bundles a fixed set of dependencies. Both variants ship the `YYYY.MM` release of Package Manager at the latest patch release available when the image was built. The `std` variant additionally ships one R version and one Python version, locked to the latest available at build time. The Containerfiles in this repository under `package-manager/<version>/` document the exact versions in any tag.
 
@@ -55,11 +60,25 @@ Tag formats:
 - `2026.04.1-ubuntu-24.04-min` - Minimal variant
 - `latest` - Latest version, default OS, standard variant
 
+## Architectures
+
+Posit publishes multi-arch images for both `linux/amd64` and `linux/arm64`. Pull the same tag from either platform; Docker selects the matching manifest automatically.
+
 ## Exposed ports
 
 | Port | Description |
 |------|-------------|
 | 4242 | HTTP web interface and API |
+
+## Healthcheck
+
+Package Manager exposes an unauthenticated health endpoint at `/__ping__` on port `4242` that returns `200 OK` once the application is ready to serve traffic. Use it for Docker `HEALTHCHECK` directives, Kubernetes liveness and readiness probes, and load balancer health checks.
+
+```bash
+curl http://localhost:4242/__ping__
+```
+
+This image does not declare a `HEALTHCHECK` directive — wire one up at the orchestrator or compose level if you need it.
 
 ## User
 
