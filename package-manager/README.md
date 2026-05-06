@@ -281,7 +281,7 @@ The legacy image was published as `rstudio/rstudio-package-manager` on Docker Hu
 
 ### Variants
 
-The legacy image shipped a single variant containing R and Python. The Standard (`std`) variant is closest to that behavior; the new Minimal (`min`) variant has no equivalent. See [Image variants](#image-variants).
+The legacy image shipped a single variant containing two versions of R and Python and many extraneous system packages not explicitly required for Package Manager's functionality. The Standard (`std`) variant is closest to the legacy image, containing one version of R and Python and a reduced set of system packages required for Package Manager to run. The new Minimal (`min`) variant image has no equivalent. See [Image variants](#image-variants).
 
 ### Environment variables
 
