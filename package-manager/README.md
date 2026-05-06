@@ -6,7 +6,7 @@ This container image provides [Package Manager](https://docs.posit.co/rspm/), a 
 > These images are in preview as Posit migrates container images from [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products). The previous images remain supported.
 
 > [!TIP]
-> Deploying on Kubernetes? Use the [Posit Package Manager Helm chart](https://docs.posit.co/helm/charts/rstudio-pm/README.html), which references this image by default.
+> Deploying on Kubernetes? Try the [Posit Package Manager Helm chart](https://docs.posit.co/helm/charts/rstudio-pm/README.html)!
 
 ## Quick start
 
@@ -27,8 +27,7 @@ docker run -d \
 
 Access Package Manager at `http://localhost:4242`.
 
-> [!NOTE]
-> The data volume above persists application data between container restarts. See [Volume mounts](#volume-mounts) for additional mount points such as configuration overrides.
+The data volume above persists application data between container restarts. See [Volume mounts](#volume-mounts) for additional mount points such as configuration overrides.
 
 ## Image variants
 
