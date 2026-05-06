@@ -249,10 +249,6 @@ This image only activates from `$PPM_LICENSE_FILE_PATH` (default `/etc/rstudio-p
 
 The `std` variant now sets `AllowUnsandboxedGitBuilds = true` so Git package builds work in containers. The legacy image did not set this option. See [Git package builds](#git-package-builds) under Caveats for the rationale and how to override.
 
-### `--privileged` no longer needed
-
-The legacy README's license key example used `docker run --privileged`. This image does not require privileged mode for any activation method — drop the `--privileged` flag when migrating.
-
 ### What did not change
 
 - Application port (`4242`)
