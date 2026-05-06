@@ -113,6 +113,19 @@ Tag formats where `YYYY.MM.P` is any supported Package Manager version:
 - `YYYY.MM.P-ubuntu-24.04-min` - Minimal variant
 - `latest` - Latest version, default OS, standard variant
 
+## Supported Tags and Respective `Dockerfile` Links
+
+- [`2026.04.1`, `2026.04.1-ubuntu-24.04`, `latest`, `std`, `ubuntu-24.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2026.04/Containerfile.ubuntu2404.std)
+- [`2025.12.0`, `2025.12.0-14`, `2025.12.0-ubuntu-24.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2025.12/Containerfile.ubuntu2404.std)
+- [`2025.09.0`, `2025.09.0-7`, `2025.09.0-ubuntu-22.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2025.09/Containerfile.ubuntu2204.std)
+- [`2025.04.4`, `2025.04.4-13`, `2025.04.4-ubuntu-22.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2025.04/Containerfile.ubuntu2204.std)
+- [`2024.11.0`, `2024.11.0-7`, `2024.11.0-ubuntu-22.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2024.11/Containerfile.ubuntu2204.std)
+- [`2026.04.1-min`, `2026.04.1-ubuntu-24.04-min`, `min`, `ubuntu-24.04-min`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2026.04/Containerfile.ubuntu2404.min)
+- [`2026.04.1-ubuntu-22.04`, `ubuntu-22.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2026.04/Containerfile.ubuntu2204.std)
+- [`2026.04.1-ubuntu-22.04-min`, `ubuntu-22.04-min`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2026.04/Containerfile.ubuntu2204.min)
+
+For a full list of available tags, see the [Tags tab](https://hub.docker.com/r/posit/package-manager/tags) on Docker Hub.
+
 ## Architectures
 
 Posit publishes multi-arch images for both `linux/amd64` and `linux/arm64`. Pull the same tag from either platform; Docker selects the matching manifest automatically.
