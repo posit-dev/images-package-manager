@@ -132,15 +132,14 @@ State files are hardware-locked and not transferable between hosts. To avoid the
 
 ### Environment variables
 
-| Variable                | Legacy variable          | Description                                                   |
-|-------------------------|--------------------------|---------------------------------------------------------------|
-| `PPM_LICENSE`           | `RSPM_LICENSE`           | License key for activation                                    |
-| `PPM_LICENSE_SERVER`    | `RSPM_LICENSE_SERVER`    | URL of floating license server                                |
-| `PPM_LICENSE_FILE_PATH` | `RSPM_LICENSE_FILE_PATH` | Path to license file (default: `/etc/rstudio-pm/license.lic`) |
-| `PPM_STARTUP_DEBUG`     | —                        | Set to `1` for verbose startup logging                        |
+| Variable                | Description                                                   |
+|-------------------------|---------------------------------------------------------------|
+| `PPM_LICENSE`           | License key for activation                                    |
+| `PPM_LICENSE_SERVER`    | URL of floating license server                                |
+| `PPM_LICENSE_FILE_PATH` | Path to license file (default: `/etc/rstudio-pm/license.lic`) |
+| `PPM_STARTUP_DEBUG`     | Set to `1` for verbose startup logging                        |
 
-> [!NOTE]
-> Posit supports legacy RSPM_ variables but plans to deprecate them after 2026. For more details and updates, see the [Package Manager release notes](https://docs.posit.co/rspm/news/). For future deployments, always use the PPM_ prefix to ensure forward compatibility.
+If you are migrating from `rstudio/rstudio-package-manager`, see [Environment variables](#environment-variables-1) under the migration guide for the legacy `RSPM_` names and deprecation timeline.
 
 ### Volume mounts
 
@@ -214,35 +213,27 @@ This image replaces the legacy [`rstudio/rstudio-package-manager`](https://hub.d
 
 ### Image references
 
-| Aspect          | This image                                                                                                                                          | rstudio/rstudio-package-manager                                          |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| Docker Hub      | `posit/package-manager`                                                                                                                             | `rstudio/rstudio-package-manager`                                        |
-| GHCR            | `ghcr.io/posit-dev/package-manager`                                                                                                                 | `ghcr.io/rstudio/rstudio-package-manager`                                |
-| Tag formats     | `2026.04.1`, `2026.04.1-ubuntu-24.04`, `2026.04.1-ubuntu-24.04-std`, `2026.04.1-ubuntu-24.04-min`, `latest`                                          | `jammy`, `ubuntu2204`, `jammy-<version>`, `ubuntu2204-<version>`         |
-| Architectures   | `linux/amd64`, `linux/arm64`                                                                                                                        | `linux/amd64`                                                            |
-| Default OS      | Ubuntu 24.04 (Ubuntu 22.04 also available)                                                                                                          | Ubuntu 22.04                                                             |
-
-Update your image reference and pick a [tag](#image-tags) that pins to your desired Package Manager version, OS, and variant.
+The legacy image was published as `rstudio/rstudio-package-manager` on Docker Hub and `ghcr.io/rstudio/rstudio-package-manager` on GHCR, tagged by OS (`jammy`, `ubuntu2204`, `jammy-<version>`, `ubuntu2204-<version>`) for `linux/amd64` only. Update your image reference to one of the new locations and pick a tag that pins to your desired Package Manager version, OS, and variant. See [Image tags](#image-tags) and [Architectures](#architectures).
 
 ### Variants
 
-The legacy image shipped a single variant containing R and Python. This image splits into:
-
-- `std` — R and Python included; runs out of the box. Closest to the legacy behavior. Bundled R and Python versions are locked at build time and may differ from what the legacy image shipped.
-- `min` — no R or Python; smaller footprint. Will not run unmodified; build a custom image on top. See [extending examples](https://github.com/posit-dev/images-examples/tree/main/extending).
+The legacy image shipped a single variant containing R and Python. The Standard (`std`) variant is closest to that behavior; the new Minimal (`min`) variant has no equivalent. See [Image variants](#image-variants).
 
 ### Environment variables
 
-License and debug environment variables now use the `PPM_` prefix. The image accepts the legacy `RSPM_` license names as a fallback during the deprecation window:
+License and debug environment variables now use the `PPM_` prefix:
 
-| Legacy variable          | New variable            |
-|--------------------------|-------------------------|
-| `RSPM_LICENSE`           | `PPM_LICENSE`           |
-| `RSPM_LICENSE_SERVER`    | `PPM_LICENSE_SERVER`    |
-| `RSPM_LICENSE_FILE_PATH` | `PPM_LICENSE_FILE_PATH` |
-| `STARTUP_DEBUG_MODE`     | `PPM_STARTUP_DEBUG`     |
+| New variable            | Legacy variable          |
+|-------------------------|--------------------------|
+| `PPM_LICENSE`           | `RSPM_LICENSE`           |
+| `PPM_LICENSE_SERVER`    | `RSPM_LICENSE_SERVER`    |
+| `PPM_LICENSE_FILE_PATH` | `RSPM_LICENSE_FILE_PATH` |
+| `PPM_STARTUP_DEBUG`     | `STARTUP_DEBUG_MODE`     |
 
-Posit plans to drop the `RSPM_` fallback after 2026. `STARTUP_DEBUG_MODE` is not honored — switch to `PPM_STARTUP_DEBUG`.
+The image accepts the legacy `RSPM_` license names as a fallback during the deprecation window. `STARTUP_DEBUG_MODE` is not honored — switch to `PPM_STARTUP_DEBUG`.
+
+> [!NOTE]
+> Posit supports legacy RSPM_ variables but plans to deprecate them after 2026. For more details and updates, see the [Package Manager release notes](https://docs.posit.co/rspm/news/). For future deployments, always use the PPM_ prefix to ensure forward compatibility.
 
 ### License file location
 
@@ -256,7 +247,7 @@ This image only activates from `$PPM_LICENSE_FILE_PATH` (default `/etc/rstudio-p
 
 ### Git package builds
 
-The `std` variant sets `AllowUnsandboxedGitBuilds = true` in the `[Git]` configuration section so Git package builds work in containers, where Package Manager's process sandbox is unavailable. The legacy image did not set this option. Customers who do not want unsandboxed Git builds should override the option in their custom configuration. See [Git package builds](#git-package-builds).
+The `std` variant now sets `AllowUnsandboxedGitBuilds = true` so Git package builds work in containers. The legacy image did not set this option. See [Git package builds](#git-package-builds) under Caveats for the rationale and how to override.
 
 ### `--privileged` no longer needed
 
