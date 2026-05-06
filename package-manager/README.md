@@ -87,12 +87,12 @@ volumes:
 
 Two variants are available:
 
-| Variant | Description |
-|---------|-------------|
-| `std` (Standard) | Opinionated image, runs out of the box. Bundles one R version and one Python version alongside Package Manager. |
-| `min` (Minimal) | Small image you can extend with desired dependencies. Does not include R or Python — Package Manager requires both at runtime, so this variant will not run unmodified. |
+| Variant          | Description                                                                                                                                                                  |
+|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Standard (`std`) | Opinionated image, runs out of the box. Bundles one R version and one Python version alongside Package Manager.                                                              |
+| Minimal (`min`)  | Small image you can extend with desired dependencies. Does not include R or Python — Package Manager requires both for full functionality with features such as Git sources. |
 
-Each tagged image bundles a fixed set of dependencies. Both variants ship the `YYYY.MM` release of Package Manager at the latest patch release available when the image was built. The `std` variant additionally ships one R version and one Python version, locked to the latest available at build time. The Containerfiles in this repository under `package-manager/<version>/` document the exact versions in any tag.
+Each tagged image bundles a fixed set of dependencies. Both variants ship the `YYYY.MM` release of Package Manager at the latest patch release available when the image was built. The `std` variant additionally ships one R version and one Python version, locked to the latest available at build time. The Containerfiles in this repository under `package-manager/<version>/` document the exact versions in any tag. No arguments are overridden at build time.
 
 Package Manager is not particular about which R or Python version is installed. See [R and Python installation requirements](https://docs.posit.co/rspm/admin/getting-started/requirements.html#r-and-python-installation-requirements) in the Package Manager admin guide for details.
 
