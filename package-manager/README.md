@@ -26,13 +26,14 @@ For a full list of available tags, see the [Tags tab](https://hub.docker.com/r/p
 
 ## Quick reference
 
-| | |
+| |                                                                                                                                                                                                                                                                                                |
 |---|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Maintained by** | [the Posit Docker team](https://github.com/posit-dev/images)                                                                                                                                                                                                                                   |
 | **Where to get help** | [GitHub Issues](https://github.com/posit-dev/images-package-manager/issues), [Images Discussion Board](https://github.com/posit-dev/images/discussions), [the Posit Community Forum](https://forum.posit.co/c/posit-professional-hosted/5), [Posit Support](https://support.posit.co/hc/en-us) |
 | **Where to file issues** | [https://github.com/posit-dev/images-package-manager/issues](https://github.com/posit-dev/images-package-manager/issues)                                                                                                                                                                       |
 | **Source** | [https://github.com/posit-dev/images-package-manager](https://github.com/posit-dev/images-package-manager)                                                                                                                                                                                     |
 | **License** | [MIT](https://github.com/posit-dev/images-package-manager/blob/main/LICENSE.md)                                                                                                                                                                                                                |
+| **Product documentation** | [Posit Package Manager documentation](https://docs.posit.co/rspm/)                                                                                                                                                                                                                             |
 
 ## How to use this image
 
