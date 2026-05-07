@@ -285,7 +285,7 @@ install.packages("demo1", repos = "http://localhost:4242/demopkgs/latest")
 
 See the [Package Manager admin guide](https://docs.posit.co/rspm/admin/getting-started/configuration.html) for managing repositories.
 
-## Migrating from rstudio/rstudio-package-manager
+## Migrating from legacy image
 
 This image replaces the legacy [`rstudio/rstudio-package-manager`](https://hub.docker.com/r/rstudio/rstudio-package-manager) image. Package Manager itself is unchanged — the application reads `rstudio-pm.gcfg`, listens on `4242`, persists data to `Server.DataDir`, and runs as the `rstudio-pm` user (UID/GID `999`). Existing data and configuration volumes mount unchanged. The differences are in how the image is published and configured.
 
