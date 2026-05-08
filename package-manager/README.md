@@ -39,7 +39,7 @@ This container image provides [Package Manager](https://docs.posit.co/rspm/), a 
 
 ```bash
 PPM_VERSION="2026.04.1"
-PPM_IMAGE="ghcr.io/posit-dev/package-manager"  # or docker.io/posit/package-manager
+PPM_IMAGE="docker.io/posit-dev/package-manager"  # or ghcr.io/posit/package-manager
 PPM_LICENSE_FILE_HOST_PATH="/path/to/license.lic"
 PPM_LICENSE_FILE_PATH="/etc/rstudio-pm/license.lic"
 PPM_DATA_HOST_PATH="/data/rstudio-pm"
@@ -60,7 +60,7 @@ The data volume above persists application data between container restarts. See 
 
 ```bash
 PPM_VERSION="2026.04.1"
-PPM_IMAGE="ghcr.io/posit-dev/package-manager"  # or docker.io/posit/package-manager
+PPM_IMAGE="docker.io/posit-dev/package-manager"  # or ghcr.io/posit/package-manager
 PPM_LICENSE_FILE_HOST_PATH="/path/to/license.lic"
 PPM_LICENSE_FILE_PATH="/etc/rstudio-pm/license.lic"
 PPM_DATA_HOST_PATH="/data/rstudio-pm"
@@ -80,7 +80,7 @@ docker run -d \
 ```yaml
 services:
   package-manager:
-    image: ghcr.io/posit-dev/package-manager:latest
+    image: docker.io/posit-dev/package-manager:latest
     ports:
     - "4242:4242"
     environment:
@@ -258,7 +258,7 @@ Find the Package Manager container ID:
 ```bash
 docker ps
 # CONTAINER ID   IMAGE
-# b8ae944b7f2d   ghcr.io/posit-dev/package-manager:2026.04.1
+# b8ae944b7f2d   docker.io/posit-dev/package-manager:2026.04.1
 ```
 
 Copy the tarball into the container and open a shell:
