@@ -1,6 +1,12 @@
+![Package Manager Logo](https://cdn.posit.co/platform/containers/logos/logo_pkgmgrtag-fullcolor.png)
+
 # Posit Package Manager container images
 
 Container images for [Package Manager](https://docs.posit.co/rspm/).
+
+[![Production CI Build Status](https://github.com/posit-dev/images-package-manager/actions/workflows/production.yml/badge.svg?branch=main)](https://github.com/posit-dev/images-package-manager/actions/workflows/production.yml)
+[![Development CI Build Status](https://github.com/posit-dev/images-package-manager/actions/workflows/development.yml/badge.svg?branch=main)](https://github.com/posit-dev/images-package-manager/actions/workflows/development.yml)
+[![Latest Version](https://img.shields.io/docker/v/posit/package-manager?sort=semver&label=latest)](https://hub.docker.com/r/posit/package-manager/tags)
 
 > [!NOTE]
 > Posit is migrating container images from [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products). The previous images remain supported.
