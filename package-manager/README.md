@@ -17,10 +17,10 @@ This container image provides [Package Manager](https://docs.posit.co/rspm/), a 
 ![Docker Image Size](https://img.shields.io/docker/image-size/posit/package-manager/latest)
 
 > [!NOTE]
-> These images are in preview as Posit migrates container images from [rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products). The previous images remain supported.
+> These images are in preview as Posit migrates container images from <a href="https://github.com/rstudio/rstudio-docker-products">rstudio/rstudio-docker-products</a>. The previous images remain supported.
 
 > [!TIP]
-> Deploying on Kubernetes? Try the [Posit Package Manager Helm chart](https://docs.posit.co/helm/charts/rstudio-pm/README.html)!
+> Deploying on Kubernetes? Try the <a href="https://docs.posit.co/helm/charts/rstudio-pm/README.html">Posit Package Manager Helm chart</a>!
 
 ## Supported tags
 
@@ -322,7 +322,7 @@ License and debug environment variables now use the `PPM_` prefix:
 The image accepts the legacy `RSPM_` license names as a fallback during the deprecation window. `STARTUP_DEBUG_MODE` is not honored — switch to `PPM_STARTUP_DEBUG`.
 
 > [!NOTE]
-> Posit supports legacy RSPM_ variables but plans to deprecate them after 2026. For more details and updates, see the [Package Manager release notes](https://docs.posit.co/rspm/news/). For future deployments, always use the PPM_ prefix to ensure forward compatibility.
+> Posit supports legacy RSPM_ variables but plans to deprecate them after 2026. For more details and updates, see the <a href="https://docs.posit.co/rspm/news/">Package Manager release notes</a>. For future deployments, always use the PPM_ prefix to ensure forward compatibility.
 
 ### Git package builds
 
