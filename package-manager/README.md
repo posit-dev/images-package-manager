@@ -237,7 +237,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
     CMD curl -fsS http://localhost:4242/__ping__ || exit 1
 ```
 
-Both variants inherit the same directive. The `min` variant will report unhealthy until extended with R and Python, since Package Manager does not run without them. To disable the directive in a derived image, add `HEALTHCHECK NONE`.
+Both variants inherit the same directive. To disable the directive in a derived image, add `HEALTHCHECK NONE`.
 
 For Kubernetes liveness and readiness probes, or load balancer health checks, hit the same endpoint directly rather than relying on the Docker healthcheck.
 
