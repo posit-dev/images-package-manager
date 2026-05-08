@@ -22,19 +22,6 @@ This container image provides [Package Manager](https://docs.posit.co/rspm/), a 
 > [!TIP]
 > Deploying on Kubernetes? Try the <a href="https://docs.posit.co/helm/charts/rstudio-pm/README.html">Posit Package Manager Helm chart</a>!
 
-## Supported tags
-
-- [`2026.04.1`, `2026.04.1-ubuntu-24.04`, `latest`, `std`, `ubuntu-24.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2026.04/Containerfile.ubuntu2404.std)
-- [`2026.04.1-min`, `2026.04.1-ubuntu-24.04-min`, `min`, `ubuntu-24.04-min`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2026.04/Containerfile.ubuntu2404.min)
-- [`2026.04.1-ubuntu-22.04`, `ubuntu-22.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2026.04/Containerfile.ubuntu2204.std)
-- [`2026.04.1-ubuntu-22.04-min`, `ubuntu-22.04-min`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2026.04/Containerfile.ubuntu2204.min)
-- [`2025.12.0`, `2025.12.0-14`, `2025.12.0-ubuntu-24.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2025.12/Containerfile.ubuntu2404.std)
-- [`2025.09.0`, `2025.09.0-7`, `2025.09.0-ubuntu-22.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2025.09/Containerfile.ubuntu2204.std)
-- [`2025.04.4`, `2025.04.4-13`, `2025.04.4-ubuntu-22.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2025.04/Containerfile.ubuntu2204.std)
-- [`2024.11.0`, `2024.11.0-7`, `2024.11.0-ubuntu-22.04`](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/2024.11/Containerfile.ubuntu2204.std)
-
-For a full list of available tags, see the [Tags tab](https://hub.docker.com/r/posit/package-manager/tags) on Docker Hub.
-
 ## Quick reference
 
 | |                                                                                                                                                                                                                                                                                                |
