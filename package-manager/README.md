@@ -1,8 +1,8 @@
+![Package Manager Logo](https://rstudio-platform-public-artifacts.s3.us-east-1.amazonaws.com/platform/containers/logos/logo_pkgmgrtag-fullcolor.png)
+
 # Posit Package Manager container image
 
 This container image provides [Package Manager](https://docs.posit.co/rspm/), a repository management server that organizes and centralizes R and Python packages across teams, departments, or organizations.
-
-![Package Manager Logo](https://rstudio-platform-public-artifacts.s3.us-east-1.amazonaws.com/platform/containers/logos/logo_pkgmgrtag-fullcolor.png)
 
 ![Docker Pulls](https://img.shields.io/docker/pulls/posit/package-manager)
 ![Docker Image Size](https://img.shields.io/docker/image-size/posit/package-manager/latest)
