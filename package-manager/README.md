@@ -1,4 +1,10 @@
-![Package Manager Logo](https://cdn.posit.co/platform/containers/logos/logo_pkgmgrtag-fullcolor.png)
+<a href="https://posit.co/products/enterprise/package-manager">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://cdn.posit.co/platform/containers/logos/logo_pkgmgrtag-reverse.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://cdn.posit.co/platform/containers/logos/logo_pkgmgrtag-fullcolor.svg">
+  <img alt="Posit Package Manager Logo" src="https://cdn.posit.co/platform/containers/logos/logo_pkgmgrtag-fullcolor.svg">
+</picture>
+</a>
 
 # Posit Package Manager container image
 
