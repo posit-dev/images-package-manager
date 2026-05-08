@@ -82,6 +82,7 @@ file:
     contents:
       - RVersion = {{ r.get_version_directory(Dependencies.R.0) }}
       - PythonVersion = {{ python.get_version_directory(Dependencies.python.0) }}/bin/python
+      - "AllowUnsandboxedGitBuilds = true"
     {% raw %}{{ end }}{% endraw %}
 
 command:

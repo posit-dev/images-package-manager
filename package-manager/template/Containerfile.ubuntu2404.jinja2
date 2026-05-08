@@ -23,7 +23,7 @@ ARG PACKAGE_MANAGER_VERSION="{{ Image.Version }}"
 ENV PPM_LICENSE=""
 ENV PPM_LICENSE_SERVER=""
 ENV PPM_LICENSE_FILE_PATH=""
-ENV STARTUP_DEBUG_MODE=0
+ENV PPM_STARTUP_DEBUG=0
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -62,5 +62,8 @@ RUN mkdir -p /var/run/rstudio-pm \
 USER rstudio-pm
 
 RUN echo "source <(rspm completion bash)" >> ~/.bashrc
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -fsS http://localhost:4242/__ping__ || exit 1
 
 CMD ["/usr/local/bin/startup.sh"]
