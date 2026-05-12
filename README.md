@@ -61,7 +61,7 @@ kubectl create secret generic posit-package-manager-license \
 ```yaml
 image:
   repository: ghcr.io/posit-dev/package-manager
-  tag: "2026.04.1"  # Replace with desired tag/version
+  tag: "2026.04.2"  # Replace with desired tag/version
 
 license:
   file:

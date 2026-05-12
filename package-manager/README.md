@@ -38,7 +38,7 @@ This container image provides [Package Manager](https://docs.posit.co/rspm/), a 
 ### Quick start
 
 ```bash
-PPM_VERSION="2026.04.1"
+PPM_VERSION="2026.04.2"
 PPM_IMAGE="docker.io/posit-dev/package-manager"  # or ghcr.io/posit/package-manager
 PPM_LICENSE_FILE_HOST_PATH="/path/to/license.lic"
 PPM_LICENSE_FILE_PATH="/etc/rstudio-pm/license.lic"
@@ -59,7 +59,7 @@ The data volume above persists application data between container restarts. See 
 ### With a custom configuration file
 
 ```bash
-PPM_VERSION="2026.04.1"
+PPM_VERSION="2026.04.2"
 PPM_IMAGE="docker.io/posit-dev/package-manager"  # or ghcr.io/posit/package-manager
 PPM_LICENSE_FILE_HOST_PATH="/path/to/license.lic"
 PPM_LICENSE_FILE_PATH="/etc/rstudio-pm/license.lic"
@@ -258,7 +258,7 @@ Find the Package Manager container ID:
 ```bash
 docker ps
 # CONTAINER ID   IMAGE
-# b8ae944b7f2d   docker.io/posit-dev/package-manager:2026.04.1
+# b8ae944b7f2d   docker.io/posit-dev/package-manager:2026.04.2
 ```
 
 Copy the tarball into the container and open a shell:

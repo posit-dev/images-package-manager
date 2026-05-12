@@ -13,7 +13,7 @@ LABEL org.opencontainers.image.base.name="docker.io/library/ubuntu:22.04"
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
-ARG PACKAGE_MANAGER_VERSION="2026.04.1"
+ARG PACKAGE_MANAGER_VERSION="2026.04.2"
 
 ENV PPM_LICENSE=""
 ENV PPM_LICENSE_SERVER=""
@@ -56,7 +56,7 @@ RUN /opt/python/3.14.4/bin/pip install --no-cache-dir --upgrade --break-system-p
 RUN RUN_UNATTENDED=1 R_VERSION=4.5.3 bash -c "$(curl -fsSL https://rstd.io/r-install)" && \
     find . -type f -name '[rR]-4.5.3.*\.(deb|rpm)' -delete
 
-### Install Package Manager 2026.04.1 ###
+### Install Package Manager 2026.04.2 ###
 COPY --chmod=0755 package-manager/2026.04/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN PYTHON_VERSION=3.14.4 R_VERSION=4.5.3 \
     /tmp/install_package_manager.sh \

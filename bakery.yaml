@@ -79,7 +79,7 @@ images:
         extension: min
         tagDisplayName: min
     versions:
-      - name: 2026.04.1
+      - name: 2026.04.2
         subpath: '2026.04'
         latest: true
         os:
