@@ -16,9 +16,6 @@ This container image provides [Package Manager](https://docs.posit.co/rspm/), a 
 ![Docker Hub Pulls](https://img.shields.io/docker/pulls/posit/package-manager)
 ![Docker Image Size](https://img.shields.io/docker/image-size/posit/package-manager/latest)
 
-> [!NOTE]
-> These images are in preview as Posit migrates container images from <a href="https://github.com/rstudio/rstudio-docker-products">rstudio/rstudio-docker-products</a>. The previous images remain supported.
-
 > [!TIP]
 > Deploying on Kubernetes? Try the <a href="https://docs.posit.co/helm/charts/rstudio-pm/README.html">Posit Package Manager Helm chart</a>!
 
