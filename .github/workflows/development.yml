@@ -13,8 +13,10 @@ on:
         type: string
 
   schedule:
-    # Hourly rebuild of dev images
-    - cron: "45 * * * *" # At minute 45 past every hour
+    # Daily rebuild of dev images. Staggered with images-connect (05:45) and
+    # images-workbench (06:45) so the three products don't all build in the
+    # same hour.
+    - cron: "45 4 * * *" # At 04:45 every day
 
   push:
     branches:
