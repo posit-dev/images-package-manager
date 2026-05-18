@@ -44,37 +44,7 @@ See the [Package Manager installation guide](https://docs.posit.co/rspm/admin/ge
 
 ## Deploying on Kubernetes
 
-Use the [Package Manager Helm chart](https://docs.posit.co/helm/charts/rstudio-pm/README.html) to deploy on Kubernetes. These instructions work for both ARM and x86_64 (AMD64) Kubernetes nodes.
-
-```bash
-helm repo add rstudio https://helm.rstudio.com
-helm repo update
-```
-
-Create a Kubernetes secret from your license file, then configure the chart in your `values.yaml`:
-
-```bash
-kubectl create secret generic posit-package-manager-license \
-  --from-file=license.lic=/path/to/license.lic
-```
-
-```yaml
-image:
-  repository: ghcr.io/posit-dev/package-manager
-  tag: "2026.04.2"  # Replace with desired tag/version
-
-license:
-  file:
-    secret: posit-package-manager-license
-```
-
-Install Package Manager with Helm:
-
-```bash
-helm upgrade --install package-manager rstudio/rstudio-pm --values values.yaml
-```
-
-See the [full chart documentation](https://docs.posit.co/helm/charts/rstudio-pm/README.html) for all available values.
+Use the [Posit Package Manager Helm chart](https://docs.posit.co/helm/charts/rstudio-pm/README.html) to deploy on Kubernetes. These images are the default in chart versions `>= 0.20.0`; see the [image migration guide](https://docs.posit.co/helm/docs/migrating-to-posit-images.html) if you are upgrading from an earlier chart version. The chart supports both ARM and x86_64 (AMD64) Kubernetes nodes.
 
 ## Build
 
