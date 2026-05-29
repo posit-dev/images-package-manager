@@ -46,7 +46,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
+    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@feat/dry-run-artifacts
     with:
       dev-versions: "exclude"
 
@@ -55,7 +55,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
+    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@feat/dry-run-artifacts
     with:
       dev-versions: "only"
 
