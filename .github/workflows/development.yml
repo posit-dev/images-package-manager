@@ -60,13 +60,13 @@ jobs:
       contents: read
       packages: write
 
-    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@feat/dry-run-artifacts"
     with:
       dev-versions: "only"
       image-version: ${{ inputs.version }}
       dev-stream: ${{ inputs.stream }}
       # Push on merges to main, scheduled rebuilds, and dispatches targeting main.
-      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+      push: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') && 'on' || 'off' }}
 
   clean:
     name: Clean
