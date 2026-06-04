@@ -140,10 +140,10 @@ bakery update files
 
 All workflows call shared reusable workflows from `images-shared`:
 
-| Workflow | Schedule | What it builds | Shared workflow |
-|---|---|---|---|
-| `production.yml` | Weekly (Sun 01:15 UTC), PR, push to main | Production versions (excludes dev) | `bakery-build-native.yml` |
-| `development.yml` | Daily (07:45 UTC), PR, push to main | Dev versions only (preview + daily streams) | `bakery-build-native.yml` |
+| Workflow | What it builds | Shared workflow |
+|---|---|---|
+| `production.yml` | Production versions (excludes dev) | `bakery-build-native.yml` |
+| `development.yml` | Dev versions only (preview + daily streams) | `bakery-build-native.yml` |
 
 Both workflows use `bakery-build-native.yml` for native multi-platform builds (amd64 + arm64).
 Images push to `docker.io/posit` and `ghcr.io/posit-dev` on main merges and scheduled runs.
