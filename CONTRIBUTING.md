@@ -65,10 +65,10 @@ covers the full workflow.
 
 Package Manager versions are dispatched automatically from `rstudio/package-manager`
 via the `posit-package-manager-automation` GitHub App, which triggers this repo's
-`release.yml` workflow. Manual steps are only needed for hotfixes.
+`release.yml` workflow. Use manual steps only for hotfixes.
 
 ```bash
-# Create a new version manually (e.g. a hotfix to 2025.12)
+# Create a new version manually (e.g., a hotfix to 2025.12)
 bakery create version 2025.12.1 --image-name package-manager
 bakery update files --image-name package-manager --image-version 2025.12
 ```
@@ -114,7 +114,7 @@ bakery run dgoss --image-name package-manager --image-version 2025.12
 
 ### Footguns
 
-**PPM has two dev streams.** `bakery.yaml` defines both `preview` and `daily` dev
+**Package Manager has two dev streams.** `bakery.yaml` defines both `preview` and `daily` dev
 version sources. A change to `dependencyConstraints` affects both streams.
 
 → [Shared footguns](https://github.com/posit-dev/images-shared/blob/main/CONTRIBUTING.md#footguns)
