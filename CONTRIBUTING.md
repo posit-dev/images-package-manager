@@ -114,10 +114,6 @@ bakery run dgoss --image-name package-manager --image-version 2025.12
 
 ### Footguns
 
-**Dev images push to AWS ECR, not Docker Hub.** The `development.yml` workflow
-requires `id-token: write` permission and the `AWS_ROLE` secret for ECR authentication.
-Docker Hub credentials are only used by `production.yml`.
-
 **PPM has two dev streams.** `bakery.yaml` defines both `preview` and `daily` dev
 version sources. A change to `dependencyConstraints` affects both streams.
 
@@ -128,12 +124,8 @@ version sources. A change to `dependencyConstraints` affects both streams.
 | Workflow | Schedule | Builds |
 |---|---|---|
 | `production.yml` | Weekly Sun 01:15 UTC, push to main, dispatch | `package-manager` (excludes dev) → Docker Hub + GHCR |
-| `development.yml` | Daily 07:45 UTC, push to main, dispatch | Dev stream (preview + daily) → AWS ECR |
+| `development.yml` | Daily 07:45 UTC, push to main, dispatch | Dev stream (preview + daily) → ghcr.io/posit-dev/package-manager-preview |
 
 Both workflows use `bakery-build-native.yml` (native amd64 + arm64 runners).
-
-**Package Manager-specific failure:** ECR auth on `development.yml`. ECR push requires
-`AWS_ROLE` secret and `id-token: write` on the job. Docker Hub auth errors only affect
-`production.yml`.
 
 → [Shared failure scenarios](https://github.com/posit-dev/images-shared/blob/main/CONTRIBUTING.md#diagnose-a-build-failure)
