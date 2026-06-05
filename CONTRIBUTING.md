@@ -1,62 +1,132 @@
 # Contributing to Posit Package Manager container images
 
-This guide covers how to build and test the Package Manager container images with the `bakery` CLI. To build images directly with Docker, Buildah, or Podman, see the [README](README.md#build). To deploy or run pre-built images, see the [running the image](README.md#running-the-image) section.
+This guide covers how to build and test the Package Manager container images locally,
+and how to perform common maintenance tasks. To build images directly with Docker,
+Buildah, or Podman, see the [README](README.md#build). To deploy or run pre-built
+images, see the [README](README.md#running-the-image).
 
-## Using `bakery`
-
-This repository follows the structure described in [bakery usage](https://github.com/posit-dev/images-shared/tree/main/posit-bakery#usage).
-
-Additional documentation:
-- [Configuration reference](https://github.com/posit-dev/images-shared/blob/main/posit-bakery/CONFIGURATION.md): `bakery.yaml` schema and options
-- [Templating reference](https://github.com/posit-dev/images-shared/blob/main/posit-bakery/TEMPLATING.md): Jinja2 macros for Containerfile templates
-- [CI workflows](https://github.com/posit-dev/images-shared/blob/main/CI.md): Shared GitHub Actions workflows for building and pushing images
-
-The [`bakery.yaml`](https://github.com/posit-dev/images-shared/blob/main/posit-bakery/CONFIGURATION.md#bakery-configuration) file, or project, is in the root of this repository.
+## Build and test
 
 ### Prerequisites
 
-Build prerequisites:
-
-* [python](https://docs.astral.sh/uv/guides/install-python/)
-* [uv](https://docs.astral.sh/uv/getting-started/installation/)
-* [docker buildx bake](https://github.com/docker/buildx#installing)
-* [just](https://just.systems/man/en/prerequisites.html)
-* `bakery`
-
-    ```shell
-    just install-bakery
-    ```
-
-* `goss` and `dgoss` for running image validation tests
-
-    ```shell
-    just install-goss
-    ```
-
-* [`pre-commit`](https://pre-commit.com/) hooks (for contributors)
-
-    ```shell
-    just setup
-    ```
-
-### Build with `bakery`
-
-By default, bakery creates an ephemeral JSON [bakefile](https://docs.bakefile.org/en/latest/language.html) to render all containers in parallel.
+| Tool | Install |
+|---|---|
+| [python](https://docs.astral.sh/uv/guides/install-python/) + [uv](https://docs.astral.sh/uv/getting-started/installation/) | Required for `bakery` |
+| [docker buildx bake](https://github.com/docker/buildx#installing) | Required for builds |
+| [just](https://just.systems/man/en/prerequisites.html) | Task runner |
 
 ```shell
+# Install bakery and goss
+just init
+
+# Install pre-commit hooks
+just setup
+```
+
+### Build
+
+```shell
+# Preview the build plan
+bakery build --plan
+
+# Build all images
 bakery build
+
+# Build a specific image version
+bakery build --image-name package-manager --image-version 2025.12
 ```
 
-You can view the bake plan using `bakery build --plan`.
-
-You can use CLI flags to build only a subset of images in the project.
-
-### Test images
-
-After building the container images, run the test suite for all images:
+### Test
 
 ```shell
+# Run goss tests for all images
 bakery run dgoss
+
+# Run goss tests for a specific image
+bakery run dgoss --image-name package-manager
 ```
 
-You can use CLI flags to limit the tests to run against a subset of images.
+### Re-render templates
+
+After changing any file in a `template/` directory, re-render the version directories:
+
+```shell
+# Omitting filters re-renders every image and version; --help shows available filters
+bakery update files --help
+bakery update files --image-name package-manager --image-version 2025.12
+```
+
+## Maintainer tasks
+
+Each section below has Package Manager-specific context and a concrete example. The
+linked procedure in the [shared maintainer guide](https://github.com/posit-dev/images-shared/blob/main/CONTRIBUTING.md)
+covers the full workflow.
+
+### Add a version
+
+Package Manager versions are dispatched automatically from `rstudio/package-manager`
+via the `posit-package-manager-automation` GitHub App, which triggers this repo's
+`release.yml` workflow. Use manual steps only for hotfixes.
+
+```bash
+# Create a new version manually (e.g., a hotfix to 2025.12)
+bakery create version 2025.12.1 --image-name package-manager
+bakery update files --image-name package-manager --image-version 2025.12
+```
+
+→ [Shared procedure](https://github.com/posit-dev/images-shared/blob/main/CONTRIBUTING.md#add-a-version)
+
+### Add an image
+
+This repo has a single image (`package-manager`). Adding a new image requires
+coordination with the Package Manager product team.
+
+```bash
+# Scaffold a new image directory and template
+bakery create image <new-image-name>
+```
+
+→ [Shared procedure](https://github.com/posit-dev/images-shared/blob/main/CONTRIBUTING.md#add-an-image)
+
+### Update dependencies
+
+`package-manager` uses `dependencyConstraints: latest: true` for R and Python — bakery
+resolves the current latest at build time.
+
+```bash
+# After changing dependencyConstraints in bakery.yaml, re-render
+bakery update files --image-name package-manager
+```
+
+→ [Shared procedure](https://github.com/posit-dev/images-shared/blob/main/CONTRIBUTING.md#update-dependencies)
+
+### Update older versions
+
+```bash
+# Edit the template, then re-render a specific edition
+bakery update files --image-name package-manager --image-version 2025.12
+
+# Build and test before opening a PR
+bakery build --image-name package-manager --image-version 2025.12
+bakery run dgoss --image-name package-manager --image-version 2025.12
+```
+
+→ [Shared procedure](https://github.com/posit-dev/images-shared/blob/main/CONTRIBUTING.md#update-older-versions)
+
+### Footguns
+
+**Package Manager has two dev streams.** `bakery.yaml` defines both `preview` and `daily` dev
+version sources. A change to `dependencyConstraints` affects both streams.
+
+→ [Shared footguns](https://github.com/posit-dev/images-shared/blob/main/CONTRIBUTING.md#footguns)
+
+### Diagnose a build failure
+
+| Workflow | Schedule | Builds |
+|---|---|---|
+| `production.yml` | Weekly Sun 01:15 UTC, push to main, dispatch | `package-manager` (excludes dev) → Docker Hub + GHCR |
+| `development.yml` | Daily 07:45 UTC, push to main, dispatch | Dev stream (preview + daily) → ghcr.io/posit-dev/package-manager-preview |
+
+Both workflows use `bakery-build-native.yml` (native amd64 + arm64 runners).
+
+→ [Shared failure scenarios](https://github.com/posit-dev/images-shared/blob/main/CONTRIBUTING.md#diagnose-a-build-failure)

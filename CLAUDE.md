@@ -140,24 +140,16 @@ bakery update files
 
 All workflows call shared reusable workflows from `images-shared`:
 
-| Workflow | Schedule | What it builds | Shared workflow |
-|---|---|---|---|
-| `production-builds.yml` | Weekly (Sun 03:15 UTC), PR, push to main | Production versions (excludes dev) | `bakery-build-native.yml` |
-| `development-builds.yml` | Hourly, PR, push to main | Dev versions only (preview + daily streams) | `bakery-build-native.yml` |
+| Workflow | What it builds | Shared workflow |
+|---|---|---|
+| `production.yml` | Production versions (excludes dev) | `bakery-build-native.yml` |
+| `development.yml` | Dev versions only (preview + daily streams) | `bakery-build-native.yml` |
 
 Both workflows use `bakery-build-native.yml` for native multi-platform builds (amd64 + arm64).
 Images push to `docker.io/posit` and `ghcr.io/posit-dev` on main merges and scheduled runs.
 Dev images push to AWS ECR.
 
-### CI failure checklist
-
-1. **Check which workflow failed** — production vs development have different scopes
-2. **Read the failing step** — usually Build or Test
-3. **Common failures:**
-   - Python version not available in UV — a new Python minor version may not be in UV's release metadata yet
-   - ARM64 build failures — may be runner availability or platform-specific package issues
-   - Registry auth — Docker Hub requires `DOCKER_HUB_ACCESS_TOKEN`, ECR requires AWS OIDC
-4. **Cache issues** — builds use `--cache-registry ghcr.io/posit-dev` for layer caching; stale caches can cause unexpected behavior
+For CI failure diagnosis, see [CONTRIBUTING.md](CONTRIBUTING.md#diagnose-a-build-failure).
 
 ## Helm Integration
 
