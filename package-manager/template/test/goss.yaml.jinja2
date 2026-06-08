@@ -12,13 +12,13 @@ Bakery handles bootstrapping the files into template rendering.
 user:
   rstudio-pm:
     exists: true
-    uid: 999
-    gid: 999
+    uid: {% raw %}{{ if eq .Env.IMAGE_OS_FAMILY "rhel" }}998{{ else }}999{{ end }}{% endraw %}
+    gid: {% raw %}{{ if eq .Env.IMAGE_OS_FAMILY "rhel" }}997{{ else }}999{{ end }}{% endraw %}
 
 group:
   rstudio-pm:
     exists: true
-    gid: 999
+    gid: {% raw %}{{ if eq .Env.IMAGE_OS_FAMILY "rhel" }}997{{ else }}999{{ end }}{% endraw %}
 
 package:
   rstudio-pm:
