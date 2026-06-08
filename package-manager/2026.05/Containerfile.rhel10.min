@@ -1,5 +1,7 @@
-FROM registry.access.redhat.com/ubi10/ubi:10.2
-LABEL org.opencontainers.image.base.name="registry.access.redhat.com/ubi10/ubi:10.2"
+# latest is intentional: pulls security errata automatically on each rebuild,
+# equivalent to ubuntu:24.04 which also floats within the LTS release.
+FROM registry.access.redhat.com/ubi10/ubi:latest
+LABEL org.opencontainers.image.base.name="registry.access.redhat.com/ubi10/ubi:latest"
 
 ### ARG declarations ###
 ARG TARGETARCH
