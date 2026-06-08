@@ -8,8 +8,8 @@ RUN uv python install 3.14.5
 RUN mv /opt/python/cpython-3.14.5-linux-*/ /opt/python/3.14.5
 
 
-FROM registry.access.redhat.com/ubi10/ubi:latest
-LABEL org.opencontainers.image.base.name="registry.access.redhat.com/ubi10/ubi:latest"
+FROM registry.access.redhat.com/ubi10/ubi:10.2
+LABEL org.opencontainers.image.base.name="registry.access.redhat.com/ubi10/ubi:10.2"
 
 ### ARG declarations ###
 ARG TARGETARCH
