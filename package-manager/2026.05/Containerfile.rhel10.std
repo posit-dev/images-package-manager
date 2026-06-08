@@ -50,8 +50,11 @@ RUN /opt/python/3.14.5/bin/pip install --no-cache-dir --upgrade --break-system-p
     rm -f /tmp/requirements.txt
 
 ### Install R ###
-RUN RUN_UNATTENDED=1 R_VERSION=4.6.0 bash -c "$(curl -fsSL https://rstd.io/r-install)" && \
-    find . -type f -name '[rR]-4.6.0.*\.(deb|rpm)' -delete
+RUN mkdir -p /opt/R
+RUN ARCH=$(uname -m) && \
+    ARCH_SUFFIX=$([ "$ARCH" = "aarch64" ] && echo "-arm64" || echo "") && \
+    curl -fsSL "https://cdn.posit.co/r/manylinux_2_34/R-4.6.0-manylinux_2_34${ARCH_SUFFIX}.tar.gz" \
+        | tar -xz -C /opt/R/
 
 ### Install Package Manager 2026.05.0 ###
 COPY --chmod=0755 package-manager/2026.05/scripts/install_package_manager.rhel10.sh /tmp/install_package_manager.sh

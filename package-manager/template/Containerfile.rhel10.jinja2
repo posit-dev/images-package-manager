@@ -44,7 +44,7 @@ COPY {{ Path.Version }}/deps/python_requirements.txt /tmp/requirements.txt
 {{ python.run_install_packages(Dependencies.python, requirements_file='/tmp/requirements.txt') }}
 
 ### Install R ###
-{{ r.run_install(Dependencies.R) }}
+{{ r.run_install_manylinux(Dependencies.R) }}
 {%- endif %}
 
 ### Install Package Manager {{ Image.Version }} ###
