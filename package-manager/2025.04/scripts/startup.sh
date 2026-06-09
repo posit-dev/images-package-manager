@@ -58,8 +58,6 @@ elif test -f "$PPM_LICENSE_FILE_PATH"; then
     echo "Using license file at ${PPM_LICENSE_FILE_PATH}."
 elif ls "${_license_dir}"/*.lic >/dev/null 2>&1; then
     echo "Detected a license file in ${_license_dir}/."
-elif ls /home/rstudio-pm/.rstudio-pm/*.lic >/dev/null 2>&1; then
-    echo "Detected a license file in /home/rstudio-pm/.rstudio-pm/."
 fi
 
 # ensure these cannot be inherited by child processes
