@@ -40,22 +40,26 @@ PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH:-$RSPM_LICENSE_FILE_PATH}
 
 # Activate License
 PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH:-/etc/rstudio-pm/license.lic}
+_license_dir=/var/lib/rstudio-pm
 /opt/rstudio-pm/bin/license-manager initialize --userspace || true
 if ! [ -z "$PPM_LICENSE" ]; then
+    echo "Activating license key."
     /opt/rstudio-pm/bin/license-manager activate "$PPM_LICENSE" --userspace
 elif ! [ -z "$PPM_LICENSE_SERVER" ]; then
+    echo "Activating floating license server."
     /opt/rstudio-pm/bin/license-manager license-server "$PPM_LICENSE_SERVER" --userspace
 elif test -f "$PPM_LICENSE_FILE_PATH"; then
     # Direct copy avoids activate-file's root requirement and activation-slot lease risk.
     # https://docs.posit.co/rspm/admin/licensing.html
-    if [ "${PPM_LICENSE_FILE_PATH}" != "/var/lib/rstudio-pm/license.lic" ]; then
-        cp "${PPM_LICENSE_FILE_PATH}" /var/lib/rstudio-pm/license.lic
-        chmod 0600 /var/lib/rstudio-pm/license.lic
+    if [ "$(dirname "${PPM_LICENSE_FILE_PATH}")" != "${_license_dir}" ]; then
+        cp "${PPM_LICENSE_FILE_PATH}" "${_license_dir}/license.lic"
+        chmod 0600 "${_license_dir}/license.lic"
     fi
-elif ls /var/lib/rstudio-pm/*.lic >/dev/null 2>&1; then
-    echo "Detected a license file in /var/lib/rstudio-pm/*.lic."
+    echo "Using license file at ${PPM_LICENSE_FILE_PATH}."
+elif ls "${_license_dir}"/*.lic >/dev/null 2>&1; then
+    echo "Detected a license file in ${_license_dir}/."
 elif ls /home/rstudio-pm/.rstudio-pm/*.lic >/dev/null 2>&1; then
-    echo "Detected a license file in /home/rstudio-pm/.rstudio-pm/*.lic."
+    echo "Detected a license file in /home/rstudio-pm/.rstudio-pm/."
 fi
 
 # ensure these cannot be inherited by child processes
