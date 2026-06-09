@@ -48,11 +48,10 @@ elif ! [ -z "$PPM_LICENSE_SERVER" ]; then
 elif test -f "$PPM_LICENSE_FILE_PATH"; then
     # Direct copy avoids activate-file's root requirement and activation-slot lease risk.
     # https://docs.posit.co/rspm/admin/licensing.html
-    _tmp_lic=$(mktemp)
-    cp "${PPM_LICENSE_FILE_PATH}" "${_tmp_lic}"
-    rm -f /var/lib/rstudio-pm/*.lic
-    mv "${_tmp_lic}" /var/lib/rstudio-pm/license.lic
-    chmod 0600 /var/lib/rstudio-pm/license.lic
+    if [ "${PPM_LICENSE_FILE_PATH}" != "/var/lib/rstudio-pm/license.lic" ]; then
+        cp "${PPM_LICENSE_FILE_PATH}" /var/lib/rstudio-pm/license.lic
+        chmod 0600 /var/lib/rstudio-pm/license.lic
+    fi
 elif ls /var/lib/rstudio-pm/*.lic >/dev/null 2>&1; then
     echo "Detected a license file in /var/lib/rstudio-pm/*.lic."
 elif ls /home/rstudio-pm/.rstudio-pm/*.lic >/dev/null 2>&1; then
