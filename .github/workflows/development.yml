@@ -7,7 +7,7 @@ on:
         description: "Pinned dev version string (e.g. '2026.06.0-dev+156-gcff5d15b7f'). When set, bypasses CDN discovery."
         required: false
         type: string
-      stream:
+      channel:
         description: "Dev channel to build (e.g. 'daily', 'preview'). When set with version, only that channel is built."
         required: false
         type: string
@@ -64,7 +64,7 @@ jobs:
     with:
       dev-versions: "only"
       dev-version: ${{ inputs.version }}
-      dev-channel: ${{ inputs.stream }}
+      dev-channel: ${{ inputs.channel }}
       # Push on merges to main, scheduled rebuilds, and dispatches targeting main.
       push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
 
