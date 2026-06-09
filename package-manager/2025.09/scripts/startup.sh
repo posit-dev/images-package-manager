@@ -46,7 +46,11 @@ if ! [ -z "$PPM_LICENSE" ]; then
 elif ! [ -z "$PPM_LICENSE_SERVER" ]; then
     /opt/rstudio-pm/bin/license-manager license-server "$PPM_LICENSE_SERVER" --userspace
 elif test -f "$PPM_LICENSE_FILE_PATH"; then
-    /opt/rstudio-pm/bin/license-manager activate-file "$PPM_LICENSE_FILE_PATH" --userspace
+    _tmp_lic=$(mktemp)
+    cp "${PPM_LICENSE_FILE_PATH}" "${_tmp_lic}"
+    mkdir -p /home/rstudio-pm/.rstudio-pm
+    mv "${_tmp_lic}" /home/rstudio-pm/.rstudio-pm/license.lic
+    chmod 0600 /home/rstudio-pm/.rstudio-pm/license.lic
 elif ls /var/lib/rstudio-pm/*.lic >/dev/null 2>&1; then
     echo "Detected a license file in /var/lib/rstudio-pm/*.lic."
 elif ls /home/rstudio-pm/.rstudio-pm/*.lic >/dev/null 2>&1; then
