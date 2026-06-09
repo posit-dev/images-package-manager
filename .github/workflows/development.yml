@@ -11,10 +11,6 @@ on:
         description: "Dev channel to build (e.g. 'daily', 'preview'). When set with version, only that channel is built."
         required: false
         type: string
-      stream:
-        description: "Deprecated: use channel instead."
-        required: false
-        type: string
 
   schedule:
     # Daily rebuild of dev images. Staggered with images-connect (08:45)
@@ -68,7 +64,7 @@ jobs:
     with:
       dev-versions: "only"
       dev-version: ${{ inputs.version }}
-      dev-channel: ${{ inputs.channel || inputs.stream }}
+      dev-channel: ${{ inputs.channel }}
       # Push on merges to main, scheduled rebuilds, and dispatches targeting main.
       push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
 
