@@ -43,25 +43,23 @@ PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH:-/etc/rstudio-pm/license.lic}
 _license_dir=/var/lib/rstudio-pm
 /opt/rstudio-pm/bin/license-manager initialize --userspace || true
 if ! [ -z "$PPM_LICENSE" ]; then
-    echo "Activating license key."
     /opt/rstudio-pm/bin/license-manager activate "$PPM_LICENSE" --userspace
 elif ! [ -z "$PPM_LICENSE_SERVER" ]; then
-    echo "Activating floating license server."
     /opt/rstudio-pm/bin/license-manager license-server "$PPM_LICENSE_SERVER" --userspace
 elif test -f "$PPM_LICENSE_FILE_PATH"; then
     # Direct copy avoids activate-file's root requirement and activation-slot lease risk.
     # https://docs.posit.co/rspm/admin/licensing.html
     if [ "$(dirname "${PPM_LICENSE_FILE_PATH}")" != "${_license_dir}" ]; then
         if mountpoint -q "${_license_dir}"; then
-            echo "ERROR: ${_license_dir} is a volume mount. Mount the license file directly into ${_license_dir}/ instead of using PPM_LICENSE_FILE_PATH."
+            echo "ERROR: ${_license_dir} is a volume mount. Mount the license file directly into ${_license_dir}/ instead of using PPM_LICENSE_FILE_PATH." >&2
             exit 1
         fi
         cp "${PPM_LICENSE_FILE_PATH}" "${_license_dir}/license.lic"
         chmod 0600 "${_license_dir}/license.lic"
     fi
-    echo "Using license file at ${PPM_LICENSE_FILE_PATH}."
+    echo "Using license file at ${PPM_LICENSE_FILE_PATH}." >&2
 elif ls "${_license_dir}"/*.lic >/dev/null 2>&1; then
-    echo "Detected a license file in ${_license_dir}/."
+    echo "Detected a license file in ${_license_dir}/." >&2
 fi
 
 # ensure these cannot be inherited by child processes
