@@ -30,6 +30,9 @@ images:
       and centralizes data science packages across your team, department, or the entire
       organization."
     documentationUrl: https://docs.posit.co/rspm/
+    options:
+      - tool: soci
+        enabled: true
     dependencyConstraints:
       - dependency: R
         constraint:
