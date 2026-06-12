@@ -40,10 +40,10 @@ bakery build --image-name package-manager --image-version 2025.12
 
 ```shell
 # Run goss tests for all images
-bakery run dgoss
+bakery dgoss run
 
 # Run goss tests for a specific image
-bakery run dgoss --image-name package-manager
+bakery dgoss run --image-name package-manager
 ```
 
 ### Re-render templates
@@ -108,7 +108,7 @@ bakery update files --image-name package-manager --image-version 2025.12
 
 # Build and test before opening a PR
 bakery build --image-name package-manager --image-version 2025.12
-bakery run dgoss --image-name package-manager --image-version 2025.12
+bakery dgoss run --image-name package-manager --image-version 2025.12
 ```
 
 → [Shared procedure](https://github.com/posit-dev/images-shared/blob/main/CONTRIBUTING.md#update-older-versions)
