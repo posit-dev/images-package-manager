@@ -130,7 +130,7 @@ bakery build --image-name package-manager --image-version 2025.12.0 --image-vari
 bakery build --image-name package-manager --image-platform linux/arm64
 
 # Run goss tests
-bakery run dgoss
+bakery dgoss run
 
 # Re-render templates after changes
 bakery update files
