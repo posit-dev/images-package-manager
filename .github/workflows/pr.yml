@@ -36,7 +36,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: posit-dev/images-shared/.github/workflows/checks.yml@main
+    uses: posit-dev/images-shared/.github/workflows/checks.yml@worktree-lychee-link-checking
 
   production:
     name: Production
