@@ -217,7 +217,7 @@ Mount a custom configuration file:
 docker run -v /path/to/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg ...
 ```
 
-See the [configuration documentation](https://docs.posit.co/rspm/admin/appendix/configuration/) for available options.
+See the [configuration documentation](https://docs.posit.co/rspm/admin/appendix/configuration.html) for available options.
 
 ## Healthcheck
 
