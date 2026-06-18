@@ -1,0 +1,4 @@
+# Hosts that rate-limit, require auth, or otherwise false-positive.
+# One regex per line (matched against each URL). Extend as real failures surface.
+https://docs.posit.co/rspm/admin/appendix/configuration.html
+https://support.posit.co
