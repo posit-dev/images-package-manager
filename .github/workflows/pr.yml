@@ -55,4 +55,3 @@ jobs:
     uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
     with:
       dev-versions: "only"
-
