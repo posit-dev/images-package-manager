@@ -60,19 +60,3 @@ jobs:
       dev-versions: "exclude"
       # Push images only for merges into main and weekly schduled re-builds.
       push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
-
-  clean:
-    name: Clean
-    if: always() && github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-      packages: write
-    needs:
-      - build
-
-    uses: "posit-dev/images-shared/.github/workflows/clean.yml@main"
-    with:
-      remove-dangling-caches: true
-      remove-caches-older-than: 14
-      remove-dangling-temporary-images: false
-      remove-temporary-images-older-than: 3

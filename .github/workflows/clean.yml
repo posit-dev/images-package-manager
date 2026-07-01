@@ -1,0 +1,42 @@
+name: Clean
+
+on:
+  schedule:
+    - cron: "0 10 * * *" # At 10:00 every day
+
+  workflow_dispatch:
+
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  clean-production:
+    name: Clean Production
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+
+    uses: "posit-dev/images-shared/.github/workflows/clean.yml@main"
+    with:
+      remove-dangling-caches: true
+      remove-caches-older-than: 14
+      remove-dangling-temporary-images: false
+      remove-temporary-images-older-than: 2
+
+  clean-development:
+    name: Clean Development
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+
+    uses: "posit-dev/images-shared/.github/workflows/clean.yml@main"
+    with:
+      dev-versions: "only"
+      remove-dangling-caches: true
+      remove-caches-older-than: 7
+      remove-dangling-temporary-images: false
+      remove-temporary-images-older-than: 2
