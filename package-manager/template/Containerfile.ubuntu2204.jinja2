@@ -17,7 +17,6 @@ LABEL org.opencontainers.image.base.name="docker.io/library/ubuntu:22.04"
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
-ARG PACKAGE_MANAGER_VERSION="{{ Image.Version }}"
 
 ENV PPM_LICENSE=""
 ENV PPM_LICENSE_SERVER=""
@@ -46,6 +45,7 @@ COPY {{ Path.Version }}/deps/python_requirements.txt /tmp/requirements.txt
 {%- endif %}
 
 ### Install Package Manager {{ Image.Version }} ###
+ARG PACKAGE_MANAGER_VERSION="{{ Image.Version }}"
 COPY --chmod=0755 {{ Path.Version }}/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN {% if Image.Variant != "Minimal" %}PYTHON_VERSION={{ Dependencies.python.0 }} R_VERSION={{ Dependencies.R.0 }} {% endif %}{% if Image.DownloadURL is defined %}DOWNLOAD_URL="{{ Image.DownloadURL }}" {% endif %}\
     /tmp/install_package_manager.sh \
