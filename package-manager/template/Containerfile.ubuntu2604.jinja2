@@ -1,0 +1,69 @@
+{#-
+Below are imports for Bakery's macros. If any are unneeded, they can be removed.
+Bakery handles bootstrapping the files into template rendering.
+-#}
+{%- import "apt.j2" as apt -%}
+{%- import "python.j2" as python -%}
+{%- import "r.j2" as r -%}
+
+{%- if Image.Variant != "Minimal" -%}
+# Build Python using uv in a separate stage
+{{ python.build_stage(Dependencies.python) }}
+
+{% endif -%}
+
+FROM docker.io/library/ubuntu:26.04
+LABEL org.opencontainers.image.base.name="docker.io/library/ubuntu:26.04"
+
+### ARG declarations ###
+ARG TARGETARCH
+ARG DEBIAN_FRONTEND=noninteractive
+
+ENV PPM_LICENSE=""
+ENV PPM_LICENSE_SERVER=""
+ENV PPM_LICENSE_FILE_PATH=""
+ENV PPM_STARTUP_DEBUG=0
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
+### Setup environment ###
+{{ apt.run_setup() }}
+
+### Install Apt Packages ###
+COPY {{ Path.Version }}/deps/ubuntu-26.04_packages.txt /tmp/packages.txt
+{{ apt.run_install(files = '/tmp/packages.txt') }}
+
+{% if not Image.Variant == "Minimal" -%}
+### Install Python from previous stage ###
+{{ python.copy_from_build_stage() }}
+
+### Install Python packages ###
+COPY {{ Path.Version }}/deps/python_requirements.txt /tmp/requirements.txt
+{{ python.run_install_packages(Dependencies.python, requirements_file='/tmp/requirements.txt') }}
+
+### Install R ###
+{{ r.run_install(Dependencies.R) }}
+{%- endif %}
+
+### Install Package Manager {{ Image.Version }} ###
+ARG PACKAGE_MANAGER_VERSION="{{ Image.Version }}"
+COPY --chmod=0755 {{ Path.Version }}/scripts/install_package_manager.sh /tmp/install_package_manager.sh
+RUN {% if Image.Variant != "Minimal" %}PYTHON_VERSION={{ Dependencies.python.0 }} R_VERSION={{ Dependencies.R.0 }} {% endif %}{% if Image.DownloadURL is defined %}DOWNLOAD_URL="{{ Image.DownloadURL }}" {% endif %}\
+    /tmp/install_package_manager.sh \
+    && rm -f /tmp/install_package_manager.sh
+
+### Add startup.sh script ###
+COPY --chmod=0775 {{ Path.Version }}/scripts/startup.sh /usr/local/bin/startup.sh
+RUN mkdir -p /var/run/rstudio-pm \
+    && chmod +x /usr/local/bin/startup.sh \
+    && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \
+    && chown -R rstudio-pm:rstudio-pm /var/run/rstudio-pm
+
+USER rstudio-pm
+
+RUN echo "source <(rspm completion bash)" >> ~/.bashrc
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -fsS http://localhost:4242/__ping__ || exit 1
+
+CMD ["/usr/local/bin/startup.sh"]
