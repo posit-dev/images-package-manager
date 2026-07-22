@@ -1,0 +1,86 @@
+user:
+  rstudio-pm:
+    exists: true
+    uid: 999
+    gid: 999
+
+group:
+  rstudio-pm:
+    exists: true
+    gid: 999
+
+package:
+  rstudio-pm:
+    installed: true
+  {{ $apt_package_list_path := printf "/tmp/version/deps/%s-%s_packages.txt" (toLower .Env.IMAGE_OS_NAME) .Env.IMAGE_OS_VERSION }}
+  {{ $apt_package_list := readFile $apt_package_list_path | splitList "\n" }}
+  {{- range $apt_package_list }}
+  {{ . }}:
+    installed: true
+  {{ end }}
+
+process:
+  rstudio-pm:
+    running: true
+    skip: {{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}
+
+port:
+  tcp6:4242:
+    listening: true
+    skip: {{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}
+
+file:
+  /etc/rstudio-pm/license.lic:
+# Currently does not exist
+# Be sure it is NOT a directory
+    exists: false
+  /opt/rstudio-pm/:
+    exists: true
+  /opt/rstudio-pm/bin/rstudio-pm:
+    exists: true
+  /opt/rstudio-pm/bin/rspm:
+    exists: true
+  /usr/local/bin/rspm:
+    exists: true
+  {{ if eq .Env.IMAGE_VARIANT "Standard" }}
+  /var/log/rstudio/rstudio-pm/rstudio-pm.log:
+    exists: true
+    filetype: file
+    contents:
+      - "Posit Package Manager service is ready"
+  {{ end }}
+  # Check for R installation
+  /opt/R/4.6.1/bin/R:
+    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
+    filetype: file
+  # Check for Python installation
+  /opt/python/3.14.6/bin/python:
+    exists: {{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}
+  /etc/rstudio-pm/rstudio-pm.gcfg:
+    exists: true
+    filetype: file
+    {{ if eq .Env.IMAGE_VARIANT "Standard" }}
+    contents:
+      - RVersion = /opt/R/4.6.1
+      - PythonVersion = /opt/python/3.14.6/bin/python
+      - "AllowUnsandboxedGitBuilds = true"
+    {{ end }}
+
+command:
+  "Ensure Package Manager version is correct":
+    exec: /opt/rstudio-pm/bin/rstudio-pm --version
+    exit-status: 0
+    stdout:
+      - "2038.01.1"
+  "Ensure R version is correct":
+    exec: /opt/R/4.6.1/bin/R --version
+    exit-status: 0
+    stdout:
+      - "4.6.1"
+    skip: {{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}
+  "Ensure Python version is correct":
+    exec: /opt/python/3.14.6/bin/python --version
+    exit-status: 0
+    stdout:
+      - "3.14.6"
+    skip: {{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}
