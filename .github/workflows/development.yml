@@ -60,7 +60,7 @@ jobs:
     #
     # Builds all development versions of each image in parallel.
     #
-    # Run on merges to main, or on hourly scheduled re-builds.
+    # Run on merges to main, or on daily scheduled re-builds.
     permissions:
       contents: read
       packages: write
@@ -78,7 +78,7 @@ jobs:
       push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
 
   dogfood:
-    name: Update PPM Dogfood
+    name: Update internal PPM installs
     if: >-
       needs.dev.result == 'success' &&
       inputs.channel == 'daily' &&
@@ -106,9 +106,9 @@ jobs:
           app-id: ${{ secrets.PPM_AUTOMATION_APP_ID }}
           private-key: ${{ secrets.PPM_AUTOMATION_PEM }}
           owner: rstudio
-          repositories: helm-package-manager
+          repositories: helm-package-manager,pulumi-package-manager
 
-      - name: Dispatch to helm-package-manager
+      - name: Dispatch deploys
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           DEV_CHANNEL: ${{ inputs.channel }}
@@ -119,7 +119,14 @@ jobs:
           bakery ci matrix "${ARGS[@]}" | jq -r '.[].version' | sort -u | while read -r version; do
             tag="${version//+/-}"
             echo "Dispatching version: $tag"
+            # Legacy dogfood sites ({solo,s3,cluster}.packagemanager.posit.co).
+            # Remove once the aws-package-manager production stack is fully
+            # de-provisioned.
             gh workflow run arbitrary-deploy.yml \
               --repo rstudio/helm-package-manager \
               --field ppm-image-version="$tag"
+            # ppm.posit.it, the dogfood replacement (aws-ppm-team Pulumi stack).
+            gh workflow run aws_ppm_team_image_update.yml \
+              --repo rstudio/pulumi-package-manager \
+              --field image_tag="$tag"
           done
