@@ -123,12 +123,6 @@ jobs:
           bakery ci matrix "${ARGS[@]}" | jq -r '.[].version' | sort -u | while read -r version; do
             tag="${version//+/-}"
             echo "Dispatching version: $tag"
-            # Legacy dogfood sites ({solo,s3,cluster}.packagemanager.posit.co).
-            # Remove once the aws-package-manager production stack is fully
-            # de-provisioned.
-            gh workflow run arbitrary-deploy.yml \
-              --repo rstudio/helm-package-manager \
-              --field ppm-image-version="$tag"
             # ppm.posit.it, the dogfood replacement (aws-ppm-team Pulumi stack).
             gh workflow run aws_ppm_team_image_update.yml \
               --repo rstudio/pulumi-package-manager \
