@@ -83,9 +83,13 @@ jobs:
 
   dogfood:
     name: Update internal PPM installs
+    # `inputs` is only populated on workflow_dispatch; on schedule and push
+    # events `inputs.channel` is empty, so those events must be allowed
+    # through without the channel check (the dispatch step defaults them to
+    # the daily channel).
     if: >-
       needs.dev.result == 'success' &&
-      inputs.channel == 'daily' &&
+      (inputs.channel == 'daily' || github.event_name != 'workflow_dispatch') &&
       (github.event_name == 'push' && github.ref == 'refs/heads/main' ||
        github.event_name == 'schedule' ||
        github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
@@ -115,7 +119,9 @@ jobs:
       - name: Dispatch deploys
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          DEV_CHANNEL: ${{ inputs.channel }}
+          # Schedule and push runs build every dev channel; only the daily
+          # channel is deployed to the internal installs.
+          DEV_CHANNEL: ${{ inputs.channel || 'daily' }}
         run: |
           ARGS=(--dev-versions only --exclude platform --quiet)
           [[ -n "$DEV_CHANNEL" ]] && ARGS+=(--dev-channel "$DEV_CHANNEL")
