@@ -55,8 +55,9 @@ jobs:
       contents: read
       packages: write
       security-events: write
-    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
+    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@feat/trivy-security-scan
     with:
+      version: feat/trivy-security-scan
       dev-versions: "exclude"
 
   development:
@@ -65,8 +66,9 @@ jobs:
       contents: read
       packages: write
       security-events: write
-    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
+    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@feat/trivy-security-scan
     with:
+      version: feat/trivy-security-scan
       dev-versions: "only"
 
   zizmor:

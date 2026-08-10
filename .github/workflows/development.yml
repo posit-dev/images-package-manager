@@ -67,10 +67,11 @@ jobs:
       id-token: write
       security-events: write
 
-    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@feat/trivy-security-scan"
     secrets:
       AWS_ROLE: ${{ secrets.AWS_ROLE }}
     with:
+      version: feat/trivy-security-scan
       dev-versions: "only"
       dev-version: ${{ inputs.version }}
       dev-channel: ${{ inputs.channel }}
