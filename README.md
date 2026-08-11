@@ -57,7 +57,7 @@ You can build Open Container Initiative (OCI) container images from the definiti
 Each Containerfile uses the root of the repository as the build context.
 
 ```shell
-PPM_VERSION="2026.06"
+PPM_VERSION="2026.08"
 
 # Build the standard Package Manager image using docker
 docker buildx build \

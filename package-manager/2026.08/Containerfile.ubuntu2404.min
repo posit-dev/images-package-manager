@@ -1,0 +1,65 @@
+FROM docker.io/library/ubuntu:24.04
+LABEL org.opencontainers.image.base.name="docker.io/library/ubuntu:24.04"
+
+### ARG declarations ###
+ARG TARGETARCH
+ARG DEBIAN_FRONTEND=noninteractive
+
+ENV PPM_LICENSE=""
+ENV PPM_LICENSE_SERVER=""
+ENV PPM_LICENSE_FILE_PATH=""
+ENV PPM_STARTUP_DEBUG=0
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
+### Setup environment ###
+RUN echo 'Acquire::Retries "3"; Acquire::http::Timeout "30"; Acquire::https::Timeout "30";' > /etc/apt/apt.conf.d/99-retries && \
+    apt-get update -yqq --fix-missing && \
+    apt-get upgrade -yqq && \
+    apt-get dist-upgrade -yqq && \
+    apt-get autoremove -yqq --purge && \
+    apt-get install -yqq --no-install-recommends \
+        curl \
+        ca-certificates \
+        gnupg \
+        tar && \
+    apt-get install -yqq --no-install-recommends locales && \
+    localedef -i en_US -f UTF-8 en_US.UTF-8 && \
+    bash -c "$(curl -1fsSL 'https://dl.posit.co/public/pro/setup.deb.sh')" && \
+    apt-get clean -yqq && \
+    rm -rf /var/lib/apt/lists/*
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
+### Install Apt Packages ###
+COPY package-manager/2026.08/deps/ubuntu-24.04_packages.txt /tmp/packages.txt
+RUN apt-get update -yqq && \
+    xargs -a /tmp/packages.txt apt-get install -yqq --no-install-recommends && \
+    apt-get clean -yqq && \
+    rm -rf /var/lib/apt/lists/*
+
+
+
+### Install Package Manager 2026.08.0 ###
+ARG PACKAGE_MANAGER_VERSION="2026.08.0"
+COPY --chmod=0755 package-manager/2026.08/scripts/install_package_manager.sh /tmp/install_package_manager.sh
+RUN \
+    /tmp/install_package_manager.sh \
+    && rm -f /tmp/install_package_manager.sh
+
+### Add startup.sh script ###
+COPY --chmod=0775 package-manager/2026.08/scripts/startup.sh /usr/local/bin/startup.sh
+RUN mkdir -p /var/run/rstudio-pm \
+    && chmod +x /usr/local/bin/startup.sh \
+    && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \
+    && chown -R rstudio-pm:rstudio-pm /var/run/rstudio-pm
+
+USER rstudio-pm
+
+RUN echo "source <(rspm completion bash)" >> ~/.bashrc
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -fsS http://localhost:4242/__ping__ || exit 1
+
+CMD ["/usr/local/bin/startup.sh"]
