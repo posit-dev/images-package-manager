@@ -65,7 +65,6 @@ jobs:
       contents: read
       packages: write
       id-token: write
-      security-events: write
 
     uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@feat/trivy-security-scan"
     secrets:
