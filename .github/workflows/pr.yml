@@ -54,18 +54,24 @@ jobs:
     permissions:
       contents: read
       packages: write
-    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
+    # TEMPORARY: pointed at feat/actions-job-summary to test the new build
+    # summary reporting end-to-end. Revert to @main before merging.
+    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@feat/actions-job-summary
     with:
       dev-versions: "exclude"
+      version: "feat/actions-job-summary"
 
   development:
     name: Development
     permissions:
       contents: read
       packages: write
-    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
+    # TEMPORARY: pointed at feat/actions-job-summary to test the new build
+    # summary reporting end-to-end. Revert to @main before merging.
+    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@feat/actions-job-summary
     with:
       dev-versions: "only"
+      version: "feat/actions-job-summary"
 
   zizmor:
     name: Zizmor
