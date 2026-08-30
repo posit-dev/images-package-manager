@@ -108,6 +108,8 @@ jobs:
 
       - name: Setup bakery
         uses: posit-dev/images-shared/setup-bakery@main
+        with:
+          restore-cache: "false"
 
       - name: Generate GitHub App Token
         id: app-token
