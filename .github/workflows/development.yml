@@ -66,13 +66,14 @@ jobs:
       packages: write
       id-token: write
 
-    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@feat/trivy-security-scan"
     secrets:
       WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
       WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
       WIZ_POLICY_ID: ${{ secrets.WIZ_POLICY_ID }}
       WIZ_PROJECT_ID: ${{ secrets.WIZ_PROJECT_ID }}
     with:
+      version: feat/trivy-security-scan
       dev-versions: "only"
       dev-version: ${{ inputs.version }}
       dev-channel: ${{ inputs.channel }}
