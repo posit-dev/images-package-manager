@@ -75,6 +75,11 @@ file:
   {{ python.get_version_directory(python_version) }}/bin/python:
     exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
   {%- endfor %}
+  {%- if Image.IsDevelopmentVersion %}
+  # Check for uv, used by package request dependency solving
+  /usr/local/bin/uv:
+    exists: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}true{{ else }}false{{ end }}{% endraw %}
+  {%- endif %}
   /etc/rstudio-pm/rstudio-pm.gcfg:
     exists: true
     filetype: file
@@ -107,3 +112,11 @@ command:
       - "{{ python_version }}"
     skip: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}{% endraw %}
   {%- endfor %}
+  {%- if Image.IsDevelopmentVersion %}
+  "Ensure uv is on PATH":
+    exec: uv --version
+    exit-status: 0
+    stdout:
+      - "0.12.3"
+    skip: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}{% endraw %}
+  {%- endif %}

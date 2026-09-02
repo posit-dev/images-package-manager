@@ -40,6 +40,39 @@ COPY {{ Path.Version }}/deps/ubuntu-22.04_packages.txt /tmp/packages.txt
 COPY {{ Path.Version }}/deps/python_requirements.txt /tmp/requirements.txt
 {{ python.run_install_packages(Dependencies.python, requirements_file='/tmp/requirements.txt') }}
 
+{% if Image.IsDevelopmentVersion -%}
+### Install uv ###
+# Package request dependency solving shells out to uv. PPM searches PATH when
+# Server.PackageRequestUvPath is empty (the default), so installing into
+# /usr/local/bin needs no matching PPM configuration.
+#
+# Pinned and checksummed rather than piped from the astral.sh install script so
+# the build fails closed on a bad download. Keep the version in sync with the
+# root Dockerfile of rstudio/package-manager, which is the uv that PPM's own CI
+# tests against.
+#
+# Named UV_RELEASE_VERSION, not UV_VERSION: uv itself consumes a large set of
+# UV_* variables, so a distinct name avoids any collision at build time.
+#
+# Development images only, while package requests sit behind the
+# `package_requests` feature flag. Drop the IsDevelopmentVersion guard when the
+# feature reaches GA so released images carry uv too.
+ARG UV_RELEASE_VERSION=0.12.3
+ARG UV_SHA256_X86=600cf9a742aca00d292673b16b5acffaa7b8c269a364ad0c2e79498dcb1fe101
+ARG UV_SHA256_ARM=bb66cb52e7b1823aed1183630d8d8e5c958840d584a4c55ec10a4cfc168dcca2
+RUN ARCH="$(dpkg --print-architecture)" && \
+    case "$ARCH" in \
+        amd64) UV_TARGET="x86_64-unknown-linux-gnu"; SHA256="$UV_SHA256_X86" ;; \
+        arm64) UV_TARGET="aarch64-unknown-linux-gnu"; SHA256="$UV_SHA256_ARM" ;; \
+        *) echo >&2 "unsupported architecture: $ARCH"; exit 1 ;; \
+    esac && \
+    curl -fsSL "https://github.com/astral-sh/uv/releases/download/${UV_RELEASE_VERSION}/uv-${UV_TARGET}.tar.gz" -o /tmp/uv.tar.gz && \
+    echo "${SHA256} */tmp/uv.tar.gz" | sha256sum -c - && \
+    tar -C /usr/local/bin --strip-components=1 -xzf /tmp/uv.tar.gz "uv-${UV_TARGET}/uv" "uv-${UV_TARGET}/uvx" && \
+    rm -f /tmp/uv.tar.gz && \
+    uv --version
+
+{% endif -%}
 ### Install R ###
 {{ r.run_install(Dependencies.R) }}
 {%- endif %}
