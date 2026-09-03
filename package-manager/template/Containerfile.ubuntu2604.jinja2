@@ -73,6 +73,29 @@ RUN ARCH="$(dpkg --print-architecture)" && \
     rm -f /tmp/uv.tar.gz && \
     uv --version
 
+### Put Python on PATH for uv ###
+# uv resolves a dependency closure only when it finds a Python interpreter.
+# PPM runs uv with UV_PYTHON_DOWNLOADS=never, so uv cannot download one, and
+# this image has none on PATH: the interpreter from the build stage sits under
+# /opt/python and nothing points at it. Every resolve then fails with `No
+# interpreter found`, and /__api__/package-requests/resolve-deps answers 500.
+#
+# PPM passes PATH, HOME, and the proxy and certificate variables to uv and
+# drops every other variable, including UV_PYTHON_INSTALL_DIR, so PATH is the
+# way to give uv an interpreter.
+#
+# PATH rather than a symlink into /usr/local/bin: the root Dockerfile of
+# rstudio/package-manager adds the same PATH entry, and records that
+# symlinking `python` and `python3` breaks Python Git sandboxing.
+#
+# The interpreter version does not have to match the version that PPM resolves
+# for. `uv pip compile --python-version 3.12` needs any interpreter, and it
+# gives the same closure under 3.9, 3.12, and 3.14.
+#
+# Development images only, for the reason above. Drop the IsDevelopmentVersion
+# guard with the uv guard at GA.
+ENV PATH={{ python.get_version_directory(Dependencies.python.0) }}/bin:$PATH
+
 {% endif -%}
 ### Install R ###
 {{ r.run_install(Dependencies.R) }}
