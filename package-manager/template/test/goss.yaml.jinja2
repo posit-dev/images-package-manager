@@ -119,4 +119,18 @@ command:
     stdout:
       - "0.12.3"
     skip: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}{% endraw %}
+  "Ensure Python is on PATH":
+    exec: python3 --version
+    exit-status: 0
+    stdout:
+      - "{{ Dependencies.python.0 }}"
+    skip: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}{% endraw %}
+  # Discovery by uv, and not the file alone. Package request dependency solving
+  # fails when uv finds no interpreter, and PPM gives uv no way to download one.
+  "Ensure uv finds a Python interpreter":
+    exec: UV_PYTHON_DOWNLOADS=never uv python find
+    exit-status: 0
+    stdout:
+      - "{{ python.get_version_directory(Dependencies.python.0) }}"
+    skip: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}{% endraw %}
   {%- endif %}
