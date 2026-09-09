@@ -59,6 +59,8 @@ file:
   {{ if eq .Env.IMAGE_OS_VERSION "26.04" }}
   /usr/bin/pebble:
     exists: false
+  /var/lib/pebble:
+    exists: false
   {{ end }}
   {%- endraw %}
   {% if major_version > 2024 or (major_version == 2024 and minor_version >= 8) -%}

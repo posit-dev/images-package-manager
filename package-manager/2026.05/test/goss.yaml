@@ -45,6 +45,8 @@ file:
   {{ if eq .Env.IMAGE_OS_VERSION "26.04" }}
   /usr/bin/pebble:
     exists: false
+  /var/lib/pebble:
+    exists: false
   {{ end }}
   {{ if eq .Env.IMAGE_VARIANT "Standard" }}
   /var/log/rstudio/rstudio-pm/rstudio-pm.log:
