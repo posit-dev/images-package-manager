@@ -66,13 +66,15 @@ jobs:
       packages: write
       id-token: write
 
-    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/bakery-build-native.yml@feat/wizcli-tag-local"
     secrets:
       WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
       WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
       WIZ_POLICY_ID: ${{ secrets.WIZ_POLICY_ID }}
       WIZ_PROJECT_ID: ${{ secrets.WIZ_PROJECT_ID }}
     with:
+      # Test the shared Wiz tagging branch and install its matching Bakery code.
+      version: "feat/wizcli-tag-local"
       dev-versions: "only"
       dev-version: ${{ inputs.version }}
       dev-channel: ${{ inputs.channel }}
@@ -81,7 +83,8 @@ jobs:
       # an explicit workflow_dispatch with `cache: false` disables the registry cache.
       cache: ${{ github.event_name != 'workflow_dispatch' || inputs.cache }}
       # Push on merges to main, scheduled rebuilds, and dispatches targeting main.
-      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+      # Test dispatches from this branch push images so the Wiz scan runs.
+      push: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/feat/wizcli-tag-local' || github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
 
   dogfood:
     name: Update internal PPM installs
