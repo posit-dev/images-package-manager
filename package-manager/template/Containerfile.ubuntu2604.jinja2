@@ -29,7 +29,7 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 RUN rm -f /usr/bin/pebble && rm -rf /var/lib/pebble
 
 ### Setup environment ###
-{{ apt.run_setup() }}
+{{ apt.run_setup(open_repo=True, pro_repo=True) }}
 
 ### Install Apt Packages ###
 COPY {{ Path.Version }}/deps/ubuntu-26.04_packages.txt /tmp/packages.txt
