@@ -57,6 +57,7 @@ jobs:
     uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
     with:
       dev-versions: "exclude"
+      recent: 3
 
   development:
     name: Development
