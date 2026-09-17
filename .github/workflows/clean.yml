@@ -19,7 +19,7 @@ jobs:
       contents: read
       packages: write
 
-    uses: "posit-dev/images-shared/.github/workflows/clean.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/clean.yml@v0"
     with:
       remove-dangling-caches: true
       remove-caches-older-than: 14
@@ -33,7 +33,7 @@ jobs:
       contents: read
       packages: write
 
-    uses: "posit-dev/images-shared/.github/workflows/clean.yml@main"
+    uses: "posit-dev/images-shared/.github/workflows/clean.yml@v0"
     with:
       dev-versions: "only"
       remove-dangling-caches: true

@@ -27,7 +27,7 @@ jobs:
           jobs: ${{ toJSON(needs) }}
       - if: always() && github.event_name == 'merge_group'
         continue-on-error: true
-        uses: posit-dev/images-shared/.github/actions/slack-build-notify@main
+        uses: posit-dev/images-shared/.github/actions/slack-build-notify@v0
         with:
           result: ${{ steps.alls-green.outcome }}
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -54,7 +54,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
+    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@v0
     with:
       dev-versions: "exclude"
       recent: 3
@@ -64,7 +64,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@main
+    uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@v0
     with:
       dev-versions: "only"
 
