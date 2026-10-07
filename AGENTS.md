@@ -4,6 +4,8 @@
 
 Posit Package Manager container image built with [Posit Bakery](https://github.com/posit-dev/images-shared/tree/main/posit-bakery). Contains `package-manager` (Standard/Minimal variants). Supports multi-platform builds (amd64/arm64).
 
+Before changing Bakery templates, versions, or CI workflows, follow the [Bakery skill](https://github.com/posit-dev/images-shared/blob/main/plugins/bakery/skills/bakery/SKILL.md).
+
 ## Sibling Repositories
 
 This project is part of a multi-repo ecosystem for Posit container images. **Read the
