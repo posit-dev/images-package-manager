@@ -57,6 +57,7 @@ jobs:
     uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@v0
     with:
       dev-versions: "exclude"
+      trivy-scan: true
       recent: 3
 
   development:
@@ -67,6 +68,7 @@ jobs:
     uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@v0
     with:
       dev-versions: "only"
+      trivy-scan: true
 
   zizmor:
     name: Zizmor
