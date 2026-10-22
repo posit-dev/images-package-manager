@@ -8,6 +8,11 @@ on:
         type: boolean
         default: false
         required: false
+      recent:
+        description: "Number of most recent release versions of each image to build. Use 0 to build ALL present release versions [default: 3]"
+        type: number
+        default: 3
+        required: false
 
   schedule:
     # Weekly rebuild of all images, to pick up any upstream changes.
@@ -61,7 +66,8 @@ jobs:
 
   build:
     name: Build
-    # Build the three most recent release versions, excluding dev versions.
+    # Build the N most recent release versions, excluding dev versions.
+    # N defaults to 3; workflow_dispatch can override it (0 = all versions).
     #
     # Run on merges to main, or on weekly scheduled re-builds.
     needs:
@@ -82,7 +88,9 @@ jobs:
       WIZ_PROJECT_ID: ${{ secrets.WIZ_PROJECT_ID }}
     with:
       dev-versions: "exclude"
-      recent: 3
+      # Not `inputs.recent || 3` (0 is falsy) or `inputs.recent == null` (null == 0 is true):
+      # both turn a dispatched 0 into 3. Non-dispatch runs have no inputs and build 3.
+      recent: ${{ github.event_name != 'workflow_dispatch' && 3 || inputs.recent }}
       # Push images only for merges into main and weekly schduled re-builds.
       push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
       refresh-cache: ${{ inputs.refresh-cache || false }}
