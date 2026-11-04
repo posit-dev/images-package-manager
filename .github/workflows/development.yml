@@ -117,6 +117,7 @@ jobs:
           private-key: ${{ secrets.PPM_AUTOMATION_PEM }}
           owner: rstudio
           repositories: helm-package-manager,pulumi-package-manager
+          permission-actions: write
 
       - name: Dispatch deploys
         env:
