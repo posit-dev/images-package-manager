@@ -77,6 +77,9 @@ RUN mkdir -p /var/run/rstudio-pm \
 
 USER rstudio-pm
 
+# Initialize userspace licensing for runtime activation.
+RUN /opt/rstudio-pm/bin/license-manager initialize --userspace || true
+
 RUN echo "source <(rspm completion bash)" >> ~/.bashrc
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
