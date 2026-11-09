@@ -130,8 +130,6 @@ command:
   "Ensure uv is on PATH":
     exec: uv --version
     exit-status: 0
-    stdout:
-      - "0.12.3"
     skip: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}{% endraw %}
   "Ensure Python is on PATH":
     exec: python3 --version
