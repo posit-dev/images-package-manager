@@ -1,0 +1,79 @@
+#!/bin/bash
+
+set -e
+if [[ "${PPM_STARTUP_DEBUG:-0}" -eq 1 ]]; then
+  set -x
+fi
+
+# Deactivate key or server licenses when the process exits
+deactivate() {
+    echo "Deactivating license ..."
+    is_deactivated=0
+    retries=0
+    while [[ $is_deactivated -ne 1 ]] && [[ $retries -le 3 ]]; do
+      /opt/rstudio-pm/bin/license-manager deactivate --userspace >/dev/null 2>&1
+      is_deactivated=1
+      ((retries+=1))
+      # TODO: this may not longer be necessary, but I need more context for why it's here first.
+      if [ -d /home/rstudio-pm/.local ]; then
+        # shellcheck disable=SC2045
+        for file in $(ls -A /home/rstudio-pm/.local); do
+          if [ -s "/home/rstudio-pm/.local/$file" ]; then
+            if [[ $retries -lt 3 ]]; then
+              echo "License did not deactivate, retry ${retries}..."
+              is_deactivated=0
+            else
+              echo "Unable to deactivate license. If you encounter issues activating your product in the future, please contact Posit support."
+            fi
+            continue
+          fi
+        done
+      fi
+    done
+}
+
+# Backward compatibility: fall back to RSPM_ prefixed variables if PPM_ not set
+PPM_LICENSE=${PPM_LICENSE:-$RSPM_LICENSE}
+PPM_LICENSE_SERVER=${PPM_LICENSE_SERVER:-$RSPM_LICENSE_SERVER}
+PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH:-$RSPM_LICENSE_FILE_PATH}
+
+# Activate License
+PPM_LICENSE_FILE_PATH=${PPM_LICENSE_FILE_PATH:-/etc/rstudio-pm/license.lic}
+_license_dir=/home/rstudio-pm/.rstudio-pm
+if [ -n "$PPM_LICENSE" ]; then
+    /opt/rstudio-pm/bin/license-manager activate "$PPM_LICENSE" --userspace
+    trap deactivate EXIT
+elif [ -n "$PPM_LICENSE_SERVER" ]; then
+    /opt/rstudio-pm/bin/license-manager license-server "$PPM_LICENSE_SERVER" --userspace
+    trap deactivate EXIT
+elif test -f "$PPM_LICENSE_FILE_PATH"; then
+    # License files are read directly from this directory, without activate-file.
+    # https://docs.posit.co/rspm/admin/licensing.html#licensing-with-file-activation
+    case "$(realpath "$PPM_LICENSE_FILE_PATH")" in
+        "${_license_dir}/"*)
+            ;;
+        *)
+            mkdir -p "${_license_dir}"
+            rm -f "${_license_dir}"/*.lic
+            cp "$PPM_LICENSE_FILE_PATH" "${_license_dir}/license.lic"
+            if [ "$(id -u)" -eq 0 ]; then
+                chown rstudio-pm:rstudio-pm "${_license_dir}/license.lic"
+            fi
+            chmod 0600 "${_license_dir}/license.lic"
+            ;;
+    esac
+    echo "Using license file at ${PPM_LICENSE_FILE_PATH}." >&2
+elif ls "${_license_dir}"/*.lic >/dev/null 2>&1; then
+    echo "Detected a license file in ${_license_dir}/." >&2
+fi
+
+# ensure these cannot be inherited by child processes
+unset PPM_LICENSE
+unset PPM_LICENSE_SERVER
+unset PPM_LICENSE_FILE_PATH
+unset RSPM_LICENSE
+unset RSPM_LICENSE_SERVER
+unset RSPM_LICENSE_FILE_PATH
+
+# Start RStudio Package Manager
+/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg
