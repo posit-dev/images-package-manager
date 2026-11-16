@@ -134,7 +134,7 @@ jobs:
           bakery ci matrix "${ARGS[@]}" | jq -r '.[].version' | sort -u | while read -r version; do
             tag="${version//+/-}"
             echo "Dispatching version: $tag"
-            # ppm.posit.it, the dogfood replacement (aws-ppm-team Pulumi stack).
+            # dogfood.ppm.posit.it, the dogfood replacement (aws-ppm-team Pulumi stack).
             gh workflow run aws_ppm_team_image_update.yml \
               --repo rstudio/pulumi-package-manager \
               --field image_tag="$tag"
