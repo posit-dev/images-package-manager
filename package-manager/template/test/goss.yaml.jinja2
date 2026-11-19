@@ -4,6 +4,8 @@ Bakery handles bootstrapping the files into template rendering.
 -#}
 {%- import "python.j2" as python -%}
 {%- import "r.j2" as r -%}
+{%- import "goss.j2" as goss -%}
+{%- set r_bins = ["R", "Rscript"] -%}
 {%- set clean_version = Image.Version | stripMetadata -%}
 {%- set version_split = clean_version.split('.') -%}
 {%- set major_version = version_split[0]|int -%}
@@ -118,6 +120,10 @@ command:
       - "{{ r_version }}"
     skip: {% raw %}{{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}{% endraw %}
   {%- endfor %}
+  {% raw %}{{ if eq .Env.IMAGE_VARIANT "Standard" }}{% endraw %}
+  {{- goss.path_link_checks(r_bins, r.get_version_directory(Dependencies.R | maxVersion)) }}
+  {{- goss.path_link_targets(r_bins, "/opt/R/default") }}
+  {% raw %}{{ end }}{% endraw %}
   {% for python_version in Dependencies.python -%}
   "Ensure Python version is correct":
     exec: {{ python.get_version_directory(python_version) }}/bin/python --version

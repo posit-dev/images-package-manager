@@ -90,6 +90,20 @@ command:
     stdout:
       - "4.6.2"
     skip: {{ if eq .Env.IMAGE_VARIANT "Minimal" }}true{{ else }}false{{ end }}
+  {{ if eq .Env.IMAGE_VARIANT "Standard" }}
+  R-on-path-is-newest:
+    exec: test "$(readlink -f "$(command -v R)")" = "$(readlink -f /opt/R/4.6.2/bin/R)"
+    exit-status: 0
+  Rscript-on-path-is-newest:
+    exec: test "$(readlink -f "$(command -v Rscript)")" = "$(readlink -f /opt/R/4.6.2/bin/Rscript)"
+    exit-status: 0
+  R-link-targets-newest:
+    exec: test "$(readlink /usr/local/bin/R)" = "/opt/R/default/bin/R"
+    exit-status: 0
+  Rscript-link-targets-newest:
+    exec: test "$(readlink /usr/local/bin/Rscript)" = "/opt/R/default/bin/Rscript"
+    exit-status: 0
+  {{ end }}
   "Ensure Python version is correct":
     exec: /opt/python/3.15.2/bin/python --version
     exit-status: 0
