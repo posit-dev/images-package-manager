@@ -91,7 +91,7 @@ ENV PATH={{ python.get_version_directory(Dependencies.python.0) }}/bin:$PATH
 
 {% endif -%}
 ### Install R ###
-{{ r.run_install(Dependencies.R) }}
+{{ r.run_install(Dependencies.R, link_to_path=True) }}
 {%- endif %}
 
 ### Install Package Manager {{ Image.Version }} ###

@@ -66,6 +66,15 @@ RUN apt-get update -yqq && \
     apt-get clean -yqq && \
     rm -rf /var/lib/apt/lists/*
 
+RUN ln -sfn /opt/R/4.6.2 /opt/R/default && \
+    for bin in R Rscript; do \
+        case "$(readlink /usr/local/bin/$bin || true)" in \
+            /opt/R/*) ;; \
+            *) if [ -e /usr/local/bin/$bin ]; then echo "Keeping existing /usr/local/bin/$bin" >&2; continue; fi ;; \
+        esac; \
+        ln -sf /opt/R/default/bin/$bin /usr/local/bin/$bin; \
+    done
+
 ### Install Package Manager 2026.11.0 ###
 ARG PACKAGE_MANAGER_VERSION="2026.11.0"
 COPY --chmod=0755 package-manager/2026.11/scripts/install_package_manager.sh /tmp/install_package_manager.sh
