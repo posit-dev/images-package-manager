@@ -87,6 +87,7 @@ images:
       - name: Minimal
         extension: min
         tagDisplayName: min
+        toolLabels: false
     versions:
       - name: 2026.11.0
         subpath: '2026.11'
