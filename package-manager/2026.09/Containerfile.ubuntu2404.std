@@ -22,6 +22,14 @@ ENV PPM_STARTUP_DEBUG=0
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
+### Pre-create rstudio-pm user (uid/gid 999) before any installs ###
+# Packages pulled in by apt (including the rstudio-pm deb's Recommends) can claim
+# system IDs first, so the deb's postinst would otherwise get 997 or lower.
+# The postinst skips creation when the user and group already exist.
+RUN groupadd -r -g 999 rstudio-pm \
+    && useradd -r -u 999 -g rstudio-pm -s /usr/sbin/nologin -d /home/rstudio-pm -m \
+        -c "System user for rstudio-pm daemon" rstudio-pm
+
 ### Setup environment ###
 RUN echo 'Acquire::Retries "3"; Acquire::http::Timeout "30"; Acquire::https::Timeout "30";' > /etc/apt/apt.conf.d/99-retries && \
     apt-get update -yqq --fix-missing && \
@@ -46,7 +54,7 @@ ENV LC_ALL=en_US.UTF-8
 ### Install Apt Packages ###
 COPY package-manager/2026.09/deps/ubuntu-24.04_packages.txt /tmp/packages.txt
 RUN apt-get update -yqq && \
-    xargs -a /tmp/packages.txt apt-get install -yqq --no-install-recommends && \
+    test -f /tmp/packages.txt && sed 's/#.*//' /tmp/packages.txt | xargs -r apt-get install -yqq --no-install-recommends && \
     apt-get clean -yqq && \
     rm -rf /var/lib/apt/lists/*
 
@@ -66,6 +74,22 @@ RUN apt-get update -yqq && \
     apt-get clean -yqq && \
     rm -rf /var/lib/apt/lists/*
 
+ARG TARGETARCH
+RUN case "$TARGETARCH" in \
+      amd64) sha256=e9d84f9e461a89abb4437af26a784917bd85cf1612c8de142a3b4449dff332d0 ;; \
+      arm64) sha256=0c19a80498da84e5615138bf804c85b782438c515832430fef8d40057418b4eb ;; \
+      *) echo "Unsupported Pebble architecture: $TARGETARCH" >&2; exit 1 ;; \
+    esac && \
+    version=v1.33.2 && \
+    tmpdir="$(mktemp -d)" && \
+    curl -fsSL "https://github.com/canonical/pebble/releases/download/${version}/pebble_${version}_linux_${TARGETARCH}.tar.gz" \
+      -o "$tmpdir/pebble.tar.gz" && \
+    printf '%s  %s\n' "$sha256" "$tmpdir/pebble.tar.gz" | sha256sum -c - && \
+    tar -xzf "$tmpdir/pebble.tar.gz" -C "$tmpdir" pebble COPYING && \
+    install -D -m 0755 "$tmpdir/pebble" /usr/local/bin/pebble && \
+    install -D -m 0644 "$tmpdir/COPYING" /usr/local/share/doc/pebble/COPYING && \
+    rm -rf "$tmpdir"
+
 ### Install Package Manager 2026.09.0 ###
 ARG PACKAGE_MANAGER_VERSION="2026.09.0"
 COPY --chmod=0755 package-manager/2026.09/scripts/install_package_manager.sh /tmp/install_package_manager.sh
@@ -80,6 +104,12 @@ RUN mkdir -p /var/run/rstudio-pm \
     && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \
     && chown -R rstudio-pm:rstudio-pm /var/run/rstudio-pm
 
+ENV PEBBLE=/var/lib/posit-pebble
+RUN command -v pebble >/dev/null || { echo "Pebble must be installed and on PATH" >&2; exit 1; }; \
+    install -d -m 0755 "$PEBBLE/layers" && chmod 0750 "$PEBBLE" && \
+    chown "rstudio-pm:rstudio-pm" "$PEBBLE"
+COPY --chmod=0644 ["package-manager/2026.09/pebble/001-package-manager.yaml", "/var/lib/posit-pebble/layers/001-product.yaml"]
+
 USER rstudio-pm
 
 # Initialize userspace licensing for runtime activation.
@@ -90,4 +120,4 @@ RUN echo "source <(rspm completion bash)" >> ~/.bashrc
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
     CMD curl -fsS http://localhost:4242/__ping__ || exit 1
 
-CMD ["/usr/local/bin/startup.sh"]
+ENTRYPOINT ["pebble", "run", "--verbose"]

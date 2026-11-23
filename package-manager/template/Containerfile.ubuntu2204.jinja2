@@ -3,6 +3,7 @@ Below are imports for Bakery's macros. If any are unneeded, they can be removed.
 Bakery handles bootstrapping the files into template rendering.
 -#}
 {%- import "apt.j2" as apt -%}
+{%- import "pebble.j2" as pebble -%}
 {%- import "python.j2" as python -%}
 {%- import "r.j2" as r -%}
 
@@ -91,6 +92,8 @@ ENV PATH={{ python.get_version_directory(Dependencies.python.0) }}/bin:$PATH
 {{ r.run_install(Dependencies.R) }}
 {%- endif %}
 
+{{ pebble.install() }}
+
 ### Install Package Manager {{ Image.Version }} ###
 ARG PACKAGE_MANAGER_VERSION="{{ Image.Version }}"
 COPY --chmod=0755 {{ Path.Version }}/scripts/install_package_manager.sh /tmp/install_package_manager.sh
@@ -105,6 +108,8 @@ RUN mkdir -p /var/run/rstudio-pm \
     && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \
     && chown -R rstudio-pm:rstudio-pm /var/run/rstudio-pm
 
+{{ pebble.configure(Path.Version ~ "/pebble/001-package-manager.yaml", "rstudio-pm:rstudio-pm") }}
+
 USER rstudio-pm
 
 # Initialize userspace licensing for runtime activation.
@@ -115,4 +120,4 @@ RUN echo "source <(rspm completion bash)" >> ~/.bashrc
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
     CMD curl -fsS http://localhost:4242/__ping__ || exit 1
 
-CMD ["/usr/local/bin/startup.sh"]
+{{ pebble.entrypoint() }}

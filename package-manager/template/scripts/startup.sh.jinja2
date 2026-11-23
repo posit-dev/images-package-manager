@@ -76,4 +76,9 @@ unset RSPM_LICENSE_SERVER
 unset RSPM_LICENSE_FILE_PATH
 
 # Start RStudio Package Manager
+# exec so SIGTERM from Pebble reaches PPM directly. Skipped when a license trap
+# exists, since exec would discard the EXIT trap that deactivates the license.
+if ! trap -p EXIT | grep -q .; then
+    exec /opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg
+fi
 /opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg
