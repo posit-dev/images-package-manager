@@ -83,14 +83,17 @@ images:
         options:
           - tool: goss
             wait: 10
-            # Pebble is the entrypoint and starts PPM itself; no extra args.
+            # No args: run the image default (startup.sh CMD on older versions,
+            # Pebble on newer ones, which rejects extra args).
             command: ""
       - name: Minimal
         extension: min
         tagDisplayName: min
         options:
           - tool: goss
-            command: ""
+            # Sleep regardless of ENTRYPOINT (Pebble on newer versions, none on older).
+            runtimeOptions: "--entrypoint sleep"
+            command: "infinity"
     versions:
       - name: 2026.11.0
         subpath: '2026.11'

@@ -345,7 +345,7 @@ For production deployments, use license files rather than license keys.
 
 ### Entrypoint and command overrides
 
-The image runs [Pebble](https://github.com/canonical/pebble) as PID 1 (`ENTRYPOINT ["pebble", "run", "--verbose"]`). Pebble starts Package Manager, forwards `SIGTERM`, and reaps orphaned processes, so `docker run --init` is not needed. Pebble waits up to 110 seconds for Package Manager to stop and deactivate its license; the container runtime's stop timeout (Docker `--stop-timeout`, Kubernetes `terminationGracePeriodSeconds`) still applies on top of that.
+Starting with the first Package Manager release after 2026.11.0, the image runs [Pebble](https://github.com/canonical/pebble) as PID 1 (`ENTRYPOINT ["pebble", "run", "--verbose"]`). Pebble starts Package Manager, forwards `SIGTERM`, and reaps orphaned processes, so `docker run --init` is not needed. Pebble waits up to 110 seconds for Package Manager to stop and deactivate its license; the container runtime's stop timeout (Docker `--stop-timeout`, Kubernetes `terminationGracePeriodSeconds`) still applies on top of that.
 
 Arguments passed after the image name are now arguments to `pebble run`, not a replacement command. To run a different command, override the entrypoint:
 
