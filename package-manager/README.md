@@ -343,6 +343,18 @@ docker stop --time 120 <container>
 
 For production deployments, use license files rather than license keys.
 
+### Entrypoint and command overrides
+
+The image runs [Pebble](https://github.com/canonical/pebble) as PID 1 (`ENTRYPOINT ["pebble", "run", "--verbose"]`). Pebble starts Package Manager, forwards `SIGTERM`, and reaps orphaned processes, so `docker run --init` is not needed. Pebble waits up to 110 seconds for Package Manager to stop and deactivate its license; the container runtime's stop timeout (Docker `--stop-timeout`, Kubernetes `terminationGracePeriodSeconds`) still applies on top of that.
+
+Arguments passed after the image name are now arguments to `pebble run`, not a replacement command. To run a different command, override the entrypoint:
+
+```bash
+docker run --rm -it --entrypoint /bin/bash ghcr.io/posit-dev/package-manager -c 'cat /etc/os-release'
+```
+
+In Kubernetes, set `command` (not only `args`) to replace the entrypoint.
+
 ### Hardware locking
 
 Hardware locks license state files to a specific machine. Changes to MAC addresses, hostnames, or container orchestration platforms, such as Kubernetes, can invalidate the license state, requiring reactivation.

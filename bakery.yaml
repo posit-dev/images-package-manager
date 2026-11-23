@@ -83,10 +83,14 @@ images:
         options:
           - tool: goss
             wait: 10
-            command: "/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg"
+            # Pebble is the entrypoint and starts PPM itself; no extra args.
+            command: ""
       - name: Minimal
         extension: min
         tagDisplayName: min
+        options:
+          - tool: goss
+            command: ""
     versions:
       - name: 2026.11.0
         subpath: '2026.11'
