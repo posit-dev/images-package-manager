@@ -56,6 +56,8 @@ jobs:
       packages: write
     uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@v0
     with:
+      # TODO: revert to default before merge (images-shared#892)
+      version: feat/891-pebble-init
       dev-versions: "exclude"
       trivy-scan: true
       recent: 3
@@ -67,6 +69,8 @@ jobs:
       packages: write
     uses: posit-dev/images-shared/.github/workflows/bakery-build-pr.yml@v0
     with:
+      # TODO: revert to default before merge (images-shared#892)
+      version: feat/891-pebble-init
       dev-versions: "only"
       trivy-scan: true
 

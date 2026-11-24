@@ -83,10 +83,17 @@ images:
         options:
           - tool: goss
             wait: 10
-            command: "/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg"
+            # No args: run the image default (startup.sh CMD on older versions,
+            # Pebble on newer ones, which rejects extra args).
+            command: ""
       - name: Minimal
         extension: min
         tagDisplayName: min
+        options:
+          - tool: goss
+            # Sleep regardless of ENTRYPOINT (Pebble on newer versions, none on older).
+            runtimeOptions: "--entrypoint sleep"
+            command: "infinity"
     versions:
       - name: 2026.11.2
         subpath: '2026.11'

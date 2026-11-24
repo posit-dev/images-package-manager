@@ -73,6 +73,8 @@ jobs:
       WIZ_POLICY_ID: ${{ secrets.WIZ_POLICY_ID }}
       WIZ_PROJECT_ID: ${{ secrets.WIZ_PROJECT_ID }}
     with:
+      # TODO: revert to default before merge (images-shared#892)
+      version: feat/891-pebble-init
       dev-versions: "only"
       dev-version: ${{ inputs.version }}
       dev-channel: ${{ inputs.channel }}
@@ -109,6 +111,8 @@ jobs:
       - name: Setup bakery
         uses: posit-dev/images-shared/setup-bakery@v0
         with:
+          # TODO: revert to default before merge (images-shared#892)
+          version: feat/891-pebble-init
           restore-cache: "false"
 
       - name: Generate GitHub App Token
