@@ -197,7 +197,7 @@ images:
             version: 4.6.0
           - dependency: python
             version: 3.14.5
-      - name: 2026.04.2
+      - name: 2026.04.4
         subpath: '2026.04'
         os:
           - name: Ubuntu 22.04
