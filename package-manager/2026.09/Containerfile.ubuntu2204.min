@@ -41,8 +41,8 @@ RUN apt-get update -yqq && \
 
 
 
-### Install Package Manager 2026.09.0 ###
-ARG PACKAGE_MANAGER_VERSION="2026.09.0"
+### Install Package Manager 2026.09.2 ###
+ARG PACKAGE_MANAGER_VERSION="2026.09.2"
 COPY --chmod=0755 package-manager/2026.09/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN \
     /tmp/install_package_manager.sh \
