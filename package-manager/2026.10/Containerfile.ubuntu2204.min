@@ -11,6 +11,14 @@ ENV PPM_STARTUP_DEBUG=0
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
+### Pre-create rstudio-pm user (uid/gid 999) before any installs ###
+# Packages pulled in by apt (including the rstudio-pm deb's Recommends) can claim
+# system IDs first, so the deb's postinst would otherwise get 997 or lower.
+# The postinst skips creation when the user and group already exist.
+RUN groupadd -r -g 999 rstudio-pm \
+    && useradd -r -u 999 -g rstudio-pm -s /usr/sbin/nologin -d /home/rstudio-pm -m \
+        -c "System user for rstudio-pm daemon" rstudio-pm
+
 ### Setup environment ###
 RUN echo 'Acquire::Retries "3"; Acquire::http::Timeout "30"; Acquire::https::Timeout "30";' > /etc/apt/apt.conf.d/99-retries && \
     apt-get update -yqq --fix-missing && \
