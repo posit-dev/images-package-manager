@@ -215,7 +215,7 @@ images:
             version: 4.5.3
           - dependency: python
             version: 3.14.4
-      - name: 2025.12.0-14
+      - name: 2025.12.4-16
         subpath: '2025.12'
         os:
           - name: Ubuntu 24.04
