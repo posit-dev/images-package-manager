@@ -120,6 +120,7 @@ jobs:
           owner: rstudio
           repositories: helm-package-manager,pulumi-package-manager
           permission-actions: write
+          permission-contents: read
 
       - name: Dispatch deploys
         env:
