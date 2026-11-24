@@ -68,8 +68,8 @@ RUN apt-get update -yqq && \
     apt-get clean -yqq && \
     rm -rf /var/lib/apt/lists/*
 
-### Install Package Manager 2026.10.0 ###
-ARG PACKAGE_MANAGER_VERSION="2026.10.0"
+### Install Package Manager 2026.10.2 ###
+ARG PACKAGE_MANAGER_VERSION="2026.10.2"
 COPY --chmod=0755 package-manager/2026.10/scripts/install_package_manager.sh /tmp/install_package_manager.sh
 RUN PYTHON_VERSION=3.15.0 R_VERSION=4.6.1 \
     /tmp/install_package_manager.sh \
