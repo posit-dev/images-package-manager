@@ -83,7 +83,7 @@ command:
     exec: /opt/rstudio-pm/bin/rstudio-pm --version
     exit-status: 0
     stdout:
-      - "2026.09.0"
+      - "2026.09.2"
   "Ensure R version is correct":
     exec: /opt/R/4.6.1/bin/R --version
     exit-status: 0

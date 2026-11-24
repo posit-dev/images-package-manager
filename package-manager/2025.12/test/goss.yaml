@@ -71,7 +71,7 @@ command:
     exec: /opt/rstudio-pm/bin/rstudio-pm --version
     exit-status: 0
     stdout:
-      - "2025.12.0-14"
+      - "2025.12.4-16"
   "Ensure R version is correct":
     exec: /opt/R/4.5.2/bin/R --version
     exit-status: 0
