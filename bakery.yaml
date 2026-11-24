@@ -88,7 +88,7 @@ images:
         extension: min
         tagDisplayName: min
     versions:
-      - name: 2026.11.0
+      - name: 2026.11.2
         subpath: '2026.11'
         latest: true
         os:
